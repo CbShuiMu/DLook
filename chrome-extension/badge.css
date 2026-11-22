@@ -1,0 +1,182 @@
+.dlook-price-low {
+  --dlook-band: #2147a1;
+  --dlook-muted: #415570;
+  --dlook-number: #b6dfff;
+  container: dlook-card / inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 4px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--dlook-band);
+  color: white;
+  font: 500 13px/1.25 system-ui, sans-serif;
+  text-align: start;
+  font-variant-numeric: tabular-nums;
+}
+.dlook-price-low *, .dlook-price-low *::after { box-sizing: border-box; }
+.dlook-price-low:is([data-state="low"], [data-state="new-low"]) {
+  --dlook-band: #775009;
+  --dlook-number: #ffe197;
+  --dlook-tag: #ffce61;
+}
+.dlook-price-low[data-state="new-low"] { --dlook-band: #241c27; }
+.dlook-details {
+  display: flex;
+  flex: 1 1 100%;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 3px 12px;
+  min-width: 0;
+  padding: 4px 6px;
+}
+.dlook-low-labels, .dlook-low-amount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.dlook-low-values {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  min-width: 0;
+  background: var(--dlook-band);
+}
+.dlook-recorded { color: #e1ecfa; }
+.dlook-low-amount { align-items: baseline; }
+.dlook-price-low .dlook-low-amount > strong {
+  color: var(--dlook-number);
+  font: 750 21px/1.12 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.dlook-low-values .dlook-unit, .dlook-price-low .dlook-off-value { font: 600 10px/1 system-ui, sans-serif; }
+.dlook-low-amount :is(.dlook-unit, .dlook-off-value) { color: var(--dlook-number); }
+.dlook-price-low :is(.dlook-low-tag, .dlook-off) {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font: 700 12px/1.2 system-ui, sans-serif;
+  white-space: nowrap;
+}
+.dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }
+.dlook-price-low[data-state="new-low"] .dlook-low-tag { color: #000; }
+.dlook-price-low .dlook-off { color: white; background: #c32f39; }
+.dlook-off-value { white-space: nowrap; }
+.dlook-price-low img {
+  display: block;
+  width: 44px;
+  height: 15px;
+  margin: 0;
+  background: transparent;
+  object-fit: contain;
+}
+.dlook-price-low a.dlook-history {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 27px;
+  padding: 3px 7px;
+  background: #295bc8;
+  color: white;
+  font: 600 12px/1.25 system-ui, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+@container dlook-card (min-width: 240px) {
+  .dlook-details { flex: 1 1 0; }
+  .dlook-price-low a.dlook-history {
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 2px;
+    padding-inline: 10px;
+  }
+}
+.dlook-price-low a.dlook-history:hover { background: #2147a1; text-decoration: underline; }
+.dlook-price-low :is(a, button):focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }
+.dlook-price-low:is([data-state="empty"], [data-state="loading"], [data-state="error"]) {
+  align-items: center;
+  gap: 3px 7px;
+  padding: 4px 8px;
+  background: var(--dlook-muted);
+}
+.dlook-price-low[data-state="error"] { background: #773747; }
+.dlook-price-low .dlook-note { flex: 1 1 6ch; font-size: 13px; overflow-wrap: anywhere; }
+.dlook-price-low > button {
+  min-height: 24px;
+  padding: 2px 6px;
+  border: 1px solid #ffffff80;
+  border-radius: 4px;
+  background: #994659;
+  color: white;
+  font: 600 13px/1.2 system-ui, sans-serif;
+  cursor: pointer;
+}
+.dlook-price-low[data-layout="touch"] > button { min-height: 44px; }
+.dlook-price-low[data-layout="touch"] .dlook-low-amount > strong { font-size: 22px; }
+
+/* The native touch price wrapper precedes the official campaign and genre tags. */
+:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }
+:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {
+  flex: 0 0 100%;
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+}
+.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }
+
+/* Keep both price rows together, then show DLook, then the site's own campaign. */
+.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }
+.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 3px 8px;
+}
+.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }
+.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }
+.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }
+.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }
+.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }
+.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }
+
+/* On desktop the campaign lives inside the title. Grid keeps all native nodes
+   in place for DLsite's cart updates, while sharing the wide details column. */
+.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0 12px;
+  align-items: start;
+  & > .work_thumb { grid-area: 1 / 1 / span 12; }
+  & > .work_setting { grid-area: 1 / 3 / span 12; }
+  & > .work_content, & > .work_content > .work_name { display: contents; }
+  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {
+    grid-column: 2;
+    min-width: 0;
+    order: 4;
+  }
+  & .work_name > a { order: 0; }
+  & > .work_content > .maker_name { order: 1; }
+  & > div.work_price {
+    order: 2;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 1px 5px;
+    width: auto;
+    padding: 0;
+    text-align: start;
+  }
+  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }
+  & .work_name > .icon_wrap { order: 3; }
+}

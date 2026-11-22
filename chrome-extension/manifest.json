@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extensionName__",
+  "version": "1.7.1",
+  "default_locale": "en",
+  "description": "__MSG_extensionDescription__",
+  "icons": { "128": "icon-128.png" },
+  "permissions": ["storage"],
+  "action": { "default_popup": "popup.html", "default_title": "DLook" },
+  "host_permissions": ["https://dlook.site/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [{
+    "matches": [
+      "https://*.dlsite.com/*/work/*",
+      "https://*.dlsite.com/*/cart",
+      "https://*.dlsite.com/*/cart?*",
+      "https://*.dlsite.com/*/cart/*"
+    ],
+    "js": ["language.js", "currency.js", "current-price.js", "content.js"],
+    "css": ["badge.css"]
+  }],
+  "web_accessible_resources": [{
+    "resources": ["dlook-logo.svg"],
+    "matches": ["https://*.dlsite.com/*"]
+  }]
+}
