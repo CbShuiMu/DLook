@@ -14,6 +14,9 @@
   const logoUrl = chrome.runtime.getURL('dlook-logo.svg') + '#on-dark';
   const validAmount = value => Number.isFinite(value) && value >= 0;
   let scheduled = false;
+  let selectedCurrency;
+  const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart'
+    : '.c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, script[type="application/ld+json"]';
 
   function targets() {
     const result = new Map();
@@ -21,8 +24,8 @@
       const rows = document.querySelectorAll('#show_cart .cart_list_item, #show_cart li._cart_item, .cart_list > .cart_list_item, .type_cart > li._cart_item');
       for (const row of rows) {
         const raw = row.getAttribute('data-workno') || '';
-        const link = row.querySelector('a[href*="/work/"][href*="/product_id/"]');
-        const id = /^(?:RJ|BJ|VJ)\d{6,10}$/i.test(raw) ? raw.toUpperCase() : link && productId(link.pathname);
+        const id = /^(?:RJ|BJ|VJ)\d{6,10}$/i.test(raw) ? raw.toUpperCase()
+          : productId(row.querySelector('a[href*="/work/"][href*="/product_id/"]')?.pathname || '');
         if (!id) continue;
         const priceColumn = row.querySelector('.n_work_price_wrap, .work_price_wrap, div.work_price');
         if (!priceColumn) continue;
@@ -56,16 +59,6 @@
     node.className = className;
     node.textContent = text;
     return node;
-  }
-
-  function addDiscount(labels, priceRow, off, plain) {
-    if (off === null) {
-      labels.prepend(part('span', 'dlook-unknown-off', copy.unknownOff));
-    } else if (plain) {
-      priceRow.append(part('b', 'dlook-off-value', `${off}% OFF`));
-    } else {
-      labels.prepend(part('span', 'dlook-off', `${off}% OFF`));
-    }
   }
 
   function logo() {
@@ -123,7 +116,11 @@
     values.append(labels, amountRow);
     details.append(values);
     const off = newLow ? currentOff : entry.off;
-    if (!newLow || off > 0) addDiscount(labels, amountRow, off, atLow || currentOff === 0);
+    if (off > 0) {
+      amountRow.append(part('b', 'dlook-off-value', `${off}% OFF`));
+    } else if (!newLow && off === null) {
+      labels.prepend(part('span', 'dlook-unknown-off', copy.unknownOff));
+    }
     const history = part('a', 'dlook-history', '');
     history.append(logo(), part('span', '', copy.history));
     history.href = 'https://dlook.site/products/' + encodeURIComponent(id);
@@ -160,7 +157,8 @@
       }
     }
     if (!current.size) return;
-    const currency = DLookCurrency.quote(schedule);
+    selectedCurrency = DLookCurrency.selected();
+    const currency = DLookCurrency.quote(schedule, selectedCurrency);
     let money;
     const needed = [];
     for (const [node, { id, anchor, position, touch, currentPrice, currentOff }] of current) {
@@ -198,16 +196,41 @@
   function schedule() {
     if (!scheduled) {
       scheduled = true;
-      setTimeout(update, 40);
+      queueMicrotask(update);
     }
   }
-  new MutationObserver(schedule).observe(document.documentElement, {
+  function affectsPrice(record) {
+    const element = record.target.nodeType === Node.ELEMENT_NODE ? record.target : record.target.parentElement;
+    if (element?.closest('.dlook-price-low')) return false;
+    const inside = element?.closest(priceScope);
+    if (record.type === 'characterData') return Boolean(inside);
+    // A change on an ancestor can hide a price or turn a cart into a different list.
+    if (record.type === 'attributes') return inside || element.querySelector(priceScope + ', .dlook-price-low');
+    if (inside) return record.removedNodes.length ||
+      Array.from(record.addedNodes).some(node => !node.classList?.contains('dlook-price-low'));
+    return [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === Node.ELEMENT_NODE &&
+      (node.matches(priceScope) || node.querySelector(priceScope)));
+  }
+
+  let mutationScheduled = false;
+  new MutationObserver(records => {
+    if (mutationScheduled || (!records.some(affectsPrice) && (!mounted.size || selectedCurrency === DLookCurrency.selected()))) return;
+    mutationScheduled = true;
+    const flush = () => { mutationScheduled = false; schedule(); };
+    if (document.hidden) setTimeout(flush, 40);
+    else requestAnimationFrame(flush);
+  }).observe(document.documentElement, {
     childList: true, characterData: true, subtree: true, attributes: true,
-    attributeFilter: ['href', 'class', 'style', 'hidden', 'data-workno', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
+    attributeFilter: ['id', 'href', 'class', 'style', 'hidden', 'data-workno', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
   });
   window.addEventListener('storage', event => {
     if (event.key === 'currency' || event.key === null) schedule();
   });
+  if (!cartPage) {
+    const id = productId(location.pathname);
+    prices.set(id, { status: 'loading' });
+    void lookup([id]);
+  }
   DLookLanguage.watch((nextLanguage, messages) => {
     language = nextLanguage;
     copy = messages;

@@ -37,9 +37,9 @@ const DLookLanguage = (() => {
     },
   };
   function siteLocale() {
-    const url = new URL(location.href);
-    return (document.documentElement.lang.trim() || url.searchParams.get('locale') ||
-      url.pathname.match(/\/locale\/([^/.]+)/i)?.[1] || '').toLowerCase().replaceAll('_', '-');
+    const locale = document.documentElement.lang.trim() || new URLSearchParams(location.search).get('locale') ||
+      location.pathname.match(/\/locale\/([^/.]+)/i)?.[1] || '';
+    return locale.toLowerCase().replaceAll('_', '-');
   }
 
   function siteLanguage() {

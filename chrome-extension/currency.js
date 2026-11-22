@@ -19,8 +19,7 @@ const DLookCurrency = (() => {
     return defaults.get(DLookLanguage.siteLocale()) || 'JPY';
   }
 
-  function quote(onChange) {
-    const code = selected();
+  function quote(onChange, code = selected()) {
     if (code === 'JPY') return yen;
     if (!rates && !pending && Date.now() >= retryAfter) {
       // DLsite publishes these rates as yen per unit of the selected currency.
@@ -58,5 +57,5 @@ const DLookCurrency = (() => {
     return { amount, unit };
   }
 
-  return { quote, formatter };
+  return { selected, quote, formatter };
 })();

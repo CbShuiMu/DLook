@@ -60,7 +60,7 @@
 }
 .dlook-low-values .dlook-unit, .dlook-price-low .dlook-off-value { font: 600 10px/1 system-ui, sans-serif; }
 .dlook-low-amount :is(.dlook-unit, .dlook-off-value) { color: var(--dlook-number); }
-.dlook-price-low :is(.dlook-low-tag, .dlook-off) {
+.dlook-price-low .dlook-low-tag {
   padding: 2px 4px;
   border-radius: 4px;
   font: 700 12px/1.2 system-ui, sans-serif;
@@ -68,7 +68,6 @@
 }
 .dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }
 .dlook-price-low[data-state="new-low"] .dlook-low-tag { color: #000; }
-.dlook-price-low .dlook-off { color: white; background: #c32f39; }
 .dlook-off-value { white-space: nowrap; }
 .dlook-price-low img {
   display: block;

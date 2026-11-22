@@ -1,4 +1,4 @@
 {
-  "extensionName": { "message": "DLook: DLsite Price Checker" },
-  "extensionDescription": { "message": "Check DLsite price history, record lows, and discounts on product pages and in your cart, in your selected currency." }
+  "extensionName": { "message": "DLook-DLsite历史最低价格查询" },
+  "extensionDescription": { "message": "在 DLsite 商品页和购物车查看历史最低价与折扣，价格按你在 DLsite 选择的币种显示。" }
 }
