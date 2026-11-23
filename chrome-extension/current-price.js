@@ -65,10 +65,18 @@ const DLookCurrentPrice = (() => {
     return !hasCampaign && prices.length === 1 && !prices[0].matches('.app-price_strike') ? 0 : null;
   }
 
-  function product(id, priceRow) {
+  function product(id, priceRow, pageId = id) {
     const visiblePrice = priceRow?.querySelector('.app-price:not(.app-price_strike), .price:not(.strike)');
     const displayed = displayedYen(visiblePrice?.textContent);
     if (displayed !== null) return displayed;
+
+    if (id !== pageId) {
+      // A translated purchase can have its own yen price outside the visible price row.
+      const purchase = priceRow?.closest('.c-purchaseSide__main, .c-purchaseBox, #work_buy_box_wrapper');
+      const offer = purchase?.querySelector(`[data-product_id="${id}"][data-price]`);
+      const price = amount(offer?.getAttribute('data-price'));
+      if (price !== null) return price;
+    }
 
     // Localized pages publish their yen offer alongside the converted display price.
     for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {

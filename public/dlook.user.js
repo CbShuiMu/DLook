@@ -2,7 +2,7 @@
 // @name         DLook — DLsite 史低价
 // @namespace    https://dlook.site/
 // @description  在 DLsite 商品页和购物车显示 DLook 史低价、折扣和价格走势链接。
-// @version      1.8
+// @version      1.8.1
 // @match        https://*.dlsite.com/*/work/*
 // @match        https://*.dlsite.com/*/cart
 // @match        https://*.dlsite.com/*/cart?*
@@ -317,10 +317,18 @@ const DLookCurrentPrice = (() => {
     return !hasCampaign && prices.length === 1 && !prices[0].matches('.app-price_strike') ? 0 : null;
   }
 
-  function product(id, priceRow) {
+  function product(id, priceRow, pageId = id) {
     const visiblePrice = priceRow?.querySelector('.app-price:not(.app-price_strike), .price:not(.strike)');
     const displayed = displayedYen(visiblePrice?.textContent);
     if (displayed !== null) return displayed;
+
+    if (id !== pageId) {
+      // A translated purchase can have its own yen price outside the visible price row.
+      const purchase = priceRow?.closest('.c-purchaseSide__main, .c-purchaseBox, #work_buy_box_wrapper');
+      const offer = purchase?.querySelector(`[data-product_id="${id}"][data-price]`);
+      const price = amount(offer?.getAttribute('data-price'));
+      if (price !== null) return price;
+    }
 
     // Localized pages publish their yen offer alongside the converted display price.
     for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
@@ -345,6 +353,8 @@ const DLookCurrentPrice = (() => {
 
 (() => {
   const productPattern = /\/work\/(?:[^/?#]+\/)*product_id\/((?:RJ|BJ|VJ)\d{6,10})(?=\.html(?:\/|$)|\/|$)/i;
+  const workNumber = /^(?:RJ|BJ|VJ)\d{6,10}$/i;
+  const buyPattern = /\/cart\/buynow\/1\/product_id\/((?:RJ|BJ|VJ)\d{6,10})\/?$/i;
   const cartPage = /^\/[^/]+\/cart(?:\/|$)/.test(location.pathname);
   const touchPage = /^\/[^/]+-touch\//.test(location.pathname);
   const productId = path => path.match(productPattern)?.[1].toUpperCase();
@@ -360,10 +370,20 @@ const DLookCurrentPrice = (() => {
   let currentTargets, expiryTimer;
   let scheduledEnd = Infinity;
   const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart'
-    : '.c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
+    : '.c-purchaseSide__main, .c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
 
   function firstVisible(selector) {
     return Array.from(document.querySelectorAll(selector)).find(node => node.getClientRects().length);
+  }
+
+  function detailProductId() {
+    const translation = new URLSearchParams(location.search).get('translation') ?? '';
+    if (workNumber.test(translation)) return translation.toUpperCase();
+
+    // DLsite may select a translation in the purchase box even on the canonical URL.
+    const buy = firstVisible('a.btn_buy[href*="/cart/buynow/"]');
+    const purchaseId = buy?.origin === location.origin ? buy.pathname.match(buyPattern)?.[1] : undefined;
+    return purchaseId?.toUpperCase() ?? productId(location.pathname);
   }
 
   function targets() {
@@ -372,7 +392,7 @@ const DLookCurrentPrice = (() => {
       const rows = document.querySelectorAll('#show_cart .cart_list_item, #show_cart li._cart_item, .cart_list > .cart_list_item, .type_cart > li._cart_item');
       for (const row of rows) {
         const raw = row.getAttribute('data-workno') || '';
-        const id = /^(?:RJ|BJ|VJ)\d{6,10}$/i.test(raw) ? raw.toUpperCase()
+        const id = workNumber.test(raw) ? raw.toUpperCase()
           : productId(row.querySelector('a[href*="/work/"][href*="/product_id/"]')?.pathname || '');
         if (!id) continue;
         const priceColumn = row.querySelector('.n_work_price_wrap, .work_price_wrap, div.work_price');
@@ -394,8 +414,8 @@ const DLookCurrentPrice = (() => {
       const priceAndRatings = priceBox?.closest('.c-purchaseBox__inner');
       const anchor = priceAndRatings || buy || firstVisible('#work_name, .c-productTitle');
       const separateRow = priceAndRatings ? DLookPlatform.separateProductRow : Boolean(priceRow || !buy);
-      const id = productId(location.pathname);
-      const currentPrice = DLookCurrentPrice.product(id, priceRow || priceBox);
+      const id = detailProductId();
+      const currentPrice = DLookCurrentPrice.product(id, priceRow || priceBox, productId(location.pathname));
       if (anchor && id) result.set(anchor, {
         id, anchor, position: separateRow ? 'afterend' : 'beforeend',
         touch: Boolean(priceAndRatings) || touchPage, currentPrice, currentOff: DLookCurrentPrice.productDiscount(priceBox, currentPrice)
@@ -589,14 +609,15 @@ const DLookCurrentPrice = (() => {
     else requestAnimationFrame(flush);
   }).observe(document.documentElement, {
     childList: true, characterData: true, subtree: true, attributes: true,
-    attributeFilter: ['id', 'href', 'class', 'style', 'hidden', 'data-workno', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
+    attributeFilter: ['id', 'href', 'class', 'style', 'hidden', 'data-workno', 'data-product_id', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
   });
   window.addEventListener('storage', event => {
     if (event.key === 'currency' || event.key === null) schedule();
   });
   if (!cartPage) {
     window.addEventListener('resize', scheduleTargets);
-    const id = productId(location.pathname);
+    window.addEventListener('popstate', scheduleTargets);
+    const id = detailProductId();
     prices.set(id, { status: 'loading' });
     void lookup([id]);
   }
