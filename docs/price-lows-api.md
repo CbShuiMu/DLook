@@ -22,7 +22,7 @@ HTTP 200。示例金额会随 DLook 的记录更新。
 {
   "currency": "JPY",
   "items": [
-    { "id": "RJ01735938", "historicalLowPrice": 440, "off": 20 },
+    { "id": "RJ01735938", "historicalLowPrice": 440, "off": 20, "newLowUntil": 1796094000000 },
     { "id": "BJ03050815", "historicalLowPrice": 2200, "off": 0 },
     { "id": "RJ9999999999", "historicalLowPrice": null, "off": null }
   ]
@@ -36,10 +36,13 @@ HTTP 200。示例金额会随 DLook 的记录更新。
 | `items[].id` | string | 大写的 DLsite 商品 ID。 |
 | `items[].historicalLowPrice` | number 或 null | 已记录的最低日元价。免费为 `0`，缺少可用价格为 `null`。 |
 | `items[].off` | number 或 null | 达到该最低价时对应的折扣百分数，`20` 表示 `20% OFF`。原价对应 `0`，折扣无法确认时为 `null`。 |
+| `items[].newLowUntil` | number，可省略 | 首次创下该最低价的促销仍在进行时，返回其结束时间，单位为 Unix 毫秒。插件现价等于该最低价时，可在这个时间点前显示「新史低」。 |
 
 最低价在 DLook 收录的原价与已生效的有效促销价中计算。已结束且记录完整的促销也参与计算。多次达到同一最低价时，返回其中可确认的最高 OFF。查询结果反映 DLook 已收录的数据，当前售价和购买条件以 DLsite 商品页为准。
 
-服务端按商品缓存结果。有价格的记录最多复用 60 秒，缺少价格的记录最多复用 10 秒。响应头 `X-DLook-Cache` 的值为 `HIT`（全部命中）、`PARTIAL`（部分命中）或 `MISS`（全部重新查询）。需要重新查询已收录的数据时，可发送请求头 `Cache-Control: no-cache`。
+判定新史低需要有可比较的原价或更早的促销价，以及本轮促销的结束时间。缺少开始时间时使用首次观测时间。同价促销首次创下纪录后，后续达到同价的促销只算追平纪录。
+
+服务端按商品缓存结果。有价格的记录最多复用 60 秒，缺少价格的记录最多复用 10 秒。有 `newLowUntil` 的记录最迟在该时间点失效。响应头 `X-DLook-Cache` 的值为 `HIT`（全部命中）、`PARTIAL`（部分命中）或 `MISS`（全部重新查询）。需要重新查询已收录的数据时，可发送请求头 `Cache-Control: no-cache`。
 
 ## 错误响应
 

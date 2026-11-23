@@ -54,14 +54,15 @@
 
 ## DLsite 浏览器扩展
 
-扩展会在 DLsite 商品页和购物车显示 DLook 已记录的最低价及对应 OFF，并链接到价格走势。界面语言和显示币种跟随 DLsite，可在扩展菜单中手动选择界面语言。
+扩展在 DLsite 商品页和购物车显示 DLook 记录的最低价、折扣和价格走势入口。语言和币种跟随 DLsite，扩展菜单支持手动选择界面语言。
 
-1. 前往 [GitHub Releases](https://github.com/CbShuiMu/DLook/releases)，下载 Assets 中的 `DLook-Chrome-<版本>.zip` 并解压。
-2. 打开桌面浏览器的扩展管理页。Chrome 可打开 `chrome://extensions`，QQ 浏览器可从菜单进入应用管理。
-3. 在支持加载 Manifest V3 扩展的浏览器版本中，开启「开发者模式」，选择「加载已解压的扩展程序」，再选择包含 `manifest.json` 的目录。
-4. 刷新 DLsite 商品页或购物车。更新时下载新版 ZIP，解压后重新加载扩展。
+从 [GitHub Releases](https://github.com/CbShuiMu/DLook/releases) 下载对应平台的文件。
 
-[扩展源码](chrome-extension) · [Chrome 加载扩展说明](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked) · [QQ 浏览器安装示例](https://stage-www.yinxiang.com/new/product/webclipper/install/qqbrowser/)
+- **Chrome、Edge 和 QQ 浏览器**：解压对应 ZIP。QQ 浏览器使用 Chrome 包。在扩展管理页启用开发者模式，加载含有 `manifest.json` 的目录。
+- **Firefox 桌面版和 Android**：Release 提供 Firefox 扩展 ZIP 和审核用源码包。日常安装使用经 Firefox 签名的扩展。
+- **Safari（iPhone、iPad、Mac）**：启用 [Userscripts](https://apps.apple.com/app/userscripts/id1463298887)，把 `.user.js` 保存到应用的脚本目录，并允许它在 DLsite 运行。
+
+[扩展源码](chrome-extension) · [历史低价 API](docs/price-lows-api.md)
 
 ## 历史低价 API
 

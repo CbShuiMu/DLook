@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "1.7.4",
+  "version": "1.8",
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "icons": { "128": "icon-128.png" },
@@ -16,8 +16,8 @@
       "https://*.dlsite.com/*/cart?*",
       "https://*.dlsite.com/*/cart/*"
     ],
-    "js": ["language.js", "currency.js", "current-price.js", "content.js"],
-    "css": ["badge.css"],
+    "js": ["language.js", "currency.js", "current-price.js", "platform.js", "content.js"],
+    "css": ["badge.css", "badge-layout.css"],
     "run_at": "document_end"
   }],
   "web_accessible_resources": [{

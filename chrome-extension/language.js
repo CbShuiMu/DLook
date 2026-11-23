@@ -45,31 +45,33 @@ const DLookLanguage = (() => {
   function siteLanguage() {
     const primary = siteLocale().split('-')[0];
     if (primary === 'zh') return 'zh-CN';
-    return Object.hasOwn(messages, primary) ? primary : 'en';
+    return hasLanguage(primary) ? primary : 'en';
   }
 
-  function watch(listener, popupSiteLanguage) {
+  function hasLanguage(value) {
+    return Object.prototype.hasOwnProperty.call(messages, value);
+  }
+
+  function watch(listener, { popupSiteLanguage, getMode, onModeChange } = {}) {
     let mode = 'auto';
     const notify = () => {
       const lang = mode === 'auto' ? popupSiteLanguage ?? siteLanguage() : mode;
       listener(lang, messages[lang], mode);
     };
     const apply = value => {
-      mode = Object.hasOwn(messages, value) ? value : 'auto';
+      mode = hasLanguage(value) ? value : 'auto';
       notify();
     };
     if (popupSiteLanguage === undefined) {
       new MutationObserver(notify).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
     }
     let changed = false;
-    chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === 'local' && changes.languageMode) {
-        changed = true;
-        apply(changes.languageMode.newValue);
-      }
+    onModeChange?.(value => {
+      changed = true;
+      apply(value);
     });
-    chrome.storage.local.get('languageMode').then(({ languageMode }) => {
-      if (!changed) apply(languageMode);
+    Promise.resolve().then(getMode).catch(() => 'auto').then(value => {
+      if (!changed) apply(value);
     });
   }
   return { watch, siteLanguage, siteLocale };

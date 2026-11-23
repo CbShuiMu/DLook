@@ -31,7 +31,8 @@ const DLookCurrentPrice = (() => {
     for (const label of scope?.querySelectorAll(
       '.c-purchaseBox__labels .label_sale, ._display_discount_rate:is(.type_sale, .icon_campaign, .icon_lead_01), .discount_rate, .rate_label'
     ) || []) {
-      if (!label.checkVisibility()) continue;
+      const visible = label.checkVisibility ? label.checkVisibility() : label.getClientRects().length > 0;
+      if (!visible) continue;
       const text = label.textContent.normalize('NFKC').trim();
       const percent = text.match(/(\d+(?:\.\d+)?)\s*%/);
       const tenths = text.match(/(\d+(?:\.\d+)?)\s*折/);

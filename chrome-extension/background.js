@@ -19,7 +19,9 @@ async function fetchPrices(ids) {
         !(item.off === null || (validAmount(item.off) && item.off <= 100))) continue;
     items.set(item.id, item);
     if (!recent.has(item.id) && recent.size >= 512) recent.delete(recent.keys().next().value);
-    recent.set(item.id, { item, expires: Date.now() + (item.historicalLowPrice === null ? 10000 : 60000) });
+    const ttl = item.historicalLowPrice === null ? 10000 : 60000;
+    const expires = Math.min(Date.now() + ttl, Number.isSafeInteger(item.newLowUntil) ? item.newLowUntil : Infinity);
+    recent.set(item.id, { item, expires });
   }
   return items;
 }

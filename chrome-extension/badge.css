@@ -69,7 +69,7 @@
 .dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }
 .dlook-price-low[data-state="new-low"] .dlook-low-tag { color: #000; }
 .dlook-off-value { white-space: nowrap; }
-.dlook-price-low img {
+.dlook-price-low :is(img, .dlook-logo) {
   display: block;
   width: 44px;
   height: 15px;
@@ -123,59 +123,3 @@
 }
 .dlook-price-low[data-layout="touch"] > button { min-height: 44px; }
 .dlook-price-low[data-layout="touch"] .dlook-low-amount > strong { font-size: 22px; }
-
-/* The native touch price wrapper precedes the official campaign and genre tags. */
-:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }
-:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {
-  flex: 0 0 100%;
-  grid-column: 1 / -1;
-  margin: 4px 0 0;
-}
-.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }
-
-/* Keep both price rows together, then show DLook, then the site's own campaign. */
-.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }
-.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 3px 8px;
-}
-.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }
-.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }
-.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }
-.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }
-.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }
-.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }
-
-/* On desktop the campaign lives inside the title. Grid keeps all native nodes
-   in place for DLsite's cart updates, while sharing the wide details column. */
-.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 0 12px;
-  align-items: start;
-  & > .work_thumb { grid-area: 1 / 1 / span 12; }
-  & > .work_setting { grid-area: 1 / 3 / span 12; }
-  & > .work_content, & > .work_content > .work_name { display: contents; }
-  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {
-    grid-column: 2;
-    min-width: 0;
-    order: 4;
-  }
-  & .work_name > a { order: 0; }
-  & > .work_content > .maker_name { order: 1; }
-  & > div.work_price {
-    order: 2;
-    display: flex;
-    flex-flow: row wrap;
-    align-items: baseline;
-    justify-content: flex-start;
-    gap: 1px 5px;
-    width: auto;
-    padding: 0;
-    text-align: start;
-  }
-  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }
-  & .work_name > .icon_wrap { order: 3; }
-}

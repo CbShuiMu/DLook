@@ -4,19 +4,22 @@
   const touchPage = /^\/[^/]+-touch\//.test(location.pathname);
   const productId = path => path.match(productPattern)?.[1].toUpperCase();
   if (!cartPage && !productId(location.pathname)) return;
-  chrome.runtime.onMessage.addListener((message, _sender, respond) => {
-    if (message?.type === 'site-language') respond(DLookLanguage.siteLanguage());
-  });
+  DLookPlatform.prepare();
 
   const prices = new Map();
   const mounted = new Map();
   let language, copy;
-  const logoUrl = chrome.runtime.getURL('dlook-logo.svg') + '#on-dark';
   const validAmount = value => Number.isFinite(value) && value >= 0;
   let scheduled = false;
   let selectedCurrency;
+  let currentTargets, expiryTimer;
+  let scheduledEnd = Infinity;
   const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart'
-    : '.c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, script[type="application/ld+json"]';
+    : '.c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
+
+  function firstVisible(selector) {
+    return Array.from(document.querySelectorAll(selector)).find(node => node.getClientRects().length);
+  }
 
   function targets() {
     const result = new Map();
@@ -37,17 +40,19 @@
         });
       }
     } else {
-      const priceBox = document.querySelector('.c-purchaseBox__priceInfo') || document.querySelector('#work_buy_box #work_price, #work_buy_box_wrapper #work_price');
-      const lastPrice = priceBox?.querySelectorAll(':scope > .c-purchaseBox__item, .work_buy_body:has(.price)');
+      const priceBox = firstVisible('.c-purchaseBox__priceInfo, #work_buy_box #work_price, #work_buy_box_wrapper #work_price');
+      const lastPrice = priceBox && Array.from(priceBox.querySelectorAll(':scope > .c-purchaseBox__item, .work_buy_body'))
+        .filter(row => row.parentElement === priceBox && row.classList.contains('c-purchaseBox__item') || row.querySelector('.price'));
       const priceRow = lastPrice?.[lastPrice.length - 1];
-      const buy = priceRow || priceBox || document.querySelector('#work_buy_box');
+      const buy = priceRow || priceBox || firstVisible('#work_buy_box, .c-purchaseBox');
       // On touch pages the native price and ratings share one horizontal row.
       const priceAndRatings = priceBox?.closest('.c-purchaseBox__inner');
-      const anchor = priceAndRatings || buy;
+      const anchor = priceAndRatings || buy || firstVisible('#work_name, .c-productTitle');
+      const separateRow = priceAndRatings ? DLookPlatform.separateProductRow : Boolean(priceRow || !buy);
       const id = productId(location.pathname);
       const currentPrice = DLookCurrentPrice.product(id, priceRow || priceBox);
       if (anchor && id) result.set(anchor, {
-        id, anchor, position: !priceAndRatings && priceRow ? 'afterend' : 'beforeend',
+        id, anchor, position: separateRow ? 'afterend' : 'beforeend',
         touch: Boolean(priceAndRatings) || touchPage, currentPrice, currentOff: DLookCurrentPrice.productDiscount(priceBox, currentPrice)
       });
     }
@@ -61,26 +66,21 @@
     return node;
   }
 
-  function logo() {
-    const image = new Image(45, 15);
-    image.src = logoUrl;
-    image.alt = 'DLook';
-    return image;
-  }
-
-  function render(badge, id, entry, currentPrice, currentOff, money) {
+  function render(badge, id, entry, currentPrice, currentOff, confirmedNewLow, money) {
     badge.lang = language;
     badge.setAttribute('role', 'group');
     badge.setAttribute('aria-label', 'DLook · ' + copy.low);
     badge.replaceChildren();
     badge.dataset.state = entry.status;
-    if (entry.status !== 'ready' || entry.price === null || entry.off === 0) {
+    const newLow = confirmedNewLow || (entry.status === 'ready' && entry.price !== null &&
+      currentPrice !== null && currentPrice < entry.price);
+    if (entry.status !== 'ready' || (!newLow && (entry.price === null || entry.off === 0))) {
       // An original price with OFF=0 cannot establish a discounted minimum.
       const empty = entry.status === 'ready';
       if (empty) badge.dataset.state = 'empty';
       const note = entry.price === null ? copy.missing : copy.noDiscount;
       const text = empty ? (currentPrice === 0 ? copy.free + ' · ' : '') + note : copy[entry.status];
-      badge.append(logo(), part('span', 'dlook-note', text));
+      badge.append(DLookPlatform.createLogo(), part('span', 'dlook-note', text));
       if (entry.status !== 'error') return;
       const retry = document.createElement('button');
       retry.type = 'button';
@@ -95,7 +95,6 @@
       return;
     }
     const matched = currentPrice === entry.price;
-    const newLow = currentPrice !== null && currentPrice < entry.price;
     const atLow = matched || newLow;
     badge.dataset.state = newLow ? 'new-low' : matched ? 'low' : 'record';
 
@@ -115,14 +114,14 @@
     amountRow.append(price);
     values.append(labels, amountRow);
     details.append(values);
-    const off = newLow ? currentOff : entry.off;
+    const off = newLow ? currentOff ?? (confirmedNewLow ? entry.off : null) : entry.off;
     if (off > 0) {
       amountRow.append(part('b', 'dlook-off-value', `${off}% OFF`));
     } else if (!newLow && off === null) {
       labels.prepend(part('span', 'dlook-unknown-off', copy.unknownOff));
     }
     const history = part('a', 'dlook-history', '');
-    history.append(logo(), part('span', '', copy.history));
+    history.append(DLookPlatform.createLogo(), part('span', '', copy.history));
     history.href = 'https://dlook.site/products/' + encodeURIComponent(id);
     history.target = '_blank';
     history.rel = 'noopener noreferrer';
@@ -131,13 +130,16 @@
 
   async function lookup(ids) {
     try {
-      const reply = await chrome.runtime.sendMessage({ type: 'price-lows', ids });
+      const reply = await DLookPlatform.lookupPrices(ids);
       const items = new Map(reply.items.map(item => [item.id, item]));
       for (const id of ids) {
         const item = items.get(id);
         const valid = item && (item.historicalLowPrice === null || validAmount(item.historicalLowPrice)) &&
           (item.off === null || (validAmount(item.off) && item.off <= 100));
-        prices.set(id, valid ? { status: 'ready', price: item.historicalLowPrice, off: item.off } : { status: 'error' });
+        prices.set(id, valid ? {
+          status: 'ready', price: item.historicalLowPrice, off: item.off,
+          newLowUntil: Number.isSafeInteger(item.newLowUntil) ? item.newLowUntil : 0,
+        } : { status: 'error' });
       }
     } catch {
       for (const id of ids) prices.set(id, { status: 'error' });
@@ -148,7 +150,7 @@
   function update() {
     scheduled = false;
     if (!copy) return;
-    const current = targets();
+    const current = currentTargets ??= targets();
     for (const [node, view] of mounted) {
       const target = current.get(node);
       if (!target || target.id !== view.id || target.anchor !== view.anchor || !view.badge.isConnected) {
@@ -156,9 +158,10 @@
         mounted.delete(node);
       }
     }
-    if (!current.size) return;
-    selectedCurrency = DLookCurrency.selected();
-    const currency = DLookCurrency.quote(schedule, selectedCurrency);
+    if (current.size) selectedCurrency = DLookCurrency.selected();
+    const currency = current.size ? DLookCurrency.quote(schedule, selectedCurrency) : null;
+    const now = Date.now();
+    let nextEnd = Infinity;
     let money;
     const needed = [];
     for (const [node, { id, anchor, position, touch, currentPrice, currentOff }] of current) {
@@ -171,23 +174,38 @@
         badge.className = 'dlook-price-low';
         if (touch) badge.dataset.layout = 'touch';
         anchor.insertAdjacentElement(position, badge);
-        mounted.set(node, { id, anchor, badge });
+        const panel = DLookPlatform.createPanel?.(badge) ?? badge;
+        mounted.set(node, { id, anchor, badge, panel });
       }
       const entry = prices.get(id);
       const view = mounted.get(node);
+      const confirmedNewLow = currentPrice !== null && currentPrice === entry.price && entry.newLowUntil > now;
+      if (confirmedNewLow) nextEnd = Math.min(nextEnd, entry.newLowUntil);
       // Keep the card with its price when the site adds or rearranges price details.
       if (position === 'afterend' && anchor.nextElementSibling !== view.badge) anchor.after(view.badge);
       if (cartPage && position === 'beforeend' && anchor.lastElementChild !== view.badge) anchor.append(view.badge);
       if (view.entry !== entry || view.language !== language || view.currentPrice !== currentPrice ||
-          view.currentOff !== currentOff || view.currency !== currency.code || view.rate !== currency.rate) {
+          view.currentOff !== currentOff || view.confirmedNewLow !== confirmedNewLow ||
+          view.currency !== currency.code || view.rate !== currency.rate) {
         money ??= DLookCurrency.formatter(currency, language, cartPage);
-        render(view.badge, id, entry, currentPrice, currentOff, money);
+        render(view.panel, id, entry, currentPrice, currentOff, confirmedNewLow, money);
         view.entry = entry;
         view.language = language;
         view.currentPrice = currentPrice;
         view.currentOff = currentOff;
+        view.confirmedNewLow = confirmedNewLow;
         view.currency = currency.code;
         view.rate = currency.rate;
+      }
+    }
+    if (scheduledEnd !== nextEnd) {
+      clearTimeout(expiryTimer);
+      scheduledEnd = nextEnd;
+      if (Number.isFinite(nextEnd)) {
+        expiryTimer = setTimeout(() => {
+          scheduledEnd = Infinity;
+          schedule();
+        }, Math.min(2147483647, Math.max(0, nextEnd - Date.now())));
       }
     }
     for (let start = 0; start < needed.length; start += 50) void lookup(needed.slice(start, start + 50));
@@ -199,6 +217,10 @@
       queueMicrotask(update);
     }
   }
+  function scheduleTargets() {
+    currentTargets = undefined;
+    schedule();
+  }
   function affectsPrice(record) {
     const element = record.target.nodeType === Node.ELEMENT_NODE ? record.target : record.target.parentElement;
     if (element?.closest('.dlook-price-low')) return false;
@@ -206,6 +228,7 @@
     if (record.type === 'characterData') return Boolean(inside);
     // A change on an ancestor can hide a price or turn a cart into a different list.
     if (record.type === 'attributes') return inside || element.querySelector(priceScope + ', .dlook-price-low');
+    if (Array.from(record.removedNodes).some(node => node.classList?.contains('dlook-price-low'))) return true;
     if (inside) return record.removedNodes.length ||
       Array.from(record.addedNodes).some(node => !node.classList?.contains('dlook-price-low'));
     return [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === Node.ELEMENT_NODE &&
@@ -216,7 +239,7 @@
   new MutationObserver(records => {
     if (mutationScheduled || (!records.some(affectsPrice) && (!mounted.size || selectedCurrency === DLookCurrency.selected()))) return;
     mutationScheduled = true;
-    const flush = () => { mutationScheduled = false; schedule(); };
+    const flush = () => { mutationScheduled = false; scheduleTargets(); };
     if (document.hidden) setTimeout(flush, 40);
     else requestAnimationFrame(flush);
   }).observe(document.documentElement, {
@@ -227,6 +250,7 @@
     if (event.key === 'currency' || event.key === null) schedule();
   });
   if (!cartPage) {
+    window.addEventListener('resize', scheduleTargets);
     const id = productId(location.pathname);
     prices.set(id, { status: 'loading' });
     void lookup([id]);
@@ -235,5 +259,5 @@
     language = nextLanguage;
     copy = messages;
     schedule();
-  });
+  }, DLookPlatform.language);
 })();

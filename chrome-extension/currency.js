@@ -23,8 +23,10 @@ const DLookCurrency = (() => {
     if (code === 'JPY') return yen;
     if (!rates && !pending && Date.now() >= retryAfter) {
       // DLsite publishes these rates as yen per unit of the selected currency.
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
       pending = fetch('/home/api/=/exchangeConfig.json', {
-        credentials: 'omit', signal: AbortSignal.timeout(8000)
+        credentials: 'omit', signal: controller.signal
       }).then(async response => {
         if (!response.ok) throw new Error('Exchange rates unavailable');
         const { data } = await response.json();
@@ -33,6 +35,7 @@ const DLookCurrency = (() => {
       }).catch(() => {
         retryAfter = Date.now() + 30000;
       }).finally(() => {
+        clearTimeout(timer);
         pending = null;
         onChange();
       });
