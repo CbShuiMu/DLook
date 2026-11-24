@@ -64,8 +64,6 @@
 
 登录 DLsite Play 后，DLook 提供底部导航，方便切换媒体库、我的列表、播放列表、离线暂存和设置。支持在线收听的已购音频可在联网时逐轨暂存，断网后可在同一浏览器的「离线暂存」中播放。Safari 的 Userscripts 也需要获准在 `play.dlsite.com` 运行。
 
-商品页的「优惠购买」和购物车的「查看优惠」会在点击后经由 DLsite Affiliate 跳转。通过这些链接完成购买时，DLook 可能获得推广佣金。适用优惠和实付金额以 DLsite 结算页为准。
-
 [扩展源码](chrome-extension) · [历史低价 API](docs/price-lows-api.md)
 
 ## 历史低价 API
