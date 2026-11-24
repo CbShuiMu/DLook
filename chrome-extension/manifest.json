@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "icons": { "128": "icon-128.png" },
@@ -25,9 +25,9 @@
     "run_at": "document_end"
   }, {
     "matches": ["https://play.dlsite.com/*"],
-    "js": ["play-site.js", "play-icons.js", "play-library.js", "play-collections.js", "play-captions.js", "play-player.js", "play-offline-store.js", "play-offline-source.js", "play-offline-player.js", "play-offline.js", "play.js"],
-    "css": ["play.css", "play-collections.css", "play-library.css", "play-player.css", "play-offline.css"],
-    "run_at": "document_end"
+    "js": ["play-site.js", "play-icons.js", "play-library.js", "play-collections.js", "play-captions.js", "play-player.js", "play-offline-store.js", "play-offline-source.js", "play-offline-player.js", "play-offline.js", "play-motion.js", "play.js"],
+    "css": ["play.css", "play-collections.css", "play-library.css", "play-player.css", "play-offline.css", "play-motion.css"],
+    "run_at": "document_start"
   }],
   "web_accessible_resources": [{
     "resources": ["dlook-logo.svg"],

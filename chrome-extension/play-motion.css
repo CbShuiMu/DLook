@@ -1,0 +1,96 @@
+:root[data-dlook-route-phase] {
+  --dlook-route-fallback: #f4f4f4;
+}
+
+:root[data-dlook-route-phase] body[data-theme="dark"] { --dlook-route-fallback: #151e2e; }
+
+@media (prefers-color-scheme: dark) {
+  :root[data-dlook-route-phase] body:not([data-theme="light"]) { --dlook-route-fallback: #151e2e; }
+}
+
+:root[data-dlook-route-phase="wait"] #App > .loContainer > div:has(nav [data-dd-action-name="menu.library"]) {
+  visibility: hidden;
+}
+
+/* The route cover belongs to the page, below the dock and the player. */
+:root[data-dlook-route-phase] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main) {
+  isolation: isolate;
+}
+
+:root[data-dlook-route-phase] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 10100;
+  background: var(--offline-surface, var(--background-background, var(--dlook-route-fallback)));
+}
+
+:root[data-dlook-route-phase] #App > .loContainer > main > :is(
+  [data-dd-action-name="player.mini_open"], [class*="_audioPlayer_"]
+) {
+  z-index: 10102;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-dlook-route-phase="out"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {
+    animation: dlook-route-cover-in 85ms ease-out both;
+  }
+
+  :root[data-dlook-route-phase="in"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {
+    pointer-events: none;
+    animation: dlook-route-cover-out 200ms ease-out both;
+  }
+
+  :root[data-dlook-route-phase="wait"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    z-index: 10101;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #6689b650;
+    border-top-color: #6599e2;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    animation: dlook-route-cover-in 110ms ease-out 160ms forwards, dlook-route-spin 680ms linear 160ms infinite;
+  }
+
+  :root[data-dlook-route-phase="in"] #App main :is(
+    [data-dlook-library-card], [class*="_workTile_"], [data-dd-action-name$=".card"],
+    .dlook-play-settings li, [data-dlook-library-filters] button, [data-dlook-library-tools] > button, [data-dlook-round-action]
+  ),
+  html[data-dlook-offline] :is(.dlook-offline-list:not([hidden]) > .dlook-offline-card, .dlook-offline-detail:not([hidden]), .dlook-offline-back:not([hidden])) {
+    animation: dlook-content-in 200ms ease-out both;
+  }
+
+  html[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player:not([hidden])) > :is(
+    [class*="_albumartWrapper_"], [class*="_controlWrapper_"], .dlook-audio-stage, .dlook-audio-controls
+  ),
+  html[data-dlook-play] :is(#App [data-dd-action-name="player.mini_open"], .dlook-offline-mini:not([hidden])) > :is(
+    [class*="_info_"], .dlook-audio-mini-open
+  ) {
+    animation: dlook-player-in 190ms ease-out both;
+  }
+
+  html[data-dlook-play] :is(
+    #App [data-control], .dlook-audio-button, .dlook-caption-toggle,
+    [data-dlook-library-tools] > button, [data-dlook-library-filter], [data-dlook-round-action], .dlook-collection-actions > button
+  ) {
+    transition: scale 125ms ease-out, background-color 150ms ease-out;
+  }
+
+  html[data-dlook-play] :is(
+    #App [data-control], .dlook-audio-button, .dlook-caption-toggle,
+    [data-dlook-library-tools] > button, [data-dlook-library-filter], [data-dlook-round-action], .dlook-collection-actions > button
+  ):active {
+    scale: .94;
+  }
+}
+
+@keyframes dlook-route-cover-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dlook-route-cover-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes dlook-route-spin { to { rotate: 360deg; } }
+@keyframes dlook-content-in { from { opacity: .7; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
+@keyframes dlook-player-in { from { opacity: .45; } to { opacity: 1; } }

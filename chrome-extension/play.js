@@ -57,7 +57,25 @@
   status.setAttribute('role', 'status');
   settings.append(heading, actionList, status);
 
-  let copy, locale, activeLayout, scheduled, handling, pendingTab;
+  let copy, locale, activeLayout, scheduled, handling, pendingTab, queuedTab;
+  const motion = DLookPlayMotion.create(schedule);
+
+  function routeFor(href = location.href) {
+    const url = new URL(href, location.href);
+    const path = url.pathname.replace(/\/+$/, '') || '/';
+    const offline = url.pathname + url.hash === DLookOffline.href;
+    const section = path.split('/')[1];
+    const tab = offline ? 'offline' : ['', 'library', 'series', 'work'].includes(section) ? 'library' :
+      ['help', 'notifications'].includes(section) ? 'settings' : section;
+    // Leave standalone readers, account screens and admin mode in their native layouts.
+    const supported = url.origin === location.origin && Object.hasOwn(tabs, tab) &&
+      !/^\/work\/[^/]+\/(?:view|viewer)(?:\/|$)/.test(path);
+    return { key: offline ? DLookOffline.href : path, path, tab, supported, offline };
+  }
+
+  function ordinaryClick(event) {
+    return !event.defaultPrevented && !event.button && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey;
+  }
 
   function moveIndicator(name) {
     const index = tabItems.findIndex(item => item.name === name);
@@ -78,10 +96,11 @@
       item.append(control);
       list.append(item);
 
-      control.addEventListener('click', async event => {
-        if (event.defaultPrevented || event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-        event.preventDefault();
-        if (handling) return;
+      async function activate() {
+        if (handling) {
+          if (isTab) queuedTab = activate;
+          return;
+        }
         if (isTab && control.getAttribute('aria-current') === 'page' && control.href === location.href) return;
         handling = true;
         const from = location.href;
@@ -90,21 +109,41 @@
           pendingTab = { name, from };
           moveIndicator(name);
         }
+        const transition = href ? motion.begin(routeFor(href), true) : null;
         try {
-          if (href && DLookPlaySite.navigate(href)) return;
+          if (transition && !await transition.start) return;
+          if (location.href !== from) return;
+          if (href && DLookPlaySite.navigate(href)) {
+            await transition?.done;
+            return;
+          }
           const activated = name !== 'offline' && !DLookOffline.isOpen() && await DLookPlaySite.activate(name);
           if (!activated && href) {
             // Keep the slide visible before a route that requires a new document.
-            if (isTab && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (isTab && !transition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
               const remaining = slideDuration - (performance.now() - started);
               if (remaining > 0) await new Promise(resolve => setTimeout(resolve, remaining));
             }
             if (location.href === from) location.assign(href);
           }
           else if (!href) status.textContent = activated ? (name === 'sync' ? copy.syncRequested : '') : copy.failed;
+          await transition?.done;
         } finally {
+          if (isTab && pendingTab?.from === from && location.href === from) {
+            pendingTab = undefined;
+            schedule();
+          }
           handling = false;
+          const next = queuedTab;
+          queuedTab = undefined;
+          next?.();
         }
+      }
+
+      control.addEventListener('click', event => {
+        if (!ordinaryClick(event)) return;
+        event.preventDefault();
+        void activate();
       });
       return { name, control, label };
     });
@@ -115,14 +154,11 @@
 
   function render() {
     scheduled = false;
-    const path = location.pathname.replace(/\/+$/, '') || '/';
-    const offline = DLookOffline.isOpen();
-    // Leave standalone readers, account screens and admin mode in their native layouts.
-    const section = path.split('/')[1];
-    const tab = offline ? 'offline' : ['', 'library', 'series', 'work'].includes(section) ? 'library' :
-      ['help', 'notifications'].includes(section) ? 'settings' : section;
-    const supported = Object.hasOwn(tabs, tab) && !/^\/work\/[^/]+\/(?:view|viewer)(?:\/|$)/.test(path);
-    const page = supported && !offline ? DLookPlaySite.layout() : null;
+    const route = routeFor();
+    const { path, offline, tab, supported } = route;
+    const layout = supported ? DLookPlaySite.layout() : null;
+    if (!motion.ready(route, layout)) return;
+    const page = offline ? null : layout;
     const showNav = Boolean(page || offline || (supported && nav.isConnected && !nav.hidden));
     if (activeLayout !== page?.container) {
       activeLayout?.removeAttribute('data-dlook-play');
@@ -140,6 +176,7 @@
     if (!showNav) {
       pendingTab = undefined;
       settings.remove();
+      motion.present(route, layout);
       return;
     }
     if (nav.parentElement !== document.body) document.body.append(nav);
@@ -168,10 +205,12 @@
     if (offline) {
       settings.remove();
       DLookOffline.show(language);
+      motion.present(route, layout);
       return;
     }
     if (!page) {
       settings.remove();
+      motion.present(route, layout);
       return;
     }
     page.container.setAttribute('data-dlook-play', '');
@@ -181,18 +220,32 @@
         page.pane.prepend(settings);
       }
     } else settings.remove();
+    motion.present(route, layout);
   }
 
   function schedule() {
     if (scheduled) return;
     scheduled = true;
-    requestAnimationFrame(render);
+    queueMicrotask(render);
   }
 
-  new MutationObserver(schedule).observe(document.documentElement, {
-    childList: true, subtree: true, attributes: true, attributeFilter: ['lang', 'data-dd-action-name', 'aria-label', 'data-active'],
+  function onHistoryChange() {
+    motion.historyChanged(routeFor());
+    schedule();
+  }
+
+  motion.begin(routeFor());
+  new MutationObserver(schedule).observe(document, {
+    childList: true, subtree: true, attributes: true,
+    attributeFilter: ['lang', 'data-dd-action-name', 'aria-label', 'data-active', 'aria-busy'],
   });
-  window.addEventListener('popstate', schedule);
-  window.addEventListener('hashchange', schedule);
+  document.addEventListener('DOMContentLoaded', schedule, { once: true });
+  document.addEventListener('click', event => {
+    if (!ordinaryClick(event) || handling) return;
+    const link = event.target.closest?.('#App a[href]:not([download])');
+    if (link && (!link.target || link.target === '_self')) motion.begin(routeFor(link.href));
+  }, true);
+  window.addEventListener('popstate', onHistoryChange);
+  window.addEventListener('hashchange', onHistoryChange);
   render();
 })();
