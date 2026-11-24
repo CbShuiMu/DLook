@@ -25,6 +25,7 @@
   const cartCampaigns = cartPage ? DLookCartCampaigns.create({
     cartRows, cartItemId, lookupProductInfo, createLogo: DLookPlatform.createLogo, schedule
   }) : null;
+  const purchaseOffers = wishlistPage ? null : DLookPurchaseOffers.create(cartPage);
   const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart, ' + DLookCartCampaigns.summarySelector
     : wishlistPage ? '._wishlist_work_list, .one_column_work_list' + (touchPage ? ', .n_work_list_item, #filter_drawer' : '')
     : '.c-purchaseSide__main, .c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
@@ -304,6 +305,7 @@
     }
     wishlistFilter?.update(language, copy, mounted, wishlistQuotes);
     cartCampaigns?.update(language, copy);
+    purchaseOffers?.update(language, copy);
     for (let start = 0; start < needed.length; start += 50) void lookup(needed.slice(start, start + 50));
     for (let start = 0; start < missingQuotes.length; start += 50) void lookupWishlistQuotes(missingQuotes.slice(start, start + 50));
   }
@@ -320,14 +322,15 @@
   }
   function affectsPrice(record) {
     const element = record.target.nodeType === Node.ELEMENT_NODE ? record.target : record.target.parentElement;
-    if (element?.closest('.dlook-price-low, .dlook-wishlist-filter, .dlook-wishlist-filter-status, .dlook-cart-campaigns')) return false;
+    if (element?.closest('.dlook-price-low, .dlook-wishlist-filter, .dlook-wishlist-filter-status, .dlook-cart-campaigns, .dlook-offer-link')) return false;
     const inside = element?.closest(priceScope);
     if (record.type === 'characterData') return Boolean(inside);
     // A change on an ancestor can hide a price or turn a cart into a different list.
     if (record.type === 'attributes') return inside || element.querySelector(priceScope + ', .dlook-price-low');
-    if (Array.from(record.removedNodes).some(node => node.matches?.('.dlook-price-low, .dlook-cart-campaigns'))) return true;
+    const injected = '.dlook-price-low, .dlook-cart-campaigns, .dlook-offer-link';
+    if (Array.from(record.removedNodes).some(node => node.matches?.(injected))) return true;
     if (inside) return record.removedNodes.length ||
-      Array.from(record.addedNodes).some(node => !node.matches?.('.dlook-price-low, .dlook-cart-campaigns'));
+      Array.from(record.addedNodes).some(node => !node.matches?.(injected));
     return [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === Node.ELEMENT_NODE &&
       (node.matches(priceScope) || node.querySelector(priceScope)));
   }

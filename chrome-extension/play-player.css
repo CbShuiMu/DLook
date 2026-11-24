@@ -1,0 +1,615 @@
+html[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) {
+  --dlook-player-text: #f1f7ff;
+  --dlook-player-muted: #b9cbea;
+  --surface-surface-high: #162951;
+  --surface-on-surface: var(--dlook-player-text);
+  --surface-on-surface-primary: #91c8ff;
+  --surface-on-surface-disabled: #8096ba;
+  --surface-on-surface-border: #ffffff25;
+  --overlay-overlay-surface: #ffffff16;
+  --primary-primary: #90c6ff;
+  box-sizing: border-box;
+  background: radial-gradient(ellipse at 50% 17%, #314f89 0%, #1b315e 48%, #101e3b 100%);
+  color: var(--dlook-player-text);
+}
+
+html[data-dlook-play] #App [class*="_audioPlayer_"][data-pc],
+html[data-dlook-play] .dlook-offline-player {
+  right: 16px;
+  bottom: calc(var(--dlook-play-dock) + 12px);
+  width: min(440px, calc(100vw - 32px));
+  height: min(690px, calc(100dvh - var(--dlook-play-dock) - 24px));
+  border: 1px solid #afcaff29;
+  border-radius: 23px;
+  box-shadow: 0 16px 45px #08132880;
+}
+
+html[data-dlook-play]:not([data-dlook-offline]):has(#App [class*="_audioPlayer_"]:not([data-pc])) .dlook-play-nav {
+  visibility: hidden;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) > :is([class*="_albumartWrapper_"], .dlook-audio-stage) {
+  --dlook-caption-room: 0px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  --dlook-speed-inset: clamp(20px, 6vw, 36px);
+  align-content: start;
+  justify-items: center;
+  flex: 1 1 0;
+  min-height: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  container-type: size;
+  padding: calc(56px + env(safe-area-inset-top, 0px)) clamp(20px, 6vw, 36px) 34px;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) > :is([class*="_albumartWrapper_"], .dlook-audio-stage):has(> [class*="_textTrack_"], > .dlook-audio-captions:not([hidden])) {
+  --dlook-caption-room: min(46cqh, 228px);
+  --dlook-cover-offset: 0px;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_albumartWrapper_"]::before {
+  position: absolute;
+  background: transparent;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_albumart_"], .dlook-audio-art) {
+  --dlook-cover-ratio: 1.333333;
+  --dlook-cover-width: min(100cqw, 410px, calc(max(0px, 100cqh - var(--dlook-caption-room)) * var(--dlook-cover-ratio)));
+  --dlook-cover-height: calc(var(--dlook-cover-width) / var(--dlook-cover-ratio));
+  grid-area: 1 / 1;
+  box-sizing: border-box;
+  flex: none;
+  width: var(--dlook-cover-width);
+  height: var(--dlook-cover-height);
+  margin-block-start: var(--dlook-cover-offset, max(0px, calc((100cqh - var(--dlook-cover-height)) / 2)));
+  background-color: #101e3b;
+  background-size: contain;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px #afcaff29, 0 14px 40px #09173380;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*="_albumart_"], .dlook-audio-art) {
+  transition: width 240ms ease, height 240ms ease, margin-block-start 240ms ease;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_textTrack_"], .dlook-audio-captions) {
+  position: static;
+  grid-area: 2 / 1;
+  justify-self: start;
+  box-sizing: border-box;
+  width: min(100%, 460px);
+  max-width: none;
+  height: var(--dlook-caption-room);
+  max-height: none;
+  margin: 0;
+  padding: clamp(12px, 3vh, 24px) 0 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  transform: none;
+  background: transparent;
+  color: var(--dlook-player-text);
+  text-align: left;
+  font: 740 clamp(17px, 5vw, 25px)/1.4 system-ui, sans-serif;
+  overflow-wrap: anywhere;
+}
+
+[data-dlook-play] #App [class*="_audioPlayer_"] [class*="_subtitle_"] {
+  position: static;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  text-align: inherit;
+}
+
+[data-dlook-play] #App [class*="_audioPlayer_"] [class*="_textTrack_"] {
+  display: block;
+}
+
+[data-dlook-play] #App [class*="_audioPlayer_"] [data-dlook-caption-enhanced] [class*="_subtitle_"] {
+  display: none;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_textTrack_"], .dlook-audio-captions) p {
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  white-space: pre-line;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_textTrack_"], .dlook-audio-captions) p + p {
+  margin-top: 3px;
+  color: var(--dlook-player-muted);
+}
+
+.dlook-caption-cue + .dlook-caption-cue { margin-top: .62em; }
+.dlook-caption-cue[data-offset="1"] { opacity: .48; }
+.dlook-caption-cue[data-offset="2"] { opacity: .24; }
+.dlook-caption-cue[data-offset="0"] { animation: dlook-caption-current 170ms ease-out; }
+
+@keyframes dlook-caption-current {
+  from { opacity: .62; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dlook-caption-cue[data-offset="0"] { animation: none; }
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_optionButtons_"] {
+  inset-inline: 0;
+  top: env(safe-area-inset-top, 0px);
+  background: none;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_hiddenButton_"] {
+  top: 10px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  background: #1a2d54;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_playlistMenuButton_"] {
+  right: 16px;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_playbackButtonWrapper_"] {
+  display: grid;
+  place-items: center;
+  right: var(--dlook-speed-inset);
+  bottom: 12px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :has(> .dlook-caption-toggle:not([hidden])) > :is([class*="_playbackButtonWrapper_"], .dlook-audio-speed) {
+  right: calc(var(--dlook-speed-inset) + 44px);
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) .dlook-caption-toggle {
+  position: absolute;
+  z-index: 1;
+  right: var(--dlook-speed-inset);
+  bottom: 12px;
+  width: 36px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #b6dfff40;
+  border-radius: 999px;
+  background: #1a2d54;
+  color: var(--dlook-player-text);
+  cursor: pointer;
+}
+
+.dlook-caption-toggle svg { width: 19px; height: 19px; }
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) .dlook-caption-toggle[aria-pressed="true"] {
+  background: #b6dfff;
+  color: #142852;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) .dlook-caption-toggle[hidden],
+[data-dlook-play] #App [class*="_audioPlayer_"] :is([data-dlook-subtitle-source], [class*="_row_"]:has(> [data-dlook-subtitle-source]:only-child)) {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*="_albumart_"], .dlook-audio-art) {
+    transition: none;
+  }
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_playbackButton_"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 32px;
+  text-align: center;
+  border: 1px solid #b6dfff40;
+  border-radius: 100px;
+  background: #1a2d54;
+  color: var(--dlook-player-text);
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_playbackButton_"] span {
+  color: inherit;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) > :is([class*="_controlWrapper_"], .dlook-audio-controls) {
+  display: grid;
+  grid-template-areas: "title" "album" "seek" "controls" "status";
+  grid-template-columns: minmax(0, 1fr);
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: min(100%, 475px);
+  margin-inline: auto;
+  padding: 10px clamp(20px, 6vw, 36px) calc(13px + env(safe-area-inset-bottom, 0px));
+  background: transparent;
+  text-align: start;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_controlWrapper_"], .dlook-audio-controls) > :is([class*="_title_"], .dlook-audio-title) {
+  grid-area: title;
+  margin: 0;
+  padding: 0;
+  font: 760 clamp(19px, 5vw, 24px)/1.25 system-ui, sans-serif;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_titleInner_"] {
+  margin: 0;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_controlWrapper_"], .dlook-audio-controls) > :is([class*="_album_"], .dlook-audio-album) {
+  grid-area: album;
+  margin: 3px 0 7px;
+  color: var(--dlook-player-muted);
+  font-size: 13px;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_sliderWrapper_"] {
+  background: transparent;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([data-time], .dlook-audio-seek) {
+  grid-area: seek;
+  display: grid;
+  grid-template: "position position" 26px "elapsed remaining" auto / 1fr 1fr;
+  height: auto;
+  padding: 0;
+  color: var(--dlook-player-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [data-time] > [class*="_playerSlider_"] {
+  grid-area: position;
+  width: 100%;
+  margin: 0;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_playerSlider_"] [class*="_track_"] {
+  background: #b6dfff46;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_playerSlider_"] [class*="_indicator_"] {
+  background: #b6dfff;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_elapsedTime_"], .dlook-audio-elapsed) {
+  grid-area: elapsed;
+  justify-self: start;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_remainingTime_"], .dlook-audio-remaining) {
+  grid-area: remaining;
+  justify-self: end;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_controlButtons_"], .dlook-audio-transport) {
+  grid-area: controls;
+  margin-top: 8px;
+  padding: 0;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([data-align="space-between"]:has(> [data-control="play-pause"]), .dlook-audio-transport) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) 64px repeat(2, minmax(0, 1fr));
+  align-items: center;
+  justify-items: center;
+  height: 68px;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) :is([class*="_shuffle_"], [class*="_repeat_"]) {
+  width: min(100%, 44px);
+  min-height: 44px;
+  margin: 0;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [data-control] {
+  border-radius: 50%;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [data-control="play-pause"] {
+  width: 60px;
+  height: 60px;
+  background: #b6dfff;
+  color: #132654;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [data-control="play-pause"] svg {
+  fill: currentColor;
+}
+
+[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_volumeWrapper_"] {
+  margin-inline: 0;
+}
+
+html[data-dlook-play] {
+  --dlook-mini-width: min(calc(100% - 20px), 556px);
+  --dlook-mini-bottom: calc(var(--dlook-play-dock) - 4px);
+  --dlook-mini-radius: 14px;
+}
+
+html[data-dlook-play] :is(#App [data-dd-action-name="player.mini_open"], .dlook-offline-mini) {
+  position: fixed;
+  inset-inline: 0;
+  left: 0 !important;
+  bottom: var(--dlook-mini-bottom);
+  width: var(--dlook-mini-width);
+  height: 60px;
+  margin-inline: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #b6dfff35;
+  border-radius: var(--dlook-mini-radius);
+  box-sizing: border-box;
+  color: #f1f7ff;
+  --surface-on-surface: #f1f7ff;
+  --surface-on-surface-primary: var(--dlook-play-accent);
+}
+
+html[data-dlook-play] :is(#App [data-dd-action-name="player.mini_open"], .dlook-offline-mini):not([data-handing-off]),
+html[data-dlook-play] #App [class*="_audioPlayer_"] [class*="_miniBarGhost_"] {
+  background: #172b52;
+  box-shadow: 0 5px 16px #0716334a;
+}
+
+html[data-dlook-play] #App [class*="_audioPlayer_"] [class*="_miniBarGhost_"] {
+  width: var(--dlook-mini-width);
+  height: 60px;
+  margin-inline: auto;
+  bottom: var(--dlook-mini-bottom);
+  border-radius: var(--dlook-mini-radius);
+}
+
+html[data-dlook-play] #App [data-dd-action-name="player.mini_open"] [class*="_info_"] {
+  grid-template-columns: 40px minmax(0, 1fr);
+  min-width: 0;
+  padding: 9px 8px 9px 11px;
+}
+
+html[data-dlook-play] #App [data-dd-action-name="player.mini_open"] [class*="_thumbnail_"] {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+html[data-dlook-play] #App [data-dd-action-name="player.mini_open"] [class*="_thumbnail_"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--dlook-mini-cover, none) center / cover no-repeat;
+  pointer-events: none;
+}
+
+html[data-dlook-play] #App [data-dd-action-name="player.mini_open"] [class*="_buttons_"] {
+  grid-template-columns: repeat(2, 44px);
+  padding-inline-end: 4px;
+}
+
+html[data-dlook-play] #App [data-dd-action-name="player.mini_open"] [class*="_titleInner_"] {
+  margin-inline-start: 0;
+  font-weight: 650;
+}
+
+html[data-dlook-play] #App [data-dd-action-name="player.mini_open"] [class*="_album_"] {
+  color: #b9cbea;
+}
+
+.dlook-offline-mini {
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
+.dlook-offline-mini > :last-child { margin-inline-end: 4px; }
+
+.dlook-offline-mini::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  width: var(--dlook-audio-progress, 0%);
+  height: 2px;
+  background: var(--dlook-play-accent);
+  pointer-events: none;
+}
+
+.dlook-audio-mini-thumb {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  background: #101e3b;
+  color: var(--dlook-play-accent);
+}
+
+.dlook-audio-mini-thumb img,
+.dlook-audio-art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dlook-audio-mini-open {
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  padding-inline: 11px 8px;
+  text-align: start;
+}
+
+.dlook-audio-mini-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.dlook-audio-mini-text > *,
+.dlook-audio-title,
+.dlook-audio-album {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dlook-audio-mini-text strong {
+  font: 650 13px/1.4 system-ui, sans-serif;
+}
+
+.dlook-offline-mini .dlook-audio-mini-text small {
+  color: #b9cbea;
+  font-size: 11px;
+}
+
+.dlook-offline-player {
+  position: fixed;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.dlook-audio-stage {
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.dlook-audio-art {
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  color: var(--dlook-play-accent);
+}
+
+.dlook-audio-art > svg {
+  width: 42px;
+  height: 42px;
+}
+
+.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue, .dlook-audio-speed) {
+  position: absolute;
+  z-index: 1;
+  border: 1px solid #b6dfff40;
+  background: #1a2d54;
+  color: #f1f7ff;
+}
+
+.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue) {
+  width: 40px;
+  height: 40px;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  border-radius: 50%;
+}
+
+.dlook-audio-minimize { left: 16px; }
+.dlook-audio-queue { right: 16px; }
+
+.dlook-audio-speed {
+  right: var(--dlook-speed-inset);
+  bottom: 12px;
+  appearance: none;
+  box-sizing: border-box;
+  min-width: 44px;
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 0 8px;
+  font: 500 12px/1.2 system-ui, sans-serif;
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+}
+
+.dlook-audio-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-block: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.dlook-audio-button:is(:hover, [aria-pressed="true"]) { color: var(--dlook-play-accent); }
+.dlook-audio-button:focus-visible,
+.dlook-caption-toggle:focus-visible,
+.dlook-audio-speed:focus-visible,
+.dlook-audio-position:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: 2px; }
+.dlook-audio-button svg { width: 22px; height: 22px; flex: none; }
+.dlook-audio-transport .dlook-audio-button { position: relative; min-width: 44px; }
+.dlook-audio-transport [data-control="play-pause"] svg { width: 28px; height: 28px; }
+.dlook-audio-transport [data-repeat="track"]::after { content: "1"; position: absolute; top: 2px; right: 5px; font-size: 10px; }
+.dlook-offline-mini > .dlook-audio-button:not(.dlook-audio-mini-open) { flex: 0 0 44px; }
+.dlook-offline-mini > .dlook-audio-button:nth-child(2) svg { fill: currentColor; }
+
+.dlook-audio-position {
+  grid-area: position;
+  appearance: none;
+  width: 100%;
+  height: 26px;
+  margin: 0;
+  background: transparent;
+  accent-color: var(--dlook-play-accent);
+  cursor: pointer;
+}
+
+.dlook-audio-position::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 10px;
+  background: linear-gradient(to right, #b6dfff var(--dlook-audio-progress, 0%), #b6dfff46 0);
+}
+
+.dlook-audio-position::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: #b6dfff;
+}
+
+.dlook-audio-position::-moz-range-track { height: 4px; border-radius: 10px; background: #b6dfff46; }
+.dlook-audio-position::-moz-range-progress { height: 4px; border-radius: 10px; background: #b6dfff; }
+.dlook-audio-position::-moz-range-thumb { border: 0; border-radius: 50%; background: #b6dfff; }
+.dlook-audio-seek span { font: 500 11px/1.3 system-ui, sans-serif; }
+.dlook-audio-status { grid-area: status; margin: 6px 0 0; color: #ffe197; }
+.dlook-audio-status:empty, .dlook-offline-mini[hidden], .dlook-offline-player[hidden] { display: none; }
+
+@media (max-width: 760px) {
+  html[data-dlook-play] .dlook-offline-player {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+  }
+
+  html[data-dlook-play]:has(.dlook-offline-page:not([hidden]) > .dlook-offline-player:not([hidden])) .dlook-play-nav,
+  .dlook-offline-page:has(> .dlook-offline-player:not([hidden])) > main {
+    visibility: hidden;
+  }
+}
+
+@media (max-height: 550px) and (orientation: landscape) {
+  [data-dlook-play] :is(#App [class*="_audioPlayer_"]:not([data-pc]), .dlook-offline-player) {
+    flex-direction: row;
+  }
+
+  [data-dlook-play] :is(#App [class*="_audioPlayer_"]:not([data-pc]), .dlook-offline-player) > :is([class*="_controlWrapper_"], .dlook-audio-controls) {
+    align-content: center;
+    width: 49%;
+  }
+}

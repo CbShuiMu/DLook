@@ -1,0 +1,332 @@
+#App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {
+  --dlook-page-frame: calc(var(--dlook-collection-width) + 24px);
+}
+
+@media (min-width: 900px) {
+  #App > .loContainer[data-dlook-play] > main[data-dlook-library]:not(:has([data-dlook-library-cards])) {
+    --dlook-page-frame: min(1480px, calc(100vw - 40px));
+  }
+
+  [data-dlook-library] :is([class*="_wrapper_1vmmi_"], [class*="_searchConditionDisplay_1vmmi_"], [class*="_searchConditionDisplayInner_1vmmi_"], [class*="_container_7hqk3_"]) {
+    max-width: var(--dlook-page-frame);
+  }
+
+  [data-dlook-library] [class*="_workGrid_"] {
+    --tile-basis: clamp(154px, 13vw, 198px);
+  }
+
+  [data-dlook-library] [data-large] [class*="_workGrid_"] {
+    --tile-basis: clamp(186px, 15vw, 240px);
+  }
+
+  [data-dlook-library] [class*="_carouselWrapper_7hqk3_"] > [class*="_scrollArea_"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: none;
+  }
+
+  [data-dlook-library] [class*="_thumbnailWrapper_7hqk3_"] {
+    width: clamp(175px, 15vw, 218px);
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools] {
+  display: flex;
+  gap: var(--dlook-tool-gap);
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*="_loHeader_"] [class*="_headerInner_"] [data-dlook-library-tools] > button {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: var(--dlook-tool-size);
+  height: var(--dlook-tool-size);
+  padding: 0;
+  border-radius: 50%;
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*="_loHeader_"] [class*="_headerInner_"] [data-dlook-library-tools] > button:first-child:is([data-active="true"], [aria-expanded="true"]) {
+  position: relative;
+  z-index: 2;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.dlook-library-search svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: auto;
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] :is(header [data-dlook-library-tools] > [class*="_searchBox_"], [data-content-pane="true"] [class*="_searchBox_"]) {
+  --dlook-search-end: calc(var(--dlook-page-gutter) + var(--dlook-tool-end) + var(--dlook-tools-after-search, 0) * (var(--dlook-tool-size) + var(--dlook-tool-gap)));
+  position: fixed;
+  z-index: 1;
+  inset: calc(4px + env(safe-area-inset-top, 0px)) var(--dlook-search-end) auto auto;
+  box-sizing: border-box;
+  width: min(335px, calc(100% - var(--dlook-search-end) - var(--dlook-page-gutter) - var(--dlook-tool-start)));
+  min-width: 0;
+  height: var(--dlook-tool-size);
+  margin: 0;
+  padding: 0;
+  border-radius: 999px;
+  background: var(--dlook-play-band);
+  animation: var(--dlook-search-motion);
+  pointer-events: auto;
+}
+
+#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools]:not(:has(> .dlook-library-search[aria-expanded="true"])) > [class*="_searchBox_"] {
+  display: none;
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*="_searchBox_"] [class*="_searchInner_"] {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: 100%;
+  margin: 0 var(--dlook-tool-size) 0 0;
+  padding: 0;
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*="_searchBox_"]::before {
+  content: none;
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*="_searchBox_"] input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0 24px 0 14px;
+  border: 0;
+  border-radius: 999px 0 0 999px;
+  background: none;
+  color: white;
+  font: 500 16px/1.3 system-ui, sans-serif;
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*="_searchBox_"] input::placeholder {
+  color: var(--dlook-play-text);
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*="_searchBox_"] input:focus {
+  outline: none;
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*="_searchBox_"]:focus-within {
+  box-shadow: inset 0 0 0 1px var(--dlook-play-accent);
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*="_searchBox_"] [data-dd-action-name="search.clear"] {
+  top: 50%;
+  right: 5px;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+#App > .loContainer[data-dlook-play] > main[data-dlook-library] [data-content-pane="true"] > div:has(> [class*="_searchBox_"]) {
+  height: 0;
+}
+
+@keyframes dlook-expand-library-search {
+  from { clip-path: inset(0 0 0 calc(100% - var(--dlook-tool-size)) round 999px); }
+  to { clip-path: inset(0 0 0 0 round 999px); }
+}
+
+/* The search field is in the toolbar, so Play's inline search spacer is unused. */
+[data-dlook-library] [data-content-pane] [class*="_inner_"][data-search-input-visible] {
+  margin-top: 0;
+}
+
+#App [data-dlook-library] [data-dlook-library-filters] {
+  position: fixed;
+  inset: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px)) 0 auto;
+  display: flex;
+  box-sizing: border-box;
+  justify-content: end;
+  width: 100%;
+  max-width: var(--dlook-page-frame);
+  height: var(--dlook-header-height);
+  margin-inline: auto;
+  padding: 4px var(--dlook-tool-end) 4px var(--dlook-tool-start);
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+[data-dlook-library-filters] [class*="_tab_"] {
+  display: flex;
+  width: auto;
+  flex: none;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--dlook-tool-gap);
+  padding: 0;
+  pointer-events: auto;
+}
+
+#App [data-dlook-library] button[data-dlook-library-filter] {
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid #b6dfff38;
+  border-radius: 50%;
+  background: var(--dlook-play-band);
+  color: var(--dlook-play-text);
+  font-size: 0;
+  box-shadow: 0 2px 7px #0a275a26;
+}
+
+#App [data-dlook-library] button[data-dlook-library-filter]:is([data-active], [aria-expanded="true"]) {
+  background: var(--dlook-play-accent);
+  color: #15356e;
+}
+
+#App [data-dlook-library] [data-dlook-library-filter] > :not(.dlook-play-icon) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+
+[data-dlook-library-filter] > .dlook-play-icon {
+  position: absolute;
+  inset: 0;
+  width: 21px;
+  height: 21px;
+  margin: auto;
+  pointer-events: none;
+}
+[data-dlook-library-filter]:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: -2px; }
+
+[data-dlook-library-cards] :is([class*="_virtualScrollContainer_"], [class*="_list_"]) {
+  background: transparent;
+}
+
+[data-dlook-library-cards] [data-dlook-library-grid] {
+  --dlook-library-columns: 2;
+  container-type: inline-size;
+  width: min(calc(100% - var(--dlook-library-grid-inset, 24px)), calc(var(--dlook-page-frame) - 24px));
+  margin: 12px auto 0;
+}
+
+[data-dlook-library-cards] :has(> [data-dlook-library-grid]) {
+  box-sizing: content-box;
+  padding-bottom: calc(var(--dlook-library-grid-tail, min(calc((100vw - 36px) * .1875 + 44px), 132px)) + var(--dlook-play-dock));
+}
+
+[data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {
+  --dlook-library-tile-width: calc((100cqi - (var(--dlook-library-columns) - 1) * var(--dlook-collection-gap)) / var(--dlook-library-columns));
+  --dlook-library-card-step: calc((var(--dlook-library-tile-width) * .75 + 88px) / var(--dlook-library-columns));
+  --dlook-library-column: 0;
+  position: relative;
+  height: var(--dlook-library-card-step);
+  pointer-events: none;
+}
+
+[data-dlook-library-cards] [data-dlook-library-grid] [data-dlook-library-card] {
+  position: absolute;
+  inset-block-start: calc(-1 * var(--dlook-library-column) * var(--dlook-library-card-step));
+  inset-inline-start: calc(var(--dlook-library-column) * (var(--dlook-library-tile-width) + var(--dlook-collection-gap)));
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: var(--dlook-library-tile-width);
+  height: calc(var(--dlook-library-columns) * var(--dlook-library-card-step) - var(--dlook-collection-gap));
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--surface-on-surface-border, #dce5f4);
+  border-radius: 15px;
+  background: var(--surface-surface, white);
+  color: var(--surface-on-surface, #182e53);
+  text-decoration: none;
+  box-shadow: 0 3px 12px #19376414;
+  pointer-events: auto;
+}
+
+/* Each native virtual item reserves one fraction of a card row. */
+@supports (top: calc(mod(3, 2) * 1px)) {
+  [data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {
+    --dlook-library-column: mod(var(--dlook-library-item-index, 0), var(--dlook-library-columns));
+  }
+
+  @media (min-width: 900px) {
+    #App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {
+      --dlook-page-frame: min(1320px, calc(100vw - 40px));
+      --dlook-library-grid-inset: 0px;
+      --dlook-library-grid-tail: 236px;
+    }
+
+    [data-dlook-library-cards] [class*="_wrapper_"]:has([data-dlook-library-grid]),
+    [data-dlook-library-cards]:not(:has([data-dlook-library-filters])) > [class*="_inner_"]:has([data-dlook-library-grid]) {
+      max-width: var(--dlook-page-frame);
+    }
+
+    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 3; }
+  }
+
+  @media (min-width: 1150px) {
+    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 4; }
+  }
+
+  @media (min-width: 1460px) {
+    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 5; }
+  }
+}
+
+@supports not (top: calc(mod(3, 2) * 1px)) {
+  [data-dlook-library-cards] [data-dlook-library-grid] > :is([data-index$="1"], [data-index$="3"], [data-index$="5"], [data-index$="7"], [data-index$="9"]) {
+    --dlook-library-column: 1;
+  }
+}
+
+[data-dlook-library-card] > [class*="_container_"] { display: contents; }
+[data-dlook-library-card] [class*="_thumbnail_"] {
+  flex: none;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  overflow: hidden;
+  background: #172c53;
+}
+
+[data-dlook-library-card] [class*="_thumbnail_"] :is([class*="_thumbs_"], [class*="_cover_"], [class*="_imageContainer_"]) {
+  width: 100%;
+  height: 100%;
+}
+
+[data-dlook-library-card] [class*="_thumbnail_"] img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-dlook-library-card] :is([class*="_creatorName_"], [class*="_title_"]) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font: 700 14px/1.35 system-ui, sans-serif;
+}
+
+[data-dlook-library-card] :is([class*="_content_"], [class*="_information_"]) {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+}
+

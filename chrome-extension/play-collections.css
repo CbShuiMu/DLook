@@ -1,0 +1,363 @@
+[data-dlook-collection] {
+  --dlook-collection-card: var(--surface-surface, white);
+  --dlook-collection-border: var(--surface-on-surface-border, #dce5f4);
+  --dlook-collection-ink: var(--surface-on-surface, #182e53);
+  --dlook-collection-muted: var(--surface-on-surface-variant-high, #415570);
+}
+
+[data-dlook-collection$="-index"] ul:has(> li > a[data-dd-action-name$=".card"]) {
+  container-type: inline-size;
+  width: min(calc(100% - 24px), var(--dlook-collection-width));
+  margin: 12px auto 0;
+  background: transparent;
+}
+
+[data-dlook-collection$="-index"] li:has(> :is([data-dd-action-name="mylist.card"], [data-dd-action-name="playlist.card"])) {
+  box-sizing: border-box;
+  max-height: none;
+  border: 0;
+  padding: 0 0 15px;
+}
+
+/* Play measures one item at a time. Each pair occupies two half-height slots,
+   with the second card aligned to the top of the first slot. */
+[data-dlook-collection$="-index"] li[data-index]:has(> a[data-dd-action-name$=".card"]) {
+  --dlook-card-step: calc((100cqi - var(--dlook-collection-gap)) * .1875 + 50px);
+  position: relative;
+  height: var(--dlook-card-step);
+  padding: 0;
+  pointer-events: none;
+}
+
+[data-dlook-collection$="-index"] li[data-index] > a[data-dd-action-name$=".card"] {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: calc((100% - var(--dlook-collection-gap)) / 2);
+  height: calc(2 * var(--dlook-card-step) - var(--dlook-collection-gap));
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+[data-dlook-collection$="-index"] li:is([data-index$="1"], [data-index$="3"], [data-index$="5"], [data-index$="7"], [data-index$="9"]) > a[data-dd-action-name$=".card"] {
+  inset-block-start: calc(-1 * var(--dlook-card-step));
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
+[data-dlook-collection$="-index"] div:has(> ul > li[data-index] > a[data-dd-action-name$=".card"]) {
+  box-sizing: content-box;
+  padding-block-end: min(calc((100vw - 36px) * .1875 + 50px), 139px);
+}
+
+[data-dlook-collection$="-index"] :is([data-dd-action-name="mylist.card"], [data-dd-action-name="playlist.card"]) {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: 1px solid var(--dlook-collection-border);
+  border-radius: 15px;
+  background: var(--dlook-collection-card);
+  box-shadow: 0 3px 12px #19376414;
+  color: var(--dlook-collection-ink);
+  text-decoration: none;
+  overflow: hidden;
+}
+
+[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"]:focus-visible,
+.dlook-collection-actions button:focus-visible {
+  outline: 2px solid var(--dlook-play-action);
+  outline-offset: 2px;
+}
+
+[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] > [class*="_thumbnail_"],
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] > [class*="_thumbnail_"] {
+  position: relative;
+  align-content: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  background-color: #172c53;
+  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+}
+
+[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] > [class*="_thumbnail_"] {
+  /* Single covers have an inline contain rule from the native thumbnail. */
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+[data-dlook-collection] :is(a[data-dd-action-name$=".card"], [class*="_info_hxvvl_"]) > [class*="_thumbnail_"] > span {
+  width: 50%;
+  height: 50%;
+  background-position: center;
+}
+
+[data-dlook-collection] :is(a[data-dd-action-name$=".card"], [class*="_info_hxvvl_"]) > [class*="_thumbnail_"] > svg {
+  width: 52px;
+  height: 52px;
+  border-radius: 9px;
+  fill: #b6dfff;
+}
+
+[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] > [class*="_text_"]:has(> p) {
+  box-sizing: border-box;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  width: 100%;
+  padding: 11px 14px 13px;
+}
+
+[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] p {
+  margin: 0;
+}
+
+[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] p:first-child {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  font: 700 15px/1.35 system-ui, sans-serif;
+}
+
+[data-dlook-collection$="-index"] li[data-index] > a[data-dd-action-name$=".card"] p:first-child {
+  min-height: 2lh;
+}
+
+[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] p:not(:first-child) {
+  color: var(--dlook-collection-muted);
+  font: 500 12px/1.35 system-ui, sans-serif;
+}
+
+[data-dlook-collection$="-index"] [class*="_text_"]:has(> .dlook-collection-count) > p:nth-child(2) {
+  display: none;
+}
+
+#App > .loContainer[data-dlook-play] > main:has([data-dlook-collection$="-detail"] > div > [class*="_info_hxvvl_"]) > [data-content-pane="true"][data-dlook-collection$="-detail"] {
+  top: env(safe-area-inset-top, 0px);
+}
+
+[data-dlook-collection$="-detail"] > div:has(> [class*="_info_hxvvl_"]) {
+  padding-block-start: 0;
+}
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] {
+  --surface-on-surface: #edf5ff;
+  --surface-on-surface-variant-high: #b6dfff;
+  display: grid;
+  position: relative;
+  justify-items: center;
+  gap: 14px;
+  margin: 0 0 12px;
+  --dlook-collection-detail-padding: clamp(16px, 4vw, 28px);
+  padding: calc(var(--dlook-header-height) + var(--dlook-collection-detail-padding)) 16px var(--dlook-collection-detail-padding);
+  border-radius: 16px;
+  background: linear-gradient(160deg, #244b9d, #14284f 80%);
+  color: #edf5ff;
+  text-align: center;
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] [class*="_headerInner_"] :is(a, button)[data-dlook-round-action],
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] [data-dlook-round-action="delete"] {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid #c5e0ff4d;
+  border-radius: 50%;
+  background: #0d214b80;
+  box-shadow: 0 2px 8px #09152e40;
+  color: var(--dlook-play-text);
+  font-size: 0;
+  cursor: pointer;
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] [class*="_headerInner_"] :is(a, button)[data-dlook-round-action]:hover {
+  background: #102751eb;
+}
+
+[data-dlook-round-action] > :not([data-dlook-action-icon]) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+[data-dlook-action-icon] {
+  position: absolute;
+  inset: 0;
+  width: 21px;
+  height: 21px;
+  margin: auto;
+  pointer-events: none;
+}
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] [class*="_btnDelete_"]:has(> [data-dlook-round-action="delete"]) {
+  position: absolute;
+  inset: calc((var(--dlook-header-height) - 42px) / 2) calc(var(--dlook-tool-end) + 52px) auto auto;
+  z-index: 1;
+  margin: 0;
+}
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] [data-dlook-round-action="delete"]:is(:hover, :focus-visible) {
+  background: #864358;
+}
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] [data-dlook-round-action="delete"]::before {
+  content: none;
+}
+
+[data-dlook-create] { cursor: pointer; }
+
+.dlook-collection-dialog {
+  box-sizing: border-box;
+  width: min(calc(100% - 32px), 400px);
+  max-width: none;
+  padding: 20px;
+  border: 1px solid var(--surface-on-surface-border, #dce5f4);
+  border-radius: 18px;
+  background: var(--surface-surface, #f3f6fc);
+  color: var(--surface-on-surface, #182e53);
+  font: 500 15px/1.4 system-ui, sans-serif;
+  box-shadow: 0 14px 50px #0b1c3e40;
+}
+
+.dlook-collection-dialog::backdrop { background: #10254db3; }
+.dlook-collection-dialog form { display: grid; gap: 12px; }
+.dlook-collection-dialog h2 { margin: 0; font-size: 20px; }
+.dlook-collection-dialog input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--surface-on-surface-border, #c3d2eb);
+  border-radius: 10px;
+  background: var(--surface-surface-high, #fff);
+  color: inherit;
+  font: 500 16px/1.4 system-ui, sans-serif;
+}
+
+.dlook-collection-dialog p { margin: 0; color: var(--surface-on-surface-error, #a32d4e); }
+.dlook-collection-dialog p:empty { display: none; }
+.dlook-collection-dialog form > div { display: flex; justify-content: flex-end; gap: 8px; }
+.dlook-collection-dialog button {
+  min-height: 44px;
+  padding: 0 17px;
+  border: 1px solid var(--surface-on-surface-border, #c3d2eb);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.dlook-collection-dialog button[type="submit"] { background: var(--dlook-play-band); color: #fff; }
+.dlook-collection-dialog button:disabled { opacity: .55; cursor: default; }
+.dlook-collection-dialog :is(input, button):focus-visible { outline: 2px solid var(--dlook-play-action); outline-offset: 2px; }
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] > [class*="_thumbnail_"] {
+  width: min(65vw, 248px);
+  aspect-ratio: 1;
+  border-radius: 13px;
+  box-shadow: 0 12px 36px #09163166;
+}
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] > [class*="_text_"] {
+  width: min(100%, 460px);
+  padding: 0;
+  color: #edf5ff;
+}
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] h1 {
+  margin: 0 0 4px;
+  color: #edf5ff;
+  font: 750 clamp(20px, 5vw, 27px)/1.25 system-ui, sans-serif;
+}
+
+[data-dlook-collection$="-detail"] [class*="_detail_hxvvl_"] > p {
+  margin: 0;
+  color: var(--dlook-play-accent);
+}
+
+[data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] input {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+[data-dlook-collection$="-detail"] :is(li[data-dd-action-name="mylist.detail_item"], li[data-dd-action-name="playlist.detail_item"]) {
+  cursor: pointer;
+  background-color: var(--dlook-collection-card);
+}
+
+[data-dlook-collection$="-detail"] > div > ol:has(> li[data-dd-action-name$=".detail_item"]) {
+  margin: 0 12px 16px;
+  overflow: clip;
+  border-radius: 12px;
+}
+
+[data-dlook-collection$="-detail"] li[data-editing][data-dd-action-name$=".detail_item"] {
+  cursor: default;
+}
+
+.dlook-collection-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: min(100%, 380px);
+}
+
+.dlook-collection-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 4px 6px;
+  border: 1px solid #ffffff26;
+  border-radius: 9px;
+  background: #ffffff19;
+  color: #edf5ff;
+  font: 650 13px/1.25 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.dlook-collection-actions button:first-child {
+  background: var(--dlook-play-action);
+}
+
+.dlook-collection-actions button:hover {
+  background: #3569c5;
+}
+
+.dlook-collection-actions svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+.dlook-collection-actions button:first-child svg {
+  fill: currentColor;
+}
+
+[data-dlook-collection] [class*="_btnFab_"]:has(> a[data-dd-action-name^="mylist."], > a[data-dd-action-name^="playlist."]) {
+  bottom: calc(var(--dlook-play-dock) + 12px);
+}
+
+[data-dlook-collection] [class*="_btnFab_"][data-mini-player-visible]:has(> a[data-dd-action-name^="mylist."], > a[data-dd-action-name^="playlist."]) {
+  bottom: calc(var(--dlook-play-dock) + 72px);
+}
+html[data-dlook-play] {
+  --dlook-collection-width: 484px;
+  --dlook-collection-gap: 12px;
+}
+

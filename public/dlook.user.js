@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         DLook — DLsite 史低价
 // @namespace    https://dlook.site/
-// @description  在 DLsite 商品页、购物车和收藏夹显示 DLook 史低价、折扣和价格走势链接。
-// @version      1.8.7
+// @description  在 DLsite 显示 DLook 价格信息，并为 DLsite Play 提供底部导航。
+// @version      2.0.0
 // @updateURL    https://github.com/CbShuiMu/DLook/releases/latest/download/DLook-Safari.meta.js
 // @downloadURL  https://github.com/CbShuiMu/DLook/releases/latest/download/DLook-Safari.user.js
 // @match        https://*.dlsite.com/*/work/*
@@ -12,6 +12,7 @@
 // @match        https://*.dlsite.com/*/mypage/wishlist
 // @match        https://*.dlsite.com/*/mypage/wishlist?*
 // @match        https://*.dlsite.com/*/mypage/wishlist/*
+// @match        https://play.dlsite.com/*
 // @run-at       document-end
 // @inject-into  content
 // @noframes
@@ -107,8 +108,2112 @@ const DLookPlatform = {
   language: { getMode: () => languageMode },
 };
 
+if (location.hostname === 'play.dlsite.com') {
+  applyStyles(document, undefined, "html[data-dlook-play] {\r\n  --dlook-play-band: #2147a1;\r\n  --dlook-play-action: #295bc8;\r\n  --dlook-play-accent: #b6dfff;\r\n  --dlook-play-text: #e1ecfa;\r\n  --dlook-play-focus: #ffe197;\r\n  --dlook-play-dock: calc(76px + env(safe-area-inset-bottom, 0px));\r\n  --dlook-header-height: 52px;\r\n  --dlook-tool-size: 44px;\r\n  --dlook-tool-gap: 6px;\r\n  --dlook-tool-end: max(12px, env(safe-area-inset-right, 0px));\r\n  --dlook-tool-start: max(12px, env(safe-area-inset-left, 0px));\r\n  --dlook-search-motion: dlook-expand-library-search 240ms cubic-bezier(.2, .75, .25, 1) both;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main {\r\n  --dlook-page-frame: 880px;\r\n  --dlook-page-gutter: max(0px, calc((100% - var(--dlook-page-frame)) / 2));\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"] {\r\n  box-sizing: border-box;\r\n  padding-bottom: var(--dlook-play-dock);\r\n  scroll-padding-bottom: var(--dlook-play-dock);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play]:has([data-dd-action-name=\"player.mini_open\"]) > main [data-content-pane=\"true\"] {\r\n  padding-bottom: calc(var(--dlook-play-dock) + 60px);\r\n  scroll-padding-bottom: calc(var(--dlook-play-dock) + 60px);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > div:has(nav [data-dd-action-name=\"menu.library\"]),\r\n#App > .loContainer[data-dlook-play] [data-dd-action-name=\"menu.hamburger_open\"] {\r\n  display: none !important;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main :is(header[class*=\"_loHeader_\"], [data-content-pane=\"true\"]) {\r\n  left: 0 !important;\r\n  width: 100% !important;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] {\r\n  top: env(safe-area-inset-top, 0px);\r\n  height: var(--dlook-header-height);\r\n  border: 0;\r\n  background: transparent;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] > [class*=\"_headerInner_\"] {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  max-width: var(--dlook-page-frame);\r\n  height: 100%;\r\n  margin-inline: auto;\r\n  padding-inline: var(--dlook-tool-start) var(--dlook-tool-end);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"] {\r\n  top: env(safe-area-inset-top, 0px);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main:has(> header [class*=\"_headerInner_\"] :is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"]), input)) [data-content-pane=\"true\"] {\r\n  top: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px));\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] :is([class*=\"_colCenter_\"], [class*=\"_colLeft_\"], [class*=\"_colRight_\"]):not(:has(:is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"]), input))) {\r\n  visibility: hidden;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"])) {\r\n  min-width: 38px;\r\n  min-height: 38px;\r\n  border: 1px solid #b6dfff35;\r\n  border-radius: 12px;\r\n  background: var(--dlook-play-band);\r\n  box-shadow: 0 2px 8px #0a275a26;\r\n  color: var(--dlook-play-text);\r\n  pointer-events: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button):hover {\r\n  background: var(--dlook-play-action);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button):focus-visible {\r\n  outline: 2px solid var(--dlook-play-focus);\r\n  outline-offset: -2px;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] input {\r\n  pointer-events: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"],\r\n#App > .loContainer[data-dlook-play] [data-dd-action-name=\"player.mini_open\"] {\r\n  --safe-area-inset-bottom: 0px;\r\n}\r\n\r\n/* The official mobile drawer mounts the menu actions on demand. */\r\nhtml[data-dlook-play] [data-dd-action-name=\"menu.overlay_close\"],\r\nhtml[data-dlook-play] [role=\"presentation\"]:has(> [role=\"dialog\"] [data-dd-action-name=\"menu.header_close\"]) {\r\n  opacity: 0 !important;\r\n  pointer-events: none !important;\r\n}\r\n\r\nhtml[data-dlook-play]:has(.dlook-play-nav:not([hidden])):not(:has(#App [class*=\"_audioPlayer_\"]:not([data-pc])))\r\n  [role=\"dialog\"][class*=\"_bottomSheet_\"]:not(:has([data-dd-action-name=\"menu.header_close\"])) {\r\n  bottom: var(--dlook-play-dock);\r\n  max-height: calc(100dvh - var(--dlook-play-dock));\r\n}\r\n\r\nhtml[data-dlook-play]:has(.dlook-play-nav:not([hidden]))\r\n  [role=\"region\"][class*=\"_viewport_\"] > [class*=\"_group_\"]:has([class*=\"_toast_\"]) {\r\n  bottom: calc(var(--dlook-play-dock) + 8px);\r\n}\r\n\r\n.dlook-play-nav,\r\n.dlook-play-settings {\r\n  color: var(--dlook-play-text);\r\n  font: 600 14px/1.3 system-ui, sans-serif;\r\n}\r\n\r\n.dlook-play-nav {\r\n  position: fixed;\r\n  z-index: 5100;\r\n  inset: auto 0 0;\r\n  height: var(--dlook-play-dock);\r\n  box-sizing: border-box;\r\n  padding: 8px max(8px, env(safe-area-inset-right, 0px))\r\n    calc(8px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));\r\n  background: transparent;\r\n  pointer-events: none;\r\n}\r\n\r\nhtml[data-dlook-offline] .dlook-play-nav {\r\n  z-index: 10001;\r\n}\r\n\r\n.dlook-play-nav ul,\r\n.dlook-play-settings ul {\r\n  list-style: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.dlook-play-nav ul {\r\n  position: relative;\r\n  isolation: isolate;\r\n  display: grid;\r\n  grid-template-columns: repeat(5, minmax(0, 1fr));\r\n  box-sizing: border-box;\r\n  width: min(100%, 560px);\r\n  margin-inline: auto;\r\n  padding: 4px;\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-band);\r\n  box-shadow: 0 4px 15px #0a275a2a;\r\n  pointer-events: auto;\r\n}\r\n\r\n.dlook-play-indicator {\r\n  position: absolute;\r\n  z-index: -1;\r\n  inset: 4px auto 4px 4px;\r\n  width: calc((100% - 8px) / 5);\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-action);\r\n  transition: transform var(--dlook-tab-slide, 240ms) cubic-bezier(.2, .75, .25, 1);\r\n  pointer-events: none;\r\n}\r\n\r\n.dlook-play-settings ul {\r\n  display: grid;\r\n  grid-template-columns: repeat(5, minmax(0, 1fr));\r\n  gap: clamp(4px, 1.5vw, 8px);\r\n}\r\n\r\n.dlook-play-nav a,\r\n.dlook-play-settings :is(a, button) {\r\n  display: flex;\r\n  align-items: center;\r\n  box-sizing: border-box;\r\n  color: inherit;\r\n  font: inherit;\r\n  text-decoration: none;\r\n}\r\n\r\n.dlook-play-nav a {\r\n  min-height: 52px;\r\n  border-radius: 999px;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  gap: 3px;\r\n  position: relative;\r\n  text-align: center;\r\n  font-size: 12px;\r\n  line-height: 1.15;\r\n  transition: color 160ms ease, transform 180ms ease, background-color 160ms ease;\r\n}\r\n\r\n.dlook-play-nav a[aria-current=\"page\"] {\r\n  color: white;\r\n}\r\n\r\n.dlook-play-nav a:hover {\r\n  background: #ffffff12;\r\n  color: white;\r\n}\r\n\r\n.dlook-play-nav a:active {\r\n  transform: scale(.94);\r\n}\r\n\r\n.dlook-play-nav a[aria-current=\"page\"] svg,\r\n.dlook-play-settings svg {\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-play-nav a[data-unread]::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  top: 6px;\r\n  left: calc(50% + 11px);\r\n  width: 6px;\r\n  height: 6px;\r\n  border-radius: 50%;\r\n  background: var(--dlook-play-focus);\r\n}\r\n\r\n.dlook-play-nav a:focus-visible,\r\n.dlook-play-settings :is(a, button):focus-visible {\r\n  outline: 2px solid var(--dlook-play-focus);\r\n  outline-offset: -3px;\r\n}\r\n\r\n.dlook-play-icon {\r\n  fill: none;\r\n  stroke: currentColor;\r\n  stroke-width: 1.75;\r\n  stroke-linecap: round;\r\n  stroke-linejoin: round;\r\n}\r\n\r\n.dlook-play-nav svg {\r\n  width: 22px;\r\n  height: 22px;\r\n  flex: none;\r\n}\r\n\r\n.dlook-play-settings {\r\n  box-sizing: border-box;\r\n  width: min(calc(100% - 24px), 464px);\r\n  margin: 16px auto 0;\r\n  color: var(--surface-on-surface, #182e53);\r\n}\r\n\r\n.dlook-play-settings h2 {\r\n  margin: 0;\r\n  padding: 0 0 9px;\r\n  color: inherit;\r\n  font: 700 14px/1.3 system-ui, sans-serif;\r\n}\r\n\r\n.dlook-play-settings :is(a, button) {\r\n  justify-content: center;\r\n  flex-direction: column;\r\n  gap: 5px;\r\n  width: 100%;\r\n  min-height: 64px;\r\n  padding: 7px 2px;\r\n  border-radius: 12px;\r\n  background: var(--dlook-play-band);\r\n  border: 0;\r\n  color: var(--dlook-play-text);\r\n  font-size: clamp(10px, 3vw, 13px);\r\n  overflow-wrap: anywhere;\r\n  text-align: center;\r\n  cursor: pointer;\r\n  transition: background-color 160ms ease;\r\n}\r\n\r\n.dlook-play-settings :is(a, button):hover {\r\n  background: var(--dlook-play-action);\r\n}\r\n\r\n.dlook-play-settings svg {\r\n  width: 24px;\r\n  height: 24px;\r\n  fill: currentColor;\r\n}\r\n\r\n.dlook-play-settings [role=\"status\"] {\r\n  margin: 0;\r\n}\r\n\r\n.dlook-play-settings [role=\"status\"]:not(:empty) {\r\n  padding: 8px 0;\r\n}\r\n\r\n@media (max-width: 760px) {\r\n  .dlook-play-settings {\r\n    margin-top: 12px;\r\n  }\r\n}\r\n\r\n@media (min-width: 761px) {\r\n  #App > .loContainer[data-dlook-play] > main:not([data-dlook-library]):has(> [data-content-pane=\"true\"] > div[class*=\"_wrapper_\"]) {\r\n    --dlook-page-frame: min(840px, calc(100% - 48px));\r\n  }\r\n}\r\n\r\n@media (prefers-reduced-motion: reduce) {\r\n  html[data-dlook-play] {\r\n    --dlook-search-motion: none;\r\n  }\r\n  .dlook-play-indicator,\r\n  .dlook-play-nav a,\r\n  .dlook-play-settings :is(a, button) {\r\n    transition: none;\r\n  }\r\n}\n\n[data-dlook-collection] {\n  --dlook-collection-card: var(--surface-surface, white);\n  --dlook-collection-border: var(--surface-on-surface-border, #dce5f4);\n  --dlook-collection-ink: var(--surface-on-surface, #182e53);\n  --dlook-collection-muted: var(--surface-on-surface-variant-high, #415570);\n}\n\n[data-dlook-collection$=\"-index\"] ul:has(> li > a[data-dd-action-name$=\".card\"]) {\n  container-type: inline-size;\n  width: min(calc(100% - 24px), var(--dlook-collection-width));\n  margin: 12px auto 0;\n  background: transparent;\n}\n\n[data-dlook-collection$=\"-index\"] li:has(> :is([data-dd-action-name=\"mylist.card\"], [data-dd-action-name=\"playlist.card\"])) {\n  box-sizing: border-box;\n  max-height: none;\n  border: 0;\n  padding: 0 0 15px;\n}\n\n/* Play measures one item at a time. Each pair occupies two half-height slots,\n   with the second card aligned to the top of the first slot. */\n[data-dlook-collection$=\"-index\"] li[data-index]:has(> a[data-dd-action-name$=\".card\"]) {\n  --dlook-card-step: calc((100cqi - var(--dlook-collection-gap)) * .1875 + 50px);\n  position: relative;\n  height: var(--dlook-card-step);\n  padding: 0;\n  pointer-events: none;\n}\n\n[data-dlook-collection$=\"-index\"] li[data-index] > a[data-dd-action-name$=\".card\"] {\n  position: absolute;\n  inset-block-start: 0;\n  inset-inline-start: 0;\n  width: calc((100% - var(--dlook-collection-gap)) / 2);\n  height: calc(2 * var(--dlook-card-step) - var(--dlook-collection-gap));\n  box-sizing: border-box;\n  pointer-events: auto;\n}\n\n[data-dlook-collection$=\"-index\"] li:is([data-index$=\"1\"], [data-index$=\"3\"], [data-index$=\"5\"], [data-index$=\"7\"], [data-index$=\"9\"]) > a[data-dd-action-name$=\".card\"] {\n  inset-block-start: calc(-1 * var(--dlook-card-step));\n  inset-inline-start: auto;\n  inset-inline-end: 0;\n}\n\n[data-dlook-collection$=\"-index\"] div:has(> ul > li[data-index] > a[data-dd-action-name$=\".card\"]) {\n  box-sizing: content-box;\n  padding-block-end: min(calc((100vw - 36px) * .1875 + 50px), 139px);\n}\n\n[data-dlook-collection$=\"-index\"] :is([data-dd-action-name=\"mylist.card\"], [data-dd-action-name=\"playlist.card\"]) {\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n  border: 1px solid var(--dlook-collection-border);\n  border-radius: 15px;\n  background: var(--dlook-collection-card);\n  box-shadow: 0 3px 12px #19376414;\n  color: var(--dlook-collection-ink);\n  text-decoration: none;\n  overflow: hidden;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"]:focus-visible,\n.dlook-collection-actions button:focus-visible {\n  outline: 2px solid var(--dlook-play-action);\n  outline-offset: 2px;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_thumbnail_\"],\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_thumbnail_\"] {\n  position: relative;\n  align-content: center;\n  justify-content: center;\n  width: 100%;\n  height: auto;\n  aspect-ratio: 4 / 3;\n  margin: 0;\n  background-color: #172c53;\n  background-position: center;\n  background-size: cover;\n  overflow: hidden;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_thumbnail_\"] {\n  /* Single covers have an inline contain rule from the native thumbnail. */\n  background-size: cover !important;\n  background-position: center !important;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] > span {\n  width: 50%;\n  height: 50%;\n  background-position: center;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] > svg {\n  width: 52px;\n  height: 52px;\n  border-radius: 9px;\n  fill: #b6dfff;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_text_\"]:has(> p) {\n  box-sizing: border-box;\n  display: grid;\n  align-content: start;\n  gap: 4px;\n  width: 100%;\n  padding: 11px 14px 13px;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p {\n  margin: 0;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p:first-child {\n  display: -webkit-box;\n  overflow: hidden;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  line-clamp: 2;\n  overflow-wrap: anywhere;\n  white-space: normal;\n  font: 700 15px/1.35 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-index\"] li[data-index] > a[data-dd-action-name$=\".card\"] p:first-child {\n  min-height: 2lh;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p:not(:first-child) {\n  color: var(--dlook-collection-muted);\n  font: 500 12px/1.35 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-index\"] [class*=\"_text_\"]:has(> .dlook-collection-count) > p:nth-child(2) {\n  display: none;\n}\n\n#App > .loContainer[data-dlook-play] > main:has([data-dlook-collection$=\"-detail\"] > div > [class*=\"_info_hxvvl_\"]) > [data-content-pane=\"true\"][data-dlook-collection$=\"-detail\"] {\n  top: env(safe-area-inset-top, 0px);\n}\n\n[data-dlook-collection$=\"-detail\"] > div:has(> [class*=\"_info_hxvvl_\"]) {\n  padding-block-start: 0;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] {\n  --surface-on-surface: #edf5ff;\n  --surface-on-surface-variant-high: #b6dfff;\n  display: grid;\n  position: relative;\n  justify-items: center;\n  gap: 14px;\n  margin: 0 0 12px;\n  --dlook-collection-detail-padding: clamp(16px, 4vw, 28px);\n  padding: calc(var(--dlook-header-height) + var(--dlook-collection-detail-padding)) 16px var(--dlook-collection-detail-padding);\n  border-radius: 16px;\n  background: linear-gradient(160deg, #244b9d, #14284f 80%);\n  color: #edf5ff;\n  text-align: center;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a, button)[data-dlook-round-action],\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"] {\n  position: relative;\n  display: block;\n  box-sizing: border-box;\n  width: 42px;\n  height: 42px;\n  padding: 0;\n  border: 1px solid #c5e0ff4d;\n  border-radius: 50%;\n  background: #0d214b80;\n  box-shadow: 0 2px 8px #09152e40;\n  color: var(--dlook-play-text);\n  font-size: 0;\n  cursor: pointer;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a, button)[data-dlook-round-action]:hover {\n  background: #102751eb;\n}\n\n[data-dlook-round-action] > :not([data-dlook-action-icon]) {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip-path: inset(50%);\n}\n\n[data-dlook-action-icon] {\n  position: absolute;\n  inset: 0;\n  width: 21px;\n  height: 21px;\n  margin: auto;\n  pointer-events: none;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [class*=\"_btnDelete_\"]:has(> [data-dlook-round-action=\"delete\"]) {\n  position: absolute;\n  inset: calc((var(--dlook-header-height) - 42px) / 2) calc(var(--dlook-tool-end) + 52px) auto auto;\n  z-index: 1;\n  margin: 0;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"]:is(:hover, :focus-visible) {\n  background: #864358;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"]::before {\n  content: none;\n}\n\n[data-dlook-create] { cursor: pointer; }\n\n.dlook-collection-dialog {\n  box-sizing: border-box;\n  width: min(calc(100% - 32px), 400px);\n  max-width: none;\n  padding: 20px;\n  border: 1px solid var(--surface-on-surface-border, #dce5f4);\n  border-radius: 18px;\n  background: var(--surface-surface, #f3f6fc);\n  color: var(--surface-on-surface, #182e53);\n  font: 500 15px/1.4 system-ui, sans-serif;\n  box-shadow: 0 14px 50px #0b1c3e40;\n}\n\n.dlook-collection-dialog::backdrop { background: #10254db3; }\n.dlook-collection-dialog form { display: grid; gap: 12px; }\n.dlook-collection-dialog h2 { margin: 0; font-size: 20px; }\n.dlook-collection-dialog input {\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 44px;\n  padding: 8px 12px;\n  border: 1px solid var(--surface-on-surface-border, #c3d2eb);\n  border-radius: 10px;\n  background: var(--surface-surface-high, #fff);\n  color: inherit;\n  font: 500 16px/1.4 system-ui, sans-serif;\n}\n\n.dlook-collection-dialog p { margin: 0; color: var(--surface-on-surface-error, #a32d4e); }\n.dlook-collection-dialog p:empty { display: none; }\n.dlook-collection-dialog form > div { display: flex; justify-content: flex-end; gap: 8px; }\n.dlook-collection-dialog button {\n  min-height: 44px;\n  padding: 0 17px;\n  border: 1px solid var(--surface-on-surface-border, #c3d2eb);\n  border-radius: 999px;\n  background: transparent;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.dlook-collection-dialog button[type=\"submit\"] { background: var(--dlook-play-band); color: #fff; }\n.dlook-collection-dialog button:disabled { opacity: .55; cursor: default; }\n.dlook-collection-dialog :is(input, button):focus-visible { outline: 2px solid var(--dlook-play-action); outline-offset: 2px; }\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_thumbnail_\"] {\n  width: min(65vw, 248px);\n  aspect-ratio: 1;\n  border-radius: 13px;\n  box-shadow: 0 12px 36px #09163166;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_text_\"] {\n  width: min(100%, 460px);\n  padding: 0;\n  color: #edf5ff;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] h1 {\n  margin: 0 0 4px;\n  color: #edf5ff;\n  font: 750 clamp(20px, 5vw, 27px)/1.25 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_detail_hxvvl_\"] > p {\n  margin: 0;\n  color: var(--dlook-play-accent);\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] input {\n  box-sizing: border-box;\n  width: 100%;\n}\n\n[data-dlook-collection$=\"-detail\"] :is(li[data-dd-action-name=\"mylist.detail_item\"], li[data-dd-action-name=\"playlist.detail_item\"]) {\n  cursor: pointer;\n  background-color: var(--dlook-collection-card);\n}\n\n[data-dlook-collection$=\"-detail\"] > div > ol:has(> li[data-dd-action-name$=\".detail_item\"]) {\n  margin: 0 12px 16px;\n  overflow: clip;\n  border-radius: 12px;\n}\n\n[data-dlook-collection$=\"-detail\"] li[data-editing][data-dd-action-name$=\".detail_item\"] {\n  cursor: default;\n}\n\n.dlook-collection-actions {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 8px;\n  width: min(100%, 380px);\n}\n\n.dlook-collection-actions button {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  box-sizing: border-box;\n  min-height: 44px;\n  padding: 4px 6px;\n  border: 1px solid #ffffff26;\n  border-radius: 9px;\n  background: #ffffff19;\n  color: #edf5ff;\n  font: 650 13px/1.25 system-ui, sans-serif;\n  cursor: pointer;\n}\n\n.dlook-collection-actions button:first-child {\n  background: var(--dlook-play-action);\n}\n\n.dlook-collection-actions button:hover {\n  background: #3569c5;\n}\n\n.dlook-collection-actions svg {\n  width: 17px;\n  height: 17px;\n  flex-shrink: 0;\n}\n\n.dlook-collection-actions button:first-child svg {\n  fill: currentColor;\n}\n\n[data-dlook-collection] [class*=\"_btnFab_\"]:has(> a[data-dd-action-name^=\"mylist.\"], > a[data-dd-action-name^=\"playlist.\"]) {\n  bottom: calc(var(--dlook-play-dock) + 12px);\n}\n\n[data-dlook-collection] [class*=\"_btnFab_\"][data-mini-player-visible]:has(> a[data-dd-action-name^=\"mylist.\"], > a[data-dd-action-name^=\"playlist.\"]) {\n  bottom: calc(var(--dlook-play-dock) + 72px);\n}\nhtml[data-dlook-play] {\n  --dlook-collection-width: 484px;\n  --dlook-collection-gap: 12px;\n}\n\n#App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {\r\n  --dlook-page-frame: calc(var(--dlook-collection-width) + 24px);\r\n}\r\n\r\n@media (min-width: 900px) {\r\n  #App > .loContainer[data-dlook-play] > main[data-dlook-library]:not(:has([data-dlook-library-cards])) {\r\n    --dlook-page-frame: min(1480px, calc(100vw - 40px));\r\n  }\r\n\r\n  [data-dlook-library] :is([class*=\"_wrapper_1vmmi_\"], [class*=\"_searchConditionDisplay_1vmmi_\"], [class*=\"_searchConditionDisplayInner_1vmmi_\"], [class*=\"_container_7hqk3_\"]) {\r\n    max-width: var(--dlook-page-frame);\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_workGrid_\"] {\r\n    --tile-basis: clamp(154px, 13vw, 198px);\r\n  }\r\n\r\n  [data-dlook-library] [data-large] [class*=\"_workGrid_\"] {\r\n    --tile-basis: clamp(186px, 15vw, 240px);\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_carouselWrapper_7hqk3_\"] > [class*=\"_scrollArea_\"] {\r\n    flex: 1 1 auto;\r\n    min-width: 0;\r\n    max-width: none;\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_thumbnailWrapper_7hqk3_\"] {\r\n    width: clamp(175px, 15vw, 218px);\r\n    height: auto;\r\n    aspect-ratio: 4 / 3;\r\n  }\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools] {\r\n  display: flex;\r\n  gap: var(--dlook-tool-gap);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] [data-dlook-library-tools] > button {\r\n  display: grid;\r\n  place-items: center;\r\n  box-sizing: border-box;\r\n  width: var(--dlook-tool-size);\r\n  height: var(--dlook-tool-size);\r\n  padding: 0;\r\n  border-radius: 50%;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] [data-dlook-library-tools] > button:first-child:is([data-active=\"true\"], [aria-expanded=\"true\"]) {\r\n  position: relative;\r\n  z-index: 2;\r\n  border-color: transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.dlook-library-search svg {\r\n  display: block;\r\n  width: 22px;\r\n  height: 22px;\r\n  margin: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] :is(header [data-dlook-library-tools] > [class*=\"_searchBox_\"], [data-content-pane=\"true\"] [class*=\"_searchBox_\"]) {\r\n  --dlook-search-end: calc(var(--dlook-page-gutter) + var(--dlook-tool-end) + var(--dlook-tools-after-search, 0) * (var(--dlook-tool-size) + var(--dlook-tool-gap)));\r\n  position: fixed;\r\n  z-index: 1;\r\n  inset: calc(4px + env(safe-area-inset-top, 0px)) var(--dlook-search-end) auto auto;\r\n  box-sizing: border-box;\r\n  width: min(335px, calc(100% - var(--dlook-search-end) - var(--dlook-page-gutter) - var(--dlook-tool-start)));\r\n  min-width: 0;\r\n  height: var(--dlook-tool-size);\r\n  margin: 0;\r\n  padding: 0;\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-band);\r\n  animation: var(--dlook-search-motion);\r\n  pointer-events: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools]:not(:has(> .dlook-library-search[aria-expanded=\"true\"])) > [class*=\"_searchBox_\"] {\r\n  display: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] [class*=\"_searchInner_\"] {\r\n  position: relative;\r\n  display: flex;\r\n  align-items: center;\r\n  width: auto;\r\n  height: 100%;\r\n  margin: 0 var(--dlook-tool-size) 0 0;\r\n  padding: 0;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"]::before {\r\n  content: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: 100%;\r\n  margin: 0;\r\n  padding: 0 24px 0 14px;\r\n  border: 0;\r\n  border-radius: 999px 0 0 999px;\r\n  background: none;\r\n  color: white;\r\n  font: 500 16px/1.3 system-ui, sans-serif;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input::placeholder {\r\n  color: var(--dlook-play-text);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input:focus {\r\n  outline: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"]:focus-within {\r\n  box-shadow: inset 0 0 0 1px var(--dlook-play-accent);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] [data-dd-action-name=\"search.clear\"] {\r\n  top: 50%;\r\n  right: 5px;\r\n  bottom: auto;\r\n  transform: translateY(-50%);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [data-content-pane=\"true\"] > div:has(> [class*=\"_searchBox_\"]) {\r\n  height: 0;\r\n}\r\n\r\n@keyframes dlook-expand-library-search {\r\n  from { clip-path: inset(0 0 0 calc(100% - var(--dlook-tool-size)) round 999px); }\r\n  to { clip-path: inset(0 0 0 0 round 999px); }\r\n}\r\n\r\n/* The search field is in the toolbar, so Play's inline search spacer is unused. */\r\n[data-dlook-library] [data-content-pane] [class*=\"_inner_\"][data-search-input-visible] {\r\n  margin-top: 0;\r\n}\r\n\r\n#App [data-dlook-library] [data-dlook-library-filters] {\r\n  position: fixed;\r\n  inset: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px)) 0 auto;\r\n  display: flex;\r\n  box-sizing: border-box;\r\n  justify-content: end;\r\n  width: 100%;\r\n  max-width: var(--dlook-page-frame);\r\n  height: var(--dlook-header-height);\r\n  margin-inline: auto;\r\n  padding: 4px var(--dlook-tool-end) 4px var(--dlook-tool-start);\r\n  background: transparent;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n}\r\n\r\n[data-dlook-library-filters] [class*=\"_tab_\"] {\r\n  display: flex;\r\n  width: auto;\r\n  flex: none;\r\n  justify-content: flex-end;\r\n  align-items: center;\r\n  gap: var(--dlook-tool-gap);\r\n  padding: 0;\r\n  pointer-events: auto;\r\n}\r\n\r\n#App [data-dlook-library] button[data-dlook-library-filter] {\r\n  position: relative;\r\n  display: grid;\r\n  place-items: center;\r\n  box-sizing: border-box;\r\n  flex: none;\r\n  width: 40px;\r\n  height: 40px;\r\n  min-width: 0;\r\n  padding: 0;\r\n  border: 1px solid #b6dfff38;\r\n  border-radius: 50%;\r\n  background: var(--dlook-play-band);\r\n  color: var(--dlook-play-text);\r\n  font-size: 0;\r\n  box-shadow: 0 2px 7px #0a275a26;\r\n}\r\n\r\n#App [data-dlook-library] button[data-dlook-library-filter]:is([data-active], [aria-expanded=\"true\"]) {\r\n  background: var(--dlook-play-accent);\r\n  color: #15356e;\r\n}\r\n\r\n#App [data-dlook-library] [data-dlook-library-filter] > :not(.dlook-play-icon) {\r\n  position: absolute;\r\n  width: 1px;\r\n  height: 1px;\r\n  clip-path: inset(50%);\r\n  overflow: hidden;\r\n}\r\n\r\n[data-dlook-library-filter] > .dlook-play-icon {\r\n  position: absolute;\r\n  inset: 0;\r\n  width: 21px;\r\n  height: 21px;\r\n  margin: auto;\r\n  pointer-events: none;\r\n}\r\n[data-dlook-library-filter]:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: -2px; }\r\n\r\n[data-dlook-library-cards] :is([class*=\"_virtualScrollContainer_\"], [class*=\"_list_\"]) {\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] {\r\n  --dlook-library-columns: 2;\r\n  container-type: inline-size;\r\n  width: min(calc(100% - var(--dlook-library-grid-inset, 24px)), calc(var(--dlook-page-frame) - 24px));\r\n  margin: 12px auto 0;\r\n}\r\n\r\n[data-dlook-library-cards] :has(> [data-dlook-library-grid]) {\r\n  box-sizing: content-box;\r\n  padding-bottom: calc(var(--dlook-library-grid-tail, min(calc((100vw - 36px) * .1875 + 44px), 132px)) + var(--dlook-play-dock));\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {\r\n  --dlook-library-tile-width: calc((100cqi - (var(--dlook-library-columns) - 1) * var(--dlook-collection-gap)) / var(--dlook-library-columns));\r\n  --dlook-library-card-step: calc((var(--dlook-library-tile-width) * .75 + 88px) / var(--dlook-library-columns));\r\n  --dlook-library-column: 0;\r\n  position: relative;\r\n  height: var(--dlook-library-card-step);\r\n  pointer-events: none;\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] [data-dlook-library-card] {\r\n  position: absolute;\r\n  inset-block-start: calc(-1 * var(--dlook-library-column) * var(--dlook-library-card-step));\r\n  inset-inline-start: calc(var(--dlook-library-column) * (var(--dlook-library-tile-width) + var(--dlook-collection-gap)));\r\n  display: flex;\r\n  flex-direction: column;\r\n  box-sizing: border-box;\r\n  width: var(--dlook-library-tile-width);\r\n  height: calc(var(--dlook-library-columns) * var(--dlook-library-card-step) - var(--dlook-collection-gap));\r\n  overflow: hidden;\r\n  padding: 0;\r\n  border: 1px solid var(--surface-on-surface-border, #dce5f4);\r\n  border-radius: 15px;\r\n  background: var(--surface-surface, white);\r\n  color: var(--surface-on-surface, #182e53);\r\n  text-decoration: none;\r\n  box-shadow: 0 3px 12px #19376414;\r\n  pointer-events: auto;\r\n}\r\n\r\n/* Each native virtual item reserves one fraction of a card row. */\r\n@supports (top: calc(mod(3, 2) * 1px)) {\r\n  [data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {\r\n    --dlook-library-column: mod(var(--dlook-library-item-index, 0), var(--dlook-library-columns));\r\n  }\r\n\r\n  @media (min-width: 900px) {\r\n    #App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {\r\n      --dlook-page-frame: min(1320px, calc(100vw - 40px));\r\n      --dlook-library-grid-inset: 0px;\r\n      --dlook-library-grid-tail: 236px;\r\n    }\r\n\r\n    [data-dlook-library-cards] [class*=\"_wrapper_\"]:has([data-dlook-library-grid]),\r\n    [data-dlook-library-cards]:not(:has([data-dlook-library-filters])) > [class*=\"_inner_\"]:has([data-dlook-library-grid]) {\r\n      max-width: var(--dlook-page-frame);\r\n    }\r\n\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 3; }\r\n  }\r\n\r\n  @media (min-width: 1150px) {\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 4; }\r\n  }\r\n\r\n  @media (min-width: 1460px) {\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 5; }\r\n  }\r\n}\r\n\r\n@supports not (top: calc(mod(3, 2) * 1px)) {\r\n  [data-dlook-library-cards] [data-dlook-library-grid] > :is([data-index$=\"1\"], [data-index$=\"3\"], [data-index$=\"5\"], [data-index$=\"7\"], [data-index$=\"9\"]) {\r\n    --dlook-library-column: 1;\r\n  }\r\n}\r\n\r\n[data-dlook-library-card] > [class*=\"_container_\"] { display: contents; }\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] {\r\n  flex: none;\r\n  width: 100%;\r\n  height: auto;\r\n  aspect-ratio: 4 / 3;\r\n  margin: 0;\r\n  overflow: hidden;\r\n  background: #172c53;\r\n}\r\n\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] :is([class*=\"_thumbs_\"], [class*=\"_cover_\"], [class*=\"_imageContainer_\"]) {\r\n  width: 100%;\r\n  height: 100%;\r\n}\r\n\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] img {\r\n  width: 100%;\r\n  height: 100%;\r\n  object-fit: cover;\r\n}\r\n\r\n[data-dlook-library-card] :is([class*=\"_creatorName_\"], [class*=\"_title_\"]) {\r\n  display: -webkit-box;\r\n  overflow: hidden;\r\n  -webkit-box-orient: vertical;\r\n  -webkit-line-clamp: 2;\r\n  white-space: normal;\r\n  overflow-wrap: anywhere;\r\n  font: 700 14px/1.35 system-ui, sans-serif;\r\n}\r\n\r\n[data-dlook-library-card] :is([class*=\"_content_\"], [class*=\"_information_\"]) {\r\n  width: 100%;\r\n  box-sizing: border-box;\r\n  padding: 9px 12px;\r\n}\n\nhtml[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) {\r\n  --dlook-player-text: #f1f7ff;\r\n  --dlook-player-muted: #b9cbea;\r\n  --surface-surface-high: #162951;\r\n  --surface-on-surface: var(--dlook-player-text);\r\n  --surface-on-surface-primary: #91c8ff;\r\n  --surface-on-surface-disabled: #8096ba;\r\n  --surface-on-surface-border: #ffffff25;\r\n  --overlay-overlay-surface: #ffffff16;\r\n  --primary-primary: #90c6ff;\r\n  box-sizing: border-box;\r\n  background: radial-gradient(ellipse at 50% 17%, #314f89 0%, #1b315e 48%, #101e3b 100%);\r\n  color: var(--dlook-player-text);\r\n}\r\n\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"][data-pc],\r\nhtml[data-dlook-play] .dlook-offline-player {\r\n  right: 16px;\r\n  bottom: calc(var(--dlook-play-dock) + 12px);\r\n  width: min(440px, calc(100vw - 32px));\r\n  height: min(690px, calc(100dvh - var(--dlook-play-dock) - 24px));\r\n  border: 1px solid #afcaff29;\r\n  border-radius: 23px;\r\n  box-shadow: 0 16px 45px #08132880;\r\n}\r\n\r\nhtml[data-dlook-play]:not([data-dlook-offline]):has(#App [class*=\"_audioPlayer_\"]:not([data-pc])) .dlook-play-nav {\r\n  visibility: hidden;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_albumartWrapper_\"], .dlook-audio-stage) {\r\n  --dlook-caption-room: 0px;\r\n  display: grid;\r\n  grid-template-columns: minmax(0, 1fr);\r\n  --dlook-speed-inset: clamp(20px, 6vw, 36px);\r\n  align-content: start;\r\n  justify-items: center;\r\n  flex: 1 1 0;\r\n  min-height: 0;\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: auto;\r\n  container-type: size;\r\n  padding: calc(56px + env(safe-area-inset-top, 0px)) clamp(20px, 6vw, 36px) 34px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_albumartWrapper_\"], .dlook-audio-stage):has(> [class*=\"_textTrack_\"], > .dlook-audio-captions:not([hidden])) {\r\n  --dlook-caption-room: min(46cqh, 228px);\r\n  --dlook-cover-offset: 0px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_albumartWrapper_\"]::before {\r\n  position: absolute;\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n  --dlook-cover-ratio: 1.333333;\r\n  --dlook-cover-width: min(100cqw, 410px, calc(max(0px, 100cqh - var(--dlook-caption-room)) * var(--dlook-cover-ratio)));\r\n  --dlook-cover-height: calc(var(--dlook-cover-width) / var(--dlook-cover-ratio));\r\n  grid-area: 1 / 1;\r\n  box-sizing: border-box;\r\n  flex: none;\r\n  width: var(--dlook-cover-width);\r\n  height: var(--dlook-cover-height);\r\n  margin-block-start: var(--dlook-cover-offset, max(0px, calc((100cqh - var(--dlook-cover-height)) / 2)));\r\n  background-color: #101e3b;\r\n  background-size: contain;\r\n  border-radius: 16px;\r\n  box-shadow: 0 0 0 1px #afcaff29, 0 14px 40px #09173380;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n  transition: width 240ms ease, height 240ms ease, margin-block-start 240ms ease;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) {\r\n  position: static;\r\n  grid-area: 2 / 1;\r\n  justify-self: start;\r\n  box-sizing: border-box;\r\n  width: min(100%, 460px);\r\n  max-width: none;\r\n  height: var(--dlook-caption-room);\r\n  max-height: none;\r\n  margin: 0;\r\n  padding: clamp(12px, 3vh, 24px) 0 0;\r\n  overflow: auto;\r\n  overscroll-behavior: contain;\r\n  transform: none;\r\n  background: transparent;\r\n  color: var(--dlook-player-text);\r\n  text-align: left;\r\n  font: 740 clamp(17px, 5vw, 25px)/1.4 system-ui, sans-serif;\r\n  overflow-wrap: anywhere;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_subtitle_\"] {\r\n  position: static;\r\n  margin: 0;\r\n  padding: 0;\r\n  background: transparent;\r\n  text-align: inherit;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_textTrack_\"] {\r\n  display: block;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [data-dlook-caption-enhanced] [class*=\"_subtitle_\"] {\r\n  display: none;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) p {\r\n  margin: 0;\r\n  color: inherit;\r\n  font: inherit;\r\n  white-space: pre-line;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) p + p {\r\n  margin-top: 3px;\r\n  color: var(--dlook-player-muted);\r\n}\r\n\r\n.dlook-caption-cue + .dlook-caption-cue { margin-top: .62em; }\r\n.dlook-caption-cue[data-offset=\"1\"] { opacity: .48; }\r\n.dlook-caption-cue[data-offset=\"2\"] { opacity: .24; }\r\n.dlook-caption-cue[data-offset=\"0\"] { animation: dlook-caption-current 170ms ease-out; }\r\n\r\n@keyframes dlook-caption-current {\r\n  from { opacity: .62; transform: translateY(4px); }\r\n  to { opacity: 1; transform: translateY(0); }\r\n}\r\n\r\n@media (prefers-reduced-motion: reduce) {\r\n  .dlook-caption-cue[data-offset=\"0\"] { animation: none; }\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_optionButtons_\"] {\r\n  inset-inline: 0;\r\n  top: env(safe-area-inset-top, 0px);\r\n  background: none;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_hiddenButton_\"] {\r\n  top: 10px;\r\n  left: 16px;\r\n  width: 40px;\r\n  height: 40px;\r\n  background: #1a2d54;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playlistMenuButton_\"] {\r\n  right: 16px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButtonWrapper_\"] {\r\n  display: grid;\r\n  place-items: center;\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  height: 32px;\r\n  min-height: 32px;\r\n  padding: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :has(> .dlook-caption-toggle:not([hidden])) > :is([class*=\"_playbackButtonWrapper_\"], .dlook-audio-speed) {\r\n  right: calc(var(--dlook-speed-inset) + 44px);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-caption-toggle {\r\n  position: absolute;\r\n  z-index: 1;\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  width: 36px;\r\n  height: 32px;\r\n  display: grid;\r\n  place-items: center;\r\n  padding: 0;\r\n  border: 1px solid #b6dfff40;\r\n  border-radius: 999px;\r\n  background: #1a2d54;\r\n  color: var(--dlook-player-text);\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-caption-toggle svg { width: 19px; height: 19px; }\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-caption-toggle[aria-pressed=\"true\"] {\r\n  background: #b6dfff;\r\n  color: #142852;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-caption-toggle[hidden],\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] :is([data-dlook-subtitle-source], [class*=\"_row_\"]:has(> [data-dlook-subtitle-source]:only-child)) {\r\n  display: none;\r\n}\r\n\r\n@media (prefers-reduced-motion: reduce) {\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n    transition: none;\r\n  }\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButton_\"] {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  min-width: 44px;\r\n  min-height: 32px;\r\n  text-align: center;\r\n  border: 1px solid #b6dfff40;\r\n  border-radius: 100px;\r\n  background: #1a2d54;\r\n  color: var(--dlook-player-text);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButton_\"] span {\r\n  color: inherit;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) {\r\n  display: grid;\r\n  grid-template-areas: \"title\" \"album\" \"seek\" \"controls\" \"status\";\r\n  grid-template-columns: minmax(0, 1fr);\r\n  flex: 0 0 auto;\r\n  box-sizing: border-box;\r\n  width: min(100%, 475px);\r\n  margin-inline: auto;\r\n  padding: 10px clamp(20px, 6vw, 36px) calc(13px + env(safe-area-inset-bottom, 0px));\r\n  background: transparent;\r\n  text-align: start;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) > :is([class*=\"_title_\"], .dlook-audio-title) {\r\n  grid-area: title;\r\n  margin: 0;\r\n  padding: 0;\r\n  font: 760 clamp(19px, 5vw, 24px)/1.25 system-ui, sans-serif;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_titleInner_\"] {\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) > :is([class*=\"_album_\"], .dlook-audio-album) {\r\n  grid-area: album;\r\n  margin: 3px 0 7px;\r\n  color: var(--dlook-player-muted);\r\n  font-size: 13px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_sliderWrapper_\"] {\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([data-time], .dlook-audio-seek) {\r\n  grid-area: seek;\r\n  display: grid;\r\n  grid-template: \"position position\" 26px \"elapsed remaining\" auto / 1fr 1fr;\r\n  height: auto;\r\n  padding: 0;\r\n  color: var(--dlook-player-muted);\r\n  font-variant-numeric: tabular-nums;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-time] > [class*=\"_playerSlider_\"] {\r\n  grid-area: position;\r\n  width: 100%;\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playerSlider_\"] [class*=\"_track_\"] {\r\n  background: #b6dfff46;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playerSlider_\"] [class*=\"_indicator_\"] {\r\n  background: #b6dfff;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_elapsedTime_\"], .dlook-audio-elapsed) {\r\n  grid-area: elapsed;\r\n  justify-self: start;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_remainingTime_\"], .dlook-audio-remaining) {\r\n  grid-area: remaining;\r\n  justify-self: end;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlButtons_\"], .dlook-audio-transport) {\r\n  grid-area: controls;\r\n  margin-top: 8px;\r\n  padding: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([data-align=\"space-between\"]:has(> [data-control=\"play-pause\"]), .dlook-audio-transport) {\r\n  display: grid;\r\n  grid-template-columns: repeat(2, minmax(0, 1fr)) 64px repeat(2, minmax(0, 1fr));\r\n  align-items: center;\r\n  justify-items: center;\r\n  height: 68px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_shuffle_\"], [class*=\"_repeat_\"]) {\r\n  width: min(100%, 44px);\r\n  min-height: 44px;\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control] {\r\n  border-radius: 50%;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control=\"play-pause\"] {\r\n  width: 60px;\r\n  height: 60px;\r\n  background: #b6dfff;\r\n  color: #132654;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control=\"play-pause\"] svg {\r\n  fill: currentColor;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_volumeWrapper_\"] {\r\n  margin-inline: 0;\r\n}\r\n\r\nhtml[data-dlook-play] {\r\n  --dlook-mini-width: min(calc(100% - 20px), 556px);\r\n  --dlook-mini-bottom: calc(var(--dlook-play-dock) - 4px);\r\n  --dlook-mini-radius: 14px;\r\n}\r\n\r\nhtml[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini) {\r\n  position: fixed;\r\n  inset-inline: 0;\r\n  left: 0 !important;\r\n  bottom: var(--dlook-mini-bottom);\r\n  width: var(--dlook-mini-width);\r\n  height: 60px;\r\n  margin-inline: auto;\r\n  padding: 0;\r\n  overflow: hidden;\r\n  border: 1px solid #b6dfff35;\r\n  border-radius: var(--dlook-mini-radius);\r\n  box-sizing: border-box;\r\n  color: #f1f7ff;\r\n  --surface-on-surface: #f1f7ff;\r\n  --surface-on-surface-primary: var(--dlook-play-accent);\r\n}\r\n\r\nhtml[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini):not([data-handing-off]),\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_miniBarGhost_\"] {\r\n  background: #172b52;\r\n  box-shadow: 0 5px 16px #0716334a;\r\n}\r\n\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_miniBarGhost_\"] {\r\n  width: var(--dlook-mini-width);\r\n  height: 60px;\r\n  margin-inline: auto;\r\n  bottom: var(--dlook-mini-bottom);\r\n  border-radius: var(--dlook-mini-radius);\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_info_\"] {\r\n  grid-template-columns: 40px minmax(0, 1fr);\r\n  min-width: 0;\r\n  padding: 9px 8px 9px 11px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_thumbnail_\"] {\r\n  overflow: hidden;\r\n  border-radius: 8px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_thumbnail_\"]::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: 0;\r\n  background: var(--dlook-mini-cover, none) center / cover no-repeat;\r\n  pointer-events: none;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_buttons_\"] {\r\n  grid-template-columns: repeat(2, 44px);\r\n  padding-inline-end: 4px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_titleInner_\"] {\r\n  margin-inline-start: 0;\r\n  font-weight: 650;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_album_\"] {\r\n  color: #b9cbea;\r\n}\r\n\r\n.dlook-offline-mini {\r\n  display: flex;\r\n  align-items: center;\r\n  z-index: 2;\r\n}\r\n\r\n.dlook-offline-mini > :last-child { margin-inline-end: 4px; }\r\n\r\n.dlook-offline-mini::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: auto 0 0;\r\n  width: var(--dlook-audio-progress, 0%);\r\n  height: 2px;\r\n  background: var(--dlook-play-accent);\r\n  pointer-events: none;\r\n}\r\n\r\n.dlook-audio-mini-thumb {\r\n  display: grid;\r\n  place-items: center;\r\n  width: 40px;\r\n  height: 40px;\r\n  flex: none;\r\n  overflow: hidden;\r\n  position: relative;\r\n  border-radius: 8px;\r\n  background: #101e3b;\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-audio-mini-thumb img,\r\n.dlook-audio-art img {\r\n  position: absolute;\r\n  inset: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  object-fit: cover;\r\n}\r\n\r\n.dlook-audio-mini-open {\r\n  gap: 10px;\r\n  flex: 1;\r\n  min-width: 0;\r\n  padding-inline: 11px 8px;\r\n  text-align: start;\r\n}\r\n\r\n.dlook-audio-mini-text {\r\n  flex: 1;\r\n  min-width: 0;\r\n}\r\n\r\n.dlook-audio-mini-text > *,\r\n.dlook-audio-title,\r\n.dlook-audio-album {\r\n  display: block;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.dlook-audio-mini-text strong {\r\n  font: 650 13px/1.4 system-ui, sans-serif;\r\n}\r\n\r\n.dlook-offline-mini .dlook-audio-mini-text small {\r\n  color: #b9cbea;\r\n  font-size: 11px;\r\n}\r\n\r\n.dlook-offline-player {\r\n  position: fixed;\r\n  z-index: 3;\r\n  display: flex;\r\n  flex-direction: column;\r\n  overflow: auto;\r\n  overscroll-behavior: contain;\r\n}\r\n\r\n.dlook-audio-stage {\r\n  display: grid;\r\n  place-items: center;\r\n  position: relative;\r\n}\r\n\r\n.dlook-audio-art {\r\n  display: grid;\r\n  place-items: center;\r\n  position: relative;\r\n  overflow: hidden;\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-audio-art > svg {\r\n  width: 42px;\r\n  height: 42px;\r\n}\r\n\r\n.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue, .dlook-audio-speed) {\r\n  position: absolute;\r\n  z-index: 1;\r\n  border: 1px solid #b6dfff40;\r\n  background: #1a2d54;\r\n  color: #f1f7ff;\r\n}\r\n\r\n.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue) {\r\n  width: 40px;\r\n  height: 40px;\r\n  top: calc(10px + env(safe-area-inset-top, 0px));\r\n  border-radius: 50%;\r\n}\r\n\r\n.dlook-audio-minimize { left: 16px; }\r\n.dlook-audio-queue { right: 16px; }\r\n\r\n.dlook-audio-speed {\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  appearance: none;\r\n  box-sizing: border-box;\r\n  min-width: 44px;\r\n  min-height: 32px;\r\n  border-radius: 999px;\r\n  padding: 0 8px;\r\n  font: 500 12px/1.2 system-ui, sans-serif;\r\n  text-align: center;\r\n  text-align-last: center;\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-button {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  min-height: 44px;\r\n  padding-block: 0;\r\n  border: 0;\r\n  background: transparent;\r\n  color: inherit;\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-button:is(:hover, [aria-pressed=\"true\"]) { color: var(--dlook-play-accent); }\r\n.dlook-audio-button:focus-visible,\r\n.dlook-caption-toggle:focus-visible,\r\n.dlook-audio-speed:focus-visible,\r\n.dlook-audio-position:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: 2px; }\r\n.dlook-audio-button svg { width: 22px; height: 22px; flex: none; }\r\n.dlook-audio-transport .dlook-audio-button { position: relative; min-width: 44px; }\r\n.dlook-audio-transport [data-control=\"play-pause\"] svg { width: 28px; height: 28px; }\r\n.dlook-audio-transport [data-repeat=\"track\"]::after { content: \"1\"; position: absolute; top: 2px; right: 5px; font-size: 10px; }\r\n.dlook-offline-mini > .dlook-audio-button:not(.dlook-audio-mini-open) { flex: 0 0 44px; }\r\n.dlook-offline-mini > .dlook-audio-button:nth-child(2) svg { fill: currentColor; }\r\n\r\n.dlook-audio-position {\r\n  grid-area: position;\r\n  appearance: none;\r\n  width: 100%;\r\n  height: 26px;\r\n  margin: 0;\r\n  background: transparent;\r\n  accent-color: var(--dlook-play-accent);\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-position::-webkit-slider-runnable-track {\r\n  height: 4px;\r\n  border-radius: 10px;\r\n  background: linear-gradient(to right, #b6dfff var(--dlook-audio-progress, 0%), #b6dfff46 0);\r\n}\r\n\r\n.dlook-audio-position::-webkit-slider-thumb {\r\n  appearance: none;\r\n  width: 16px;\r\n  height: 16px;\r\n  margin-top: -6px;\r\n  border-radius: 50%;\r\n  background: #b6dfff;\r\n}\r\n\r\n.dlook-audio-position::-moz-range-track { height: 4px; border-radius: 10px; background: #b6dfff46; }\r\n.dlook-audio-position::-moz-range-progress { height: 4px; border-radius: 10px; background: #b6dfff; }\r\n.dlook-audio-position::-moz-range-thumb { border: 0; border-radius: 50%; background: #b6dfff; }\r\n.dlook-audio-seek span { font: 500 11px/1.3 system-ui, sans-serif; }\r\n.dlook-audio-status { grid-area: status; margin: 6px 0 0; color: #ffe197; }\r\n.dlook-audio-status:empty, .dlook-offline-mini[hidden], .dlook-offline-player[hidden] { display: none; }\r\n\r\n@media (max-width: 760px) {\r\n  html[data-dlook-play] .dlook-offline-player {\r\n    inset: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    border: 0;\r\n    border-radius: 0;\r\n  }\r\n\r\n  html[data-dlook-play]:has(.dlook-offline-page:not([hidden]) > .dlook-offline-player:not([hidden])) .dlook-play-nav,\r\n  .dlook-offline-page:has(> .dlook-offline-player:not([hidden])) > main {\r\n    visibility: hidden;\r\n  }\r\n}\r\n\r\n@media (max-height: 550px) and (orientation: landscape) {\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"]:not([data-pc]), .dlook-offline-player) {\r\n    flex-direction: row;\r\n  }\r\n\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"]:not([data-pc]), .dlook-offline-player) > :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) {\r\n    align-content: center;\r\n    width: 49%;\r\n  }\r\n}\n\nhtml[data-dlook-offline] #App {\n  visibility: hidden;\n}\n\n.dlook-offline-page {\n  --offline-surface: #f3f6fc;\n  --offline-card: #fff;\n  --offline-text: #182e53;\n  --offline-muted: #415570;\n  --offline-border: #dce5f4;\n  position: fixed;\n  inset: 0;\n  z-index: 10000;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;\n  background: var(--offline-surface);\n  color: var(--offline-text);\n  font: 500 14px/1.5 system-ui, sans-serif;\n}\n\n.dlook-offline-page[hidden],\n.dlook-offline-page[data-dlook-background] > main { display: none; }\n\n.dlook-offline-page[data-dlook-background] {\n  background: transparent;\n  pointer-events: none;\n}\n\n.dlook-offline-page[data-dlook-background] > :is(.dlook-offline-player, .dlook-offline-mini) { pointer-events: auto; }\n\nbody[data-theme=\"dark\"] .dlook-offline-page {\n  --offline-surface: #151e2e;\n  --offline-card: #202d43;\n  --offline-text: #e1ecfa;\n  --offline-muted: #b6c8df;\n  --offline-border: #384d6b;\n}\n\n@media (prefers-color-scheme: dark) {\n  body:not([data-theme=\"light\"]) .dlook-offline-page {\n    --offline-surface: #151e2e;\n    --offline-card: #202d43;\n    --offline-text: #e1ecfa;\n    --offline-muted: #b6c8df;\n    --offline-border: #384d6b;\n  }\n}\n\n.dlook-offline-heading {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  width: min(100%, 840px);\n  margin: 0 auto 16px;\n}\n\n.dlook-offline-page h1 {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip-path: inset(50%);\n}\n\n.dlook-offline-heading:has(.dlook-offline-back[hidden]) { margin-bottom: 0; }\n\n.dlook-offline-page > main {\n  flex: 1;\n  overflow: auto;\n  box-sizing: border-box;\n  width: min(100%, 872px);\n  margin-inline: auto;\n  padding: max(16px, env(safe-area-inset-top, 0px)) 16px var(--dlook-play-dock);\n}\n\n.dlook-offline-page:has(> .dlook-offline-mini:not([hidden])) > main {\n  padding-bottom: calc(var(--dlook-play-dock) + 60px);\n}\n\n.dlook-offline-notice {\n  margin: 0 0 12px;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-notice:empty,\n.dlook-offline-page [hidden],\n.dlook-offline-work [hidden] {\n  display: none;\n}\n\n.dlook-offline-list {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: var(--dlook-collection-gap);\n  width: min(100%, var(--dlook-collection-width));\n  margin-inline: auto;\n}\n\n.dlook-offline-card {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  overflow: hidden;\n  padding: 0;\n  border: 1px solid var(--offline-border);\n  border-radius: 15px;\n  background: var(--offline-card);\n  color: var(--offline-text);\n  text-align: start;\n  cursor: pointer;\n}\n\n.dlook-offline-cover {\n  position: relative;\n  display: grid;\n  place-items: center;\n  width: 100%;\n  aspect-ratio: 4 / 3;\n  overflow: hidden;\n  background: #172c53;\n  color: var(--dlook-play-accent);\n}\n\n.dlook-offline-cover svg {\n  width: 36px;\n  height: 36px;\n}\n\n.dlook-offline-cover img {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.dlook-offline-card-text {\n  display: grid;\n  gap: 4px;\n  padding: 11px 12px 13px;\n  min-width: 0;\n}\n\n.dlook-offline-card-text strong {\n  display: -webkit-box;\n  overflow: hidden;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  overflow-wrap: anywhere;\n  font: 700 15px/1.35 system-ui, sans-serif;\n}\n\n.dlook-offline-card .dlook-offline-creator {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.dlook-offline-page small {\n  display: block;\n  font: 500 12px/1.35 system-ui, sans-serif;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-detail {\n  width: min(100%, 640px);\n  margin-inline: auto;\n  border: 1px solid var(--offline-border);\n  border-radius: 15px;\n  overflow: hidden;\n  background: var(--offline-card);\n}\n\n.dlook-offline-detail-hero {\n  display: grid;\n  justify-items: center;\n  gap: 8px;\n  padding: 14px;\n  text-align: center;\n  background: var(--offline-surface);\n}\n\n.dlook-offline-detail-hero .dlook-offline-cover {\n  width: min(100%, 236px);\n  border-radius: 12px;\n}\n\n.dlook-offline-detail ol {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n.dlook-offline-button {\n  min-height: 44px;\n  box-sizing: border-box;\n  padding: 6px 12px;\n  border: 0;\n  border-radius: 7px;\n  background: var(--dlook-play-action);\n  color: white;\n  font: 600 14px/1.3 system-ui, sans-serif;\n  cursor: pointer;\n  overflow-wrap: anywhere;\n}\n\n.dlook-offline-button:disabled {\n  opacity: .75;\n  cursor: default;\n}\n\n.dlook-offline-button:focus-visible,\n.dlook-offline-card:focus-visible {\n  outline: 2px solid var(--dlook-play-focus);\n  outline-offset: -3px;\n}\n\n.dlook-offline-detail ol .dlook-offline-button {\n  display: block;\n  width: 100%;\n  border-bottom: 1px solid var(--offline-border);\n  border-radius: 0;\n  background: transparent;\n  color: inherit;\n  text-align: start;\n}\n\n.dlook-offline-detail ol .dlook-offline-button:is(:hover, [aria-current]) {\n  background: var(--offline-surface);\n}\n\n.dlook-offline-detail ol .dlook-offline-button[aria-current] {\n  box-shadow: inset 3px 0 var(--dlook-play-action);\n}\n\n.dlook-offline-detail > button {\n  display: block;\n  margin: 6px 10px;\n  background: transparent;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-heading .dlook-offline-back {\n  display: grid;\n  place-items: center;\n  width: 36px;\n  min-height: 36px;\n  border-radius: 50%;\n  padding: 0;\n  background: var(--dlook-play-band);\n  color: var(--dlook-play-text);\n}\n\n.dlook-offline-heading .dlook-offline-back[hidden] {\n  display: none;\n}\n\n.dlook-offline-heading .dlook-offline-back svg {\n  width: 19px;\n  height: 19px;\n}\n\n.dlook-offline-work {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px 12px;\n  box-sizing: border-box;\n  width: min(calc(100% - 24px), 840px);\n  margin: 12px auto;\n  padding: 7px;\n  border-radius: 7px;\n  background: var(--dlook-play-band);\n  color: var(--dlook-play-text);\n  font: 600 14px/1.3 system-ui, sans-serif;\n}\n\n.dlook-offline-work p {\n  flex: 1 1 180px;\n  margin: 0;\n}\n\n.dlook-offline-work p:empty {\n  display: none;\n}\n\n.dlook-offline-work button:first-child {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 7px;\n}\n\n.dlook-offline-work button:first-child svg {\n  width: 18px;\n  height: 18px;\n  flex: none;\n}\n\n#App [class*=\"_actions_\"]:has(> .dlook-offline-work[data-listen-group]) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, auto));\n}\n\n.dlook-offline-work[data-listen-group] {\n  grid-column: 1 / -1;\n  justify-content: end;\n  width: auto;\n  margin: 0;\n  padding: 0;\n  background: transparent;\n  color: var(--surface-on-surface, #182e53);\n}\n\n.dlook-offline-work[data-listen-group] button:first-child {\n  background: var(--dlook-play-band);\n}\n\n.dlook-offline-work button:disabled {\n  opacity: .68;\n  cursor: default;\n}\n\n.dlook-offline-work[data-listen-group] p {\n  flex: 0 1 auto;\n}\n\n@media (max-width: 760px) {\n  .dlook-offline-work[data-listen-group] button:first-child {\n    flex: 1 0 100%;\n  }\n}\n\n@container (width < 460px) {\n  [class*=\"_actions_\"]:has(> .dlook-offline-work) > :is([data-dd-action-name=\"work_detail.resume\"], [data-dd-action-name=\"work_detail.start\"]) {\n    grid-column: 1 / -1;\n  }\n}");
+const DLookPlaySite = (() => {
+  const action = name => `[data-dd-action-name="${name}"]`;
+  const targets = {
+    library: action('menu.library'),
+    mylist: action('menu.mylist'),
+    playlist: action('menu.playlist'),
+    settings: action('menu.setting'),
+    sync: action('menu.sync_library'),
+    dlsite: action('menu.dlsite'),
+    help: action('menu.help'),
+    logout: action('menu.logout'),
+    notifications: [action('menu.notification'), action('notification.menu_unread')].join(','),
+  };
+  const hamburger = action('menu.hamburger_open');
+  const drawer = `[role="dialog"][data-open]:has(${action('menu.header_close')})`;
+  const cached = new Map();
+
+  function navigate(href) {
+    const url = new URL(href, location.href);
+    if (url.origin !== location.origin || !Number.isInteger(history.state?.idx)) return false;
+    if (url.href === location.href) return true;
+    // React Router uses the history entry's index and key to handle same-document POP navigation.
+    const state = { usr: null, key: crypto.randomUUID(), idx: history.state.idx + 1 };
+    history.pushState(state, '', url);
+    window.dispatchEvent(new PopStateEvent('popstate', { state }));
+    return true;
+  }
+
+  function cache(key, load, ttl = 60000) {
+    const previous = cached.get(key);
+    if (previous && previous.expires > Date.now()) return previous.value;
+    if (cached.size >= 96) cached.delete(cached.keys().next().value);
+    const entry = { expires: Date.now() + ttl };
+    entry.value = Promise.resolve().then(load).catch(error => {
+      if (cached.get(key) === entry) cached.delete(key);
+      throw error;
+    });
+    cached.set(key, entry);
+    return entry.value;
+  }
+
+  function clearCache() { cached.clear(); }
+
+  function layout() {
+    const container = document.querySelector('#App > .loContainer');
+    const main = container?.querySelector(':scope > main');
+    const pane = main?.querySelector('[data-content-pane="true"]');
+    if (pane) return { container, main, pane };
+  }
+
+  function waitForDrawer() {
+    const current = document.querySelector(drawer);
+    if (current) return Promise.resolve(current);
+    return new Promise(resolve => {
+      const finish = panel => {
+        observer.disconnect();
+        clearTimeout(timeout);
+        resolve(panel);
+      };
+      const observer = new MutationObserver(() => {
+        const panel = document.querySelector(drawer);
+        if (panel) finish(panel);
+      });
+      const timeout = setTimeout(() => finish(null), 1000);
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-open'] });
+    });
+  }
+
+  async function activate(name) {
+    const page = layout();
+    if (!page) return false;
+    const selector = targets[name];
+    if (name === 'sync' || name === 'logout') clearCache();
+    const desktop = page.container.querySelector(selector);
+    if (desktop) {
+      desktop.click();
+      return true;
+    }
+
+    const opener = page.main.querySelector(hamburger);
+    if (!opener) return false;
+    // The mobile menu mounts its controls only while its drawer is open.
+    if (!document.querySelector(drawer)) opener.click();
+    const panel = await waitForDrawer();
+    const control = panel?.querySelector(selector);
+    control?.click();
+    // React Router links close the drawer themselves. Use the hamburger for
+    // logout so the site's own confirmation stays open when the drawer closes.
+    if (panel && (!control || ['sync', 'logout', 'dlsite'].includes(name))) opener.click();
+    return Boolean(control);
+  }
+
+  function hasUnreadNotifications(page) {
+    const headerMarker = page.main.querySelector(`${hamburger} [aria-label]`);
+    return Boolean(headerMarker || page.container.querySelector(action('notification.menu_unread')));
+  }
+
+  function csrfHeaders() {
+    const headers = new Headers();
+    const token = /(?:^|;\s*)XSRF-TOKEN=([^;]+)/.exec(document.cookie)?.[1];
+    if (token) {
+      try { headers.set('X-XSRF-TOKEN', decodeURIComponent(token)); } catch {}
+    }
+    return headers;
+  }
+
+  async function createCollection(kind, title) {
+    const headers = csrfHeaders();
+    headers.set('Content-Type', 'application/json');
+    const response = await fetch(kind === 'mylist' ? '/api/mylists' : '/api/playlists', {
+      method: 'POST', credentials: 'same-origin', redirect: 'error', headers, body: JSON.stringify({ title }),
+    });
+    if (!response.ok) throw new Error('Could not create the collection');
+    clearCache();
+  }
+
+  return { layout, activate, hasUnreadNotifications, navigate, cache, clearCache, csrfHeaders, createCollection };
+})();
+
+const DLookPlayIcons = (() => {
+  const paths = {
+    library: 'M3 4h4v16H3z M10 4h4v16h-4z M17 5l2.7-.6 3 14.6-2.7.6z',
+    works: 'M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h6v6h-6z',
+    authors: 'M4 20v-2c0-3 3-5 6-5s6 2 6 5v2M14 12c3 0 6 2 6 5v2M13 7a3 3 0 1 1-6 0 3 3 0 1 1 6 0Zm2-3a3 3 0 0 1 1 6',
+    voices: 'M9 5a3 3 0 0 1 6 0v6a3 3 0 0 1-6 0ZM5 11a7 7 0 0 0 14 0m-7 7v4m-3 0h6',
+    comics: 'M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1Zm9 1v14M6 9l3 1m6 0 3-1m-3 5 3-1',
+    headphones: 'M4 14v-2a8 8 0 0 1 16 0v2M4 14h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H4Zm16 0h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2Z',
+    video: 'M4 5h16v14H4z M10 9l5 3-5 3Z',
+    captions: 'M3 5h18v14H3z M6 11h4m3 0h5M6 15h7m3 0h2',
+    mylist: 'M3 7V5a2 2 0 0 1 2-2h4l3 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z M7 12h10 M7 16h6',
+    playlist: 'M3 6h12 M3 10h12 M3 14h8 M17 17V5l4-1 M17 17c0 1.7-1.4 3-3.2 3S11 19 11 17.6s1.4-2.6 3.2-2.6c1.1 0 2.2.4 2.8 1',
+    offline: 'M12 3v12m-4-4 4 4 4-4M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4',
+    back: 'm15 5-7 7 7 7',
+    check: 'm5 12 4 4L19 6',
+    edit: 'm4 16 12-12a2.8 2.8 0 0 1 4 4L8 20l-5 1 1-5Zm10-10 4 4',
+    delete: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 10v7m4-7v7',
+    search: 'M15.5 15.5 21 21M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z',
+    minimize: 'm5 9 7 7 7-7',
+    close: 'm6 6 12 12M18 6 6 18',
+    settings: 'm9.5 3-.6 2.2-2 .9-2.1-1-2 3.5 1.7 1.5v2.4l-1.7 1.6 2 3.5 2.1-1 2 .9.6 2.2h4l.6-2.2 2-.9 2.1 1 2-3.5-1.7-1.6v-2.4l1.7-1.5-2-3.5-2.1 1-2-.9-.6-2.2z M14.5 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
+    play: 'm8 5 12 7-12 7z',
+    pause: 'M8 5h2v14H8z M14 5h2v14h-2z',
+    previous: 'M5 6v12m14-12L8 12l11 6z',
+    next: 'M19 6v12M5 6l11 6-11 6z',
+    shuffle: 'M3 6h3c5 0 7 12 12 12h3m-3-3 3 3-3 3M3 18h3c2 0 3.5-2 5-4m2-4c1.5-2 3-4 5-4h3m-3-3 3 3-3 3',
+    repeat: 'm17 2 4 4-4 4M3 11V8a2 2 0 0 1 2-2h16M7 22l-4-4 4-4m14-1v3a2 2 0 0 1-2 2H3',
+  };
+
+  // The original Play menu glyphs are used even when its mobile drawer is unmounted.
+  const menuPaths = {
+    sync: ['M5.925 9.416A6.6 6.6 0 0 1 12 5.4c1.489 0 2.918.593 3.971 1.646L17.93 9H15.9c-.499 0-.9.401-.9.9s.401.9.9.9h4.2c.499 0 .9-.401.9-.9V5.7c0-.499-.401-.9-.9-.9s-.9.401-.9.9v2.029L17.246 5.77A7.42 7.42 0 0 0 12 3.6a8.4 8.4 0 0 0-7.732 5.111.9.9 0 0 0 1.657.705m13.8 5.888a.9.9 0 1 0-1.654-.709A6.6 6.6 0 0 1 12 18.6a5.62 5.62 0 0 1-3.971-1.646L6.07 15H8.1c.499 0 .9-.401.9-.9s-.401-.9-.9-.9H3.9c-.499 0-.9.401-.9.9v4.2c0 .499.401.9.9.9s.9-.401.9-.9v-2.029l1.954 1.954A7.4 7.4 0 0 0 12 20.4a8.4 8.4 0 0 0 7.725-5.096'],
+    dlsite: [
+      'M8.05 9.481zh-.01zM8.05 14.6V9.481c.48.065 2.52.474 2.56 2.519.02.74-.2 1.35-.65 1.8-.64.65-1.55.8-1.85.8z',
+      'M5.28 4h13.44c.71 0 1.28.57 1.28 1.28v13.44c0 .71-.57 1.28-1.28 1.28H5.28C4.57 20 4 19.43 4 18.72V5.28C4 4.57 4.57 4 5.28 4m2.98 12.48c1.07 0 2.1-.43 2.88-1.21.84-.84 1.33-2.03 1.33-3.25-.01-2.42-2.05-4.4-4.55-4.4H6.24v8.86zm4.94 0h4.6v-1.89h-2.81V7.63H13.2z',
+    ],
+    help: ['M19.313 12a7.312 7.312 0 1 0-14.625 0 7.312 7.312 0 0 0 14.625 0M3 12a9 9 0 1 1 18 0 9 9 0 0 1-18 0m5.97-3.189A1.97 1.97 0 0 1 10.826 7.5h2.05a2.218 2.218 0 0 1 1.103 4.145l-1.135.65a.846.846 0 0 1-.844.83.84.84 0 0 1-.844-.844v-.474c0-.303.162-.58.426-.732l1.557-.893a.532.532 0 0 0-.264-.991h-2.05a.28.28 0 0 0-.263.186l-.014.043a.844.844 0 0 1-1.589-.563l.014-.042zm1.905 6.564a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0'],
+    notifications: ['M7 20.125a.627.627 0 0 1-.625-.625v-15c0-.344.281-.625.625-.625h6.25V7c0 .691.559 1.25 1.25 1.25h3.125V19.5a.627.627 0 0 1-.625.625zM7 2a2.5 2.5 0 0 0-2.5 2.5v15C4.5 20.879 5.621 22 7 22h10c1.379 0 2.5-1.121 2.5-2.5V8.035a2.5 2.5 0 0 0-.73-1.77L15.23 2.73A2.5 2.5 0 0 0 13.465 2zm2.188 10a.935.935 0 0 0-.938.938c0 .519.418.937.938.937h5.624c.52 0 .938-.418.938-.937a.935.935 0 0 0-.937-.938zm0 3.75a.935.935 0 0 0-.938.938c0 .519.418.937.938.937h5.624c.52 0 .938-.418.938-.937a.935.935 0 0 0-.937-.938z'],
+    logout: ['M20.752 12.598a.84.84 0 0 0 0-1.192l-4.5-4.503a.843.843 0 0 0-1.192 1.192l3.06 3.058-8.652.003a.84.84 0 0 0-.844.844c0 .467.377.844.844.844h8.651l-3.058 3.058a.843.843 0 0 0 1.192 1.192zM8.906 5.813a.84.84 0 0 0 .843-.844.84.84 0 0 0-.843-.843H6.093A3.093 3.093 0 0 0 3 7.219v9.562a3.093 3.093 0 0 0 3.093 3.093h2.813a.84.84 0 0 0 .843-.843.84.84 0 0 0-.843-.844H6.093c-.776 0-1.406-.63-1.406-1.406V7.219c0-.777.63-1.406 1.406-1.406z'],
+  };
+  const namespace = 'http://www.w3.org/2000/svg';
+
+  function create(name) {
+    const svg = document.createElementNS(namespace, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    const native = menuPaths[name];
+    svg.setAttribute('class', native ? 'dlook-play-icon-native' : 'dlook-play-icon');
+    for (const shape of native ?? [paths[name]]) {
+      const path = document.createElementNS(namespace, 'path');
+      path.setAttribute('d', shape);
+      svg.append(path);
+    }
+    return svg;
+  }
+
+  return { create };
+})();
+
+const DLookPlayLibrary = (() => {
+  const searchLabels = { zh: '搜索作品', 'zh-tw': '搜尋作品', ja: '作品を検索', ko: '작품 검색', en: 'Search works' };
+  const viewLabels = {
+    authors: { zh: '作者/社团', 'zh-tw': '作者/社團', ja: '作者・サークル', ko: '작가/서클', en: 'Authors and circles' },
+    voices: { zh: '声优', 'zh-tw': '聲優', ja: '声優', ko: '성우', en: 'Voice actors' },
+    works: { zh: '作品', ja: '作品', ko: '작품', en: 'Works' },
+  };
+  const workTypeDropdown = '[data-dd-action-name="library.work_type_dropdown"]';
+  const workFilters = `button:is([data-dd-action-name="library.category_tab"], ${workTypeDropdown})`;
+  let active, activeTools, searchButton, searchField;
+
+  function localize(copy, language) {
+    return copy[language] ?? copy[language.split('-')[0]] ?? copy.en;
+  }
+
+  function closeSearch(event) {
+    if (event.key === 'Escape' && searchButton.getAttribute('aria-expanded') === 'true') {
+      searchButton.setAttribute('aria-expanded', 'false');
+      searchButton.focus({ preventScroll: true });
+    }
+  }
+
+  function updateSearch(main, language) {
+    const right = main?.querySelector(':scope > header [class*="_colRight_"]');
+    const tools = right?.querySelector('[class*="_utility_"]') ??
+      (right?.querySelector('input[type="search"], button[data-btn-type="others"]') ? right : undefined);
+    if (activeTools !== tools) {
+      activeTools?.removeAttribute('data-dlook-library-tools');
+      activeTools = tools;
+      tools?.setAttribute('data-dlook-library-tools', '');
+    }
+    const field = tools?.querySelector('input[type="search"]');
+    if (field !== searchField) {
+      searchField?.removeEventListener('keydown', closeSearch);
+      searchButton?.remove();
+      searchField = field;
+      searchButton = undefined;
+      if (field) {
+        const control = document.createElement('button');
+        control.type = 'button';
+        control.className = 'dlook-library-search';
+        control.setAttribute('aria-expanded', 'false');
+        control.append(DLookPlayIcons.create('search'));
+        control.onclick = () => {
+          const expanded = control.getAttribute('aria-expanded') !== 'true';
+          control.setAttribute('aria-expanded', String(expanded));
+          if (expanded) field.focus({ preventScroll: true });
+        };
+        field.addEventListener('keydown', closeSearch);
+        tools.prepend(control);
+        searchButton = control;
+      }
+    }
+    if (searchButton) {
+      const label = localize(searchLabels, language);
+      if (label !== searchButton.getAttribute('aria-label')) searchButton.setAttribute('aria-label', label);
+    }
+    if (tools) {
+      const afterSearch = String(Math.max(0, tools.querySelectorAll(':scope > button').length - 1));
+      if (main.style.getPropertyValue('--dlook-tools-after-search') !== afterSearch) {
+        main.style.setProperty('--dlook-tools-after-search', afterSearch);
+      }
+    }
+  }
+
+  function categoryIcon(label) {
+    if (/漫画|漫畫|マンガ|コミック|manga|comic|만화|\bcg\b/i.test(label)) return 'comics';
+    if (/音[声聲频頻]|audio|voice|오디오|음성/i.test(label)) return 'headphones';
+    if (/视频|影片|視訊|動画|video|동영상/i.test(label)) return 'video';
+    return 'works';
+  }
+
+  function addFilterIcon(button, icon, label) {
+    if (label && button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
+    if (button.dataset.dlookLibraryFilter !== icon || !button.querySelector(':scope > .dlook-play-icon')) {
+      button.dataset.dlookLibraryFilter = icon;
+      button.querySelector(':scope > .dlook-play-icon')?.remove();
+      button.append(DLookPlayIcons.create(icon));
+    }
+  }
+
+  function keepSelectedFilter(event) {
+    if (event.type === 'keydown' && !['Enter', ' ', 'ArrowDown', 'ArrowUp'].includes(event.key)) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }
+
+  function updateWorkFilter(button) {
+    const label = button.textContent.trim();
+    addFilterIcon(button, categoryIcon(label), label);
+    const selected = String(button.hasAttribute('data-active'));
+    if (button.getAttribute('aria-pressed') !== selected) button.setAttribute('aria-pressed', selected);
+    // Play replaces the selected category with a trigger for its subtype menu.
+    if (button.matches(workTypeDropdown)) {
+      button.removeAttribute('aria-haspopup');
+      button.removeAttribute('aria-expanded');
+      for (const type of ['pointerdown', 'click', 'keydown']) {
+        button.addEventListener(type, keepSelectedFilter, true);
+      }
+    }
+  }
+
+  function update(page, path, language) {
+    const main = page && (path === '/' || path === '/library' || path.startsWith('/library/')) ? page.main : undefined;
+    if (active !== main) {
+      active?.removeAttribute('data-dlook-library');
+      active = main;
+      main?.setAttribute('data-dlook-library', '');
+    }
+    updateSearch(main, language);
+    if (!main) return;
+    const dropdown = page.pane.querySelector('[data-dd-action-name="library.category_dropdown"]');
+    if (dropdown) {
+      const view = path === '/library/author' ? 'authors' : path === '/library/voice' ? 'voices' : 'works';
+      addFilterIcon(dropdown, view === 'works' ? 'library' : view, dropdown.textContent.trim() || localize(viewLabels[view], language));
+      dropdown.closest('[class*="_viewSwitcherTab_"]')?.setAttribute('data-dlook-library-filters', '');
+    }
+    for (const button of page.pane.querySelectorAll(workFilters)) updateWorkFilter(button);
+    const useCards = /^\/library\/(author|voice)(?:\/|$)/.test(path);
+    page.pane.toggleAttribute('data-dlook-library-cards', useCards);
+    if (useCards) {
+      for (const link of page.pane.querySelectorAll('[data-index] a:is([href^="/library/"], [href^="/work/"]):has([class*="_thumbnail_"])')) {
+        link.setAttribute('data-dlook-library-card', '');
+        const slot = link.closest('[data-index]')?.parentElement;
+        if (slot?.hasAttribute('data-index')) {
+          slot.parentElement.setAttribute('data-dlook-library-grid', '');
+          const index = slot.dataset.index;
+          if (slot.style.getPropertyValue('--dlook-library-item-index') !== index) {
+            slot.style.setProperty('--dlook-library-item-index', index);
+          }
+        }
+      }
+    }
+  }
+
+  return { update };
+})();
+
+const DLookPlayCollections = (() => {
+  const copy = {
+    zh: ['播放全部', '随机播放', count => `${count} 部作品`],
+    'zh-tw': ['播放全部', '隨機播放', count => `${count} 部作品`],
+    ja: ['すべて再生', 'シャッフル', count => `${count} 作品`],
+    ko: ['모두 재생', '셔플 재생', count => `작품 ${count}개`],
+    en: ['Play all', 'Shuffle', count => `${count} ${count === 1 ? 'work' : 'works'}`],
+  };
+  const createCopy = {
+    zh: ['新建我的列表', '新建播放列表', '列表名称', '取消', '创建', '创建失败，请重试。'],
+    'zh-tw': ['新增我的清單', '新增播放清單', '清單名稱', '取消', '建立', '建立失敗，請再試一次。'],
+    ja: ['マイリストを作成', 'プレイリストを作成', 'リスト名', 'キャンセル', '作成', '作成できませんでした。もう一度お試しください。'],
+    ko: ['내 목록 만들기', '재생 목록 만들기', '목록 이름', '취소', '만들기', '목록을 만들 수 없습니다. 다시 시도해 주세요.'],
+    en: ['Create a list', 'Create a playlist', 'List name', 'Cancel', 'Create', 'Could not create the list. Try again.'],
+  };
+  const trackSelector = '[data-dd-action-name="playlist.detail_item"]';
+  const shuffleSelector = 'button[data-dd-action-name="player.shuffle"]';
+  let activePane, request, counts, actions, pendingOrder, createLabels;
+
+  function collectionMode(path) {
+    const match = /^\/(mylist|playlist)(?:\/\d+)?$/.exec(path);
+    if (match) return path === `/${match[1]}` ? `${match[1]}-index` : `${match[1]}-detail`;
+  }
+
+  function countPlaylistWorks(pane, labels) {
+    const cards = pane.querySelectorAll('a[data-dd-action-name="playlist.card"]');
+    if (cards.length && !request) {
+      const lookup = DLookPlaySite.cache('playlists', async () => {
+        const response = await fetch('/api/playlists', { credentials: 'same-origin' });
+        if (!response.ok) throw new Error('Could not load playlists');
+        return response.json();
+      }, 20000);
+      request = lookup;
+      lookup.then(data => {
+        if (activePane !== pane || request !== lookup || !Array.isArray(data?.playlists)) return;
+        counts = new Map();
+        for (const entry of data.playlists) {
+          if (!Array.isArray(entry?.data) || !entry.data.every(track => typeof track?.workno === 'string')) continue;
+          counts.set(String(entry.id), new Set(entry.data.map(track => track.workno)).size);
+        }
+        countPlaylistWorks(pane, labels);
+      }).catch(() => {});
+    }
+    if (!counts) return;
+    for (const card of cards) {
+      const count = counts.get(card.pathname.split('/').at(-1));
+      const text = card.querySelector('[class*="_text_"]:has(> p + p)');
+      if (count === undefined || !text) continue;
+      let output = text.querySelector('.dlook-collection-count');
+      if (!output) {
+        output = document.createElement('p');
+        output.className = 'dlook-collection-count';
+        text.append(output);
+      }
+      const label = labels[2](count);
+      if (output.textContent !== label) output.textContent = label;
+    }
+  }
+
+  function applyPlaybackOrder() {
+    if (!pendingOrder) return;
+    const toggle = document.querySelector(shuffleSelector);
+    if (toggle) {
+      const enabled = Boolean(toggle.querySelector('[data-color="onSurfacePrimary"]'));
+      if (enabled !== pendingOrder.shuffle) toggle.click();
+      pendingOrder = null;
+    } else if (performance.now() >= pendingOrder.until) {
+      pendingOrder = null;
+    }
+  }
+
+  function playlistActions(pane, labels) {
+    const hero = pane.querySelector('[class*="_info_hxvvl_"]');
+    const track = pane.querySelector(trackSelector);
+    if (!hero || !track || track.hasAttribute('data-editing')) {
+      actions?.remove();
+      return;
+    }
+    if (!actions) {
+      actions = document.createElement('div');
+      actions.className = 'dlook-collection-actions';
+      for (const name of ['play', 'shuffle']) {
+        const control = document.createElement('button');
+        control.type = 'button';
+        control.append(DLookPlayIcons.create(name), document.createElement('span'));
+        control.addEventListener('click', () => {
+          const tracks = pane.querySelectorAll(trackSelector);
+          if (!tracks.length) return;
+          const shuffle = name === 'shuffle';
+          const index = shuffle ? Math.floor(Math.random() * tracks.length) : 0;
+          pendingOrder = { shuffle, until: performance.now() + 2000 };
+          tracks[index].click();
+          requestAnimationFrame(applyPlaybackOrder);
+        });
+        actions.append(control);
+      }
+    }
+    for (const [index, control] of [...actions.children].entries()) {
+      if (control.lastElementChild.textContent !== labels[index]) control.lastElementChild.textContent = labels[index];
+    }
+    if (actions.parentElement !== hero) hero.append(actions);
+  }
+
+  function createDialog(kind) {
+    if (document.querySelector('.dlook-collection-dialog[open]')) return;
+    const [list, playlist, nameLabel, cancelLabel, createLabel, errorLabel] = createLabels;
+    const dialog = document.createElement('dialog');
+    dialog.className = 'dlook-collection-dialog';
+    dialog.setAttribute('aria-labelledby', 'dlook-collection-dialog-title');
+    const form = document.createElement('form');
+    const title = document.createElement('h2');
+    title.id = 'dlook-collection-dialog-title';
+    title.textContent = kind === 'mylist' ? list : playlist;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.maxLength = 255;
+    input.required = input.autofocus = true;
+    input.placeholder = nameLabel;
+    input.setAttribute('aria-label', nameLabel);
+    const status = document.createElement('p');
+    status.setAttribute('role', 'status');
+    const actions = document.createElement('div');
+    const cancel = document.createElement('button');
+    cancel.type = 'button';
+    cancel.textContent = cancelLabel;
+    const create = document.createElement('button');
+    create.type = 'submit';
+    create.textContent = createLabel;
+    actions.append(cancel, create);
+    form.append(title, input, status, actions);
+    dialog.append(form);
+
+    create.disabled = true;
+    input.oninput = () => { create.disabled = !input.value.trim(); };
+    cancel.onclick = () => dialog.close();
+    dialog.addEventListener('close', () => dialog.remove(), { once: true });
+    dialog.addEventListener('cancel', event => { if (input.disabled) event.preventDefault(); });
+    form.onsubmit = async event => {
+      event.preventDefault();
+      const name = input.value.trim();
+      if (!name || input.disabled) return;
+      input.disabled = cancel.disabled = create.disabled = true;
+      status.textContent = '';
+      try {
+        await DLookPlaySite.createCollection(kind, name);
+        location.reload();
+      } catch {
+        input.disabled = cancel.disabled = create.disabled = false;
+        status.textContent = errorLabel;
+        input.focus();
+      }
+    };
+    document.body.append(dialog);
+    dialog.showModal();
+  }
+
+  function prepareCreate(pane, kind) {
+    const add = pane.querySelector(`[data-dd-action-name="${kind}.create"]`);
+    if (!add) return;
+    const label = createLabels[kind === 'mylist' ? 0 : 1];
+    if (add.getAttribute('aria-label') !== label) add.setAttribute('aria-label', label);
+    if (add.hasAttribute('data-dlook-create')) return;
+    add.setAttribute('data-dlook-create', '');
+    add.removeAttribute('href');
+    add.setAttribute('role', 'button');
+    add.tabIndex = 0;
+    add.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      createDialog(kind);
+    }, true);
+    add.addEventListener('keydown', event => {
+      if (event.key !== ' ' && event.key !== 'Enter') return;
+      event.preventDefault();
+      add.click();
+    });
+  }
+
+  function roundAction(control, icon) {
+    if (!control || control.querySelector(`:scope > [data-dlook-action-icon="${icon}"]`)) return;
+    control.querySelector(':scope > [data-dlook-action-icon]')?.remove();
+    control.setAttribute('data-dlook-round-action', icon);
+    const graphic = DLookPlayIcons.create(icon);
+    graphic.dataset.dlookActionIcon = icon;
+    control.append(graphic);
+  }
+
+  function detailActions(page, kind) {
+    const header = page.main.querySelector(':scope > header');
+    const remove = page.pane.querySelector(`button[data-dd-action-name="${kind}.delete"]`);
+    const edit = header?.querySelector('[class*="_colRight_"] button');
+    if (edit && !edit.hasAttribute('data-dlook-round-action')) {
+      edit.addEventListener('click', () => { if (edit.dataset.dlookRoundAction === 'check') DLookPlaySite.clearCache(); });
+    }
+    roundAction(header?.querySelector(`[data-dd-action-name="${kind}.detail_back"]`), 'back');
+    roundAction(edit, remove ? 'check' : 'edit');
+    roundAction(remove, 'delete');
+  }
+
+  function update(page, path, language) {
+    const mode = page && collectionMode(path);
+    const pane = mode ? page.pane : null;
+    if (pane !== activePane || (pane && pane.dataset.dlookCollection !== mode)) {
+      if (activePane) delete activePane.dataset.dlookCollection;
+      activePane = pane;
+      request = counts = undefined;
+      pendingOrder = null;
+      actions?.remove();
+      actions = undefined;
+      if (pane) pane.dataset.dlookCollection = mode;
+    }
+    applyPlaybackOrder();
+    const labels = copy[language] ?? copy[language.split('-')[0]] ?? copy.en;
+    createLabels = createCopy[language] ?? createCopy[language.split('-')[0]] ?? createCopy.en;
+    if (mode?.endsWith('-index')) prepareCreate(pane, mode.split('-')[0]);
+    if (mode?.endsWith('-detail')) detailActions(page, mode.split('-')[0]);
+    if (mode === 'playlist-index') countPlaylistWorks(pane, labels);
+    if (mode === 'playlist-detail') playlistActions(pane, labels);
+  }
+
+  return { update };
+})();
+
+const DLookPlayCaptions = (() => {
+  const cdn = 'https://play.dl.dlsite.com';
+  const requests = new Map();
+  let native;
+  const progress = new MutationObserver(renderNative);
+
+  function seconds(value) {
+    if (typeof value !== 'string' || !/^(?:\d{2,}:)?\d{2}:\d{2}(?:\.\d+)?$/.test(value)) return NaN;
+    return value.split(':').reduce((time, part) => time * 60 + Number(part), 0);
+  }
+
+  function parse(data) {
+    if (!Array.isArray(data)) return [];
+    return data.flatMap(cue => {
+      const start = seconds(cue?.start_time);
+      const end = seconds(cue?.end_time);
+      if (!(end > start) || !Array.isArray(cue.subtitles)) return [];
+      const lines = cue.subtitles.filter(line => typeof line === 'string' && line.trim());
+      return lines.length ? [{ start, end, lines }] : [];
+    }).sort((left, right) => left.start - right.start);
+  }
+
+  function timeline(output) {
+    let shown = [], currentCount = 0;
+    return (cues, time) => {
+      const current = cues.filter(cue => time >= cue.start && time < cue.end);
+      const upcoming = cues.filter(cue => time < cue.start).slice(0, 2);
+      const next = [...current, ...upcoming];
+      if (current.length === currentCount && next.length === shown.length && next.every((cue, i) => cue === shown[i])) return;
+      shown = next;
+      currentCount = current.length;
+      const groups = next.map((cue, index) => {
+        const group = document.createElement('div');
+        group.className = 'dlook-caption-cue';
+        group.dataset.offset = Math.max(0, index - currentCount + 1);
+        for (const line of cue.lines) {
+          const text = document.createElement('p');
+          text.textContent = line;
+          group.append(text);
+        }
+        return group;
+      });
+      output.replaceChildren(...groups);
+      output.scrollTop = 0;
+    };
+  }
+
+  function cueResourceNames() {
+    // The native player loads its caption JSON via fetch. Its audio is kept outside the DOM.
+    return [...new Set(performance.getEntriesByType('resource').reverse().filter(entry =>
+      ['fetch', 'xmlhttprequest'].includes(entry.initiatorType) && entry.name.startsWith(cdn + '/content/work/') &&
+      /\/(?:RJ|VJ|BJ)\d+\/optimized\/[^/]+\?/.test(entry.name)).map(entry => entry.name))].slice(0, 4);
+  }
+
+  function loadCues(url) {
+    if (!requests.has(url)) {
+      if (requests.size >= 24) requests.delete(requests.keys().next().value);
+      requests.set(url, fetch(url, { cache: 'force-cache', credentials: 'omit', redirect: 'error' })
+        .then(response => response.ok ? response.json() : null)
+        .then(data => parse(data?.webvtt)).catch(() => []));
+    }
+    return requests.get(url);
+  }
+
+  async function matchNativeCues(state, lines, time, key) {
+    for (const url of cueResourceNames()) {
+      const cues = await loadCues(url);
+      if (native !== state || state.lastLookup !== key) return;
+      if (cues.some(cue => time >= cue.start - .4 && time <= cue.end + .4 &&
+          lines.length === cue.lines.length && lines.every((line, index) => line === cue.lines[index].trim()))) {
+        state.cues = cues;
+        state.host.setAttribute('data-dlook-caption-enhanced', '');
+        renderNative();
+        return;
+      }
+    }
+  }
+
+  function renderNative() {
+    if (!native) return;
+    const time = Number(native.slider.value);
+    if (!Number.isFinite(time)) return;
+    if (native.cues) {
+      native.render(native.cues, time);
+      return;
+    }
+    const lines = [...native.host.querySelectorAll('[class*="_subtitle_"] > p')].map(line => line.textContent.trim());
+    if (!lines.length) return;
+    const key = JSON.stringify(lines);
+    if (key === native.lastLookup) return;
+    native.lastLookup = key;
+    void matchNativeCues(native, lines, time, key);
+  }
+
+  function updateNative(player) {
+    const host = player?.querySelector('[class*="_textTrack_"]');
+    const slider = player?.querySelector('[data-time] input[type="range"]');
+    const key = player && [...player.querySelectorAll('[class*="_controlWrapper_"] > :is([class*="_title_"], [class*="_album_"])')]
+      .map(element => element.textContent).join('\n');
+    if (host !== native?.host || slider !== native?.slider || key !== native?.key) {
+      progress.disconnect();
+      native?.host.removeAttribute('data-dlook-caption-enhanced');
+      native?.output.remove();
+      native = undefined;
+      if (host && slider) {
+        const output = document.createElement('div');
+        output.className = 'dlook-caption-timeline';
+        host.append(output);
+        native = { host, slider, key, output, render: timeline(output) };
+        progress.observe(slider, { attributes: true, attributeFilter: ['value'] });
+      }
+    }
+    renderNative();
+  }
+
+  return { parse, timeline, updateNative };
+})();
+
+const DLookPlayPlayer = (() => {
+  const artwork = '[class*="_audioPlayer_"] [class*="_albumart_"]';
+  let container, observed, source, remembered, subtitleButton;
+  const observer = new MutationObserver(updateArtwork);
+  const coverTimers = new WeakMap();
+
+  function fitCover(frame, image) {
+    if (image.naturalWidth && image.naturalHeight) {
+      frame.style.setProperty('--dlook-cover-ratio', image.naturalWidth / image.naturalHeight);
+    }
+  }
+
+  function animateCover(stage) {
+    clearTimeout(coverTimers.get(stage));
+    stage.setAttribute('data-dlook-cover-moving', '');
+    coverTimers.set(stage, setTimeout(() => stage.removeAttribute('data-dlook-cover-moving'), 280));
+  }
+
+  function updateSubtitleButton(player) {
+    const source = player?.querySelector('[data-dd-action-name="player.subtitle"]');
+    const stage = player?.querySelector('[class*="_albumartWrapper_"]');
+    if (!source || !stage) {
+      subtitleButton?.remove();
+      subtitleButton = undefined;
+      return;
+    }
+    if (subtitleButton?.parentElement !== stage) {
+      subtitleButton?.remove();
+      subtitleButton = document.createElement('button');
+      subtitleButton.type = 'button';
+      subtitleButton.className = 'dlook-caption-toggle';
+      subtitleButton.append(DLookPlayIcons.create('captions'));
+      subtitleButton.onclick = () => {
+        animateCover(stage);
+        player.querySelector('[data-dd-action-name="player.subtitle"]')?.click();
+      };
+      stage.append(subtitleButton);
+    }
+    source.setAttribute('data-dlook-subtitle-source', '');
+    const label = source.getAttribute('aria-label');
+    if (label && subtitleButton.getAttribute('aria-label') !== label) subtitleButton.setAttribute('aria-label', label);
+    subtitleButton.setAttribute('aria-pressed', String(source.getAttribute('data-active') === 'true'));
+  }
+
+  function updateArtwork() {
+    const background = observed?.style.backgroundImage;
+    const url = /^url\(["']?(.*?)["']?\)$/.exec(background ?? '')?.[1];
+    if (observed && url !== source) {
+      source = url;
+      observed.style.removeProperty('--dlook-cover-ratio');
+      if (url) {
+        const frame = observed;
+        const image = new Image();
+        image.onload = () => {
+          if (frame === observed && url === source) fitCover(frame, image);
+        };
+        image.src = url;
+      }
+    }
+
+    const album = observed?.closest('[class*="_audioPlayer_"]')?.querySelector('[class*="_album_"]')?.textContent.trim();
+    if (url && album && !url.includes('no_img')) remembered = { album, background };
+
+    const mini = container?.querySelector('[data-dd-action-name="player.mini_open"]');
+    if (!mini) return;
+    const name = mini.querySelector('[class*="_album_"]')?.textContent.trim();
+    const metadata = navigator.mediaSession?.metadata;
+    const mainImage = name && metadata?.album === name ? metadata.artwork?.[0]?.src : '';
+    const cover = name && remembered?.album === name ? remembered.background :
+      mainImage && !mainImage.includes('no_img') ? `url(${JSON.stringify(mainImage)})` : '';
+    if (cover) mini.style.setProperty('--dlook-mini-cover', cover);
+    else mini.style.removeProperty('--dlook-mini-cover');
+  }
+
+  function update(pageContainer) {
+    container = pageContainer;
+    const next = container?.querySelector(artwork);
+    if (next !== observed) {
+      observer.disconnect();
+      observed = next;
+      source = undefined;
+      if (observed) observer.observe(observed, { attributes: true, attributeFilter: ['style'] });
+    }
+    updateArtwork();
+    const player = container?.querySelector('[class*="_audioPlayer_"]');
+    updateSubtitleButton(player);
+    DLookPlayCaptions.updateNative(player);
+  }
+
+  return { fitCover, animateCover, update };
+})();
+
+const DLookOfflineStore = (() => {
+  let connection;
+
+  function open() {
+    if (!connection) {
+      connection = new Promise((resolve, reject) => {
+        const request = indexedDB.open('dlook-offline-audio', 1);
+        request.onupgradeneeded = () => {
+          request.result.createObjectStore('works', { keyPath: 'workno' });
+          request.result.createObjectStore('tracks');
+        };
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          const db = request.result;
+          db.onversionchange = () => { db.close(); connection = undefined; };
+          resolve(db);
+        };
+      }).catch(error => {
+        connection = undefined;
+        throw error;
+      });
+    }
+    return connection;
+  }
+
+  async function transact(names, mode, run) {
+    const db = await open();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(names, mode);
+      let result;
+      tx.oncomplete = () => resolve(result);
+      tx.onabort = () => reject(tx.error ?? new DOMException('Offline operation interrupted', 'AbortError'));
+      try {
+        run(tx, value => { result = value; });
+      } catch (error) {
+        reject(error);
+        tx.abort();
+      }
+    });
+  }
+
+  function read(name, key) {
+    return transact(name, 'readonly', (tx, finish) => {
+      const store = tx.objectStore(name);
+      const request = key === undefined ? store.getAll() : store.get(key);
+      request.onsuccess = () => finish(request.result);
+    });
+  }
+
+  const workTrackRange = workno => IDBKeyRange.bound([workno], [workno, []]);
+  const coverKey = workno => ['cover', workno];
+  const captionKey = (work, asset) => [work.workno, work.revision, asset, 'captions'];
+
+  function start({ workno, title, creator }, revision, tracks) {
+    const attempt = crypto.randomUUID();
+    return transact(['works', 'tracks'], 'readwrite', (tx, finish) => {
+      const works = tx.objectStore('works');
+      const get = works.get(workno);
+      get.onsuccess = () => {
+        const previous = get.result;
+        const audio = tx.objectStore('tracks');
+        const keep = new Map(tracks.map(track => [track.asset, track]));
+        const saved = [];
+        if (previous?.revision === revision) {
+          for (const track of previous.tracks) {
+            const updated = keep.get(track.asset);
+            if (updated) saved.push({ ...updated, size: track.size });
+            else {
+              audio.delete([workno, revision, track.asset]);
+              audio.delete(captionKey(previous, track.asset));
+            }
+          }
+        } else if (previous) {
+          audio.delete(workTrackRange(workno));
+        }
+        const record = {
+          workno, title, creator: creator || previous?.creator,
+          hasCover: Boolean(previous?.hasCover), revision, attempt, total: tracks.length, tracks: saved,
+          updated: previous?.updated ?? Date.now(),
+        };
+        works.put(record);
+        finish(record);
+      };
+    });
+  }
+
+  function saveCover(record, cover) {
+    return transact(['works', 'tracks'], 'readwrite', tx => {
+      const works = tx.objectStore('works');
+      const request = works.get(record.workno);
+      request.onsuccess = () => {
+        const latest = request.result;
+        if (latest?.attempt !== record.attempt) return;
+        tx.objectStore('tracks').put(cover, coverKey(record.workno));
+        latest.hasCover = true;
+        works.put(latest);
+      };
+    });
+  }
+
+  function writeTrack(record, track, data, size, captions) {
+    return transact(['works', 'tracks'], 'readwrite', (tx, finish) => {
+      const works = tx.objectStore('works');
+      const request = works.get(record.workno);
+      request.onsuccess = () => {
+        const latest = request.result;
+        if (latest?.attempt !== record.attempt) {
+          tx.abort();
+          return;
+        }
+        const store = tx.objectStore('tracks');
+        store.put(data, [record.workno, record.revision, track.asset]);
+        if (captions?.length) store.put(captions, captionKey(record, track.asset));
+        latest.tracks.push({ ...track, size });
+        latest.updated = Date.now();
+        works.put(latest);
+        finish(latest.tracks.length);
+      };
+    });
+  }
+
+  async function save(record, track, blob, captions) {
+    try {
+      return await writeTrack(record, track, blob, blob.size, captions);
+    } catch (error) {
+      // Some WebKit storage modes reject Blob writes but accept byte buffers.
+      if (error.name !== 'UnknownError') throw error;
+      const data = { bytes: await blob.arrayBuffer(), type: blob.type };
+      return writeTrack(record, track, data, blob.size, captions);
+    }
+  }
+
+  function remove(workno) {
+    return transact(['works', 'tracks'], 'readwrite', tx => {
+      tx.objectStore('works').delete(workno);
+      const tracks = tx.objectStore('tracks');
+      tracks.delete(workTrackRange(workno));
+      tracks.delete(coverKey(workno));
+    });
+  }
+
+  return {
+    start, save, saveCover, remove,
+    list: () => read('works'),
+    work: workno => read('works', workno),
+    cover: workno => read('tracks', coverKey(workno)),
+    captions: (work, asset) => read('tracks', captionKey(work, asset)),
+    async track(work, asset) {
+      const data = await read('tracks', [work.workno, work.revision, asset]);
+      return data?.bytes instanceof ArrayBuffer ? new Blob([data.bytes], { type: data.type }) : data;
+    },
+  };
+})();
+
+const DLookOfflineSource = (() => {
+  const play = 'https://play.dlsite.com';
+  const cdn = 'https://play.dl.dlsite.com';
+  const workPattern = /^(RJ|VJ|BJ)\d{6,10}$/;
+  const audioTypes = new Set(['SOU', 'MUS']);
+  const defaultRevision = '00000000-0000-7000-8000-000000000000';
+  const maxCoverBytes = 5 * 1024 * 1024;
+
+  function failure(phase, status, cause) {
+    return Object.assign(new Error('DLsite Play request failed', { cause }), { phase, status });
+  }
+
+  async function request(url, phase, signal, credentials = 'same-origin') {
+    const sameOrigin = new URL(url).origin === play;
+    const headers = sameOrigin ? DLookPlaySite.csrfHeaders() : new Headers();
+    let response;
+    try {
+      response = await fetch(url, {
+        credentials, signal, headers, cache: 'no-store', redirect: sameOrigin ? 'error' : 'follow',
+      });
+    } catch (error) {
+      if (signal.aborted) throw error;
+      throw failure(phase, undefined, error);
+    }
+    if (!response.ok) throw failure(phase, response.status);
+    return response;
+  }
+
+  async function json(response, phase) {
+    try { return await response.json(); } catch (error) {
+      if (error.name === 'AbortError') throw error;
+      throw failure(phase, response.status, error);
+    }
+  }
+
+  function localName(value, locale) {
+    const name = typeof value === 'string' ? value : value?.[locale] || value?.ja_JP;
+    return typeof name === 'string' ? name.trim() : '';
+  }
+
+  async function identify(workno, locale, signal) {
+    if (!workPattern.test(workno)) return null;
+    if (signal.aborted) return null;
+    const work = await DLookPlaySite.cache(`work:${workno}`, async () => {
+      const response = await request(`${play}/api/v4/work/${workno}`, 'catalog', AbortSignal.timeout(10000));
+      return json(response, 'catalog');
+    });
+    if (!audioTypes.has(work?.work_type) || !work.encodable ||
+        (work.sales_date == null && (!work.entitlement_type || work.entitlement_type === 'none'))) return null;
+    const authors = Array.isArray(work.authors) ? work.authors.map(author => localName(author?.name, locale)).filter(Boolean) : [];
+    return {
+      workno,
+      title: localName(work.name, locale) || workno,
+      creator: [...new Set(authors)].join(', ') || localName((work.original_maker ?? work.maker)?.name, locale),
+      coverUrl: work.images?.main || work.images?.thumb,
+    };
+  }
+
+  async function cover(rawUrl, signal) {
+    if (typeof rawUrl !== 'string' || signal.aborted) return;
+    const url = new URL(rawUrl, play);
+    const host = url.hostname;
+    if (url.protocol !== 'https:' || url.username || url.password ||
+        !(host.endsWith('.dlsite.jp') || host.endsWith('.dlsite.com'))) return;
+    const controller = new AbortController();
+    const cancel = () => controller.abort();
+    const timeout = setTimeout(cancel, 5000);
+    signal.addEventListener('abort', cancel, { once: true });
+    try {
+      const response = await fetch(url, { credentials: 'omit', signal: controller.signal, redirect: 'error' });
+      const type = response.headers.get('content-type')?.split(';', 1)[0].trim().toLowerCase();
+      const length = Number(response.headers.get('content-length'));
+      if (!response.ok || !type?.startsWith('image/') || length > maxCoverBytes) return;
+      const bytes = await response.arrayBuffer();
+      if (bytes.byteLength && bytes.byteLength <= maxCoverBytes) return { type, bytes };
+    } finally {
+      clearTimeout(timeout);
+      signal.removeEventListener('abort', cancel);
+    }
+  }
+
+  function workDirectory(workno) {
+    const floor = { R: 'doujin', V: 'professional', B: 'books' }[workno[0]];
+    const number = workno.slice(2);
+    const bucket = String(Math.ceil(Number(number) / 1000) * 1000).padStart(number.length, '0');
+    return `${cdn}/content/work/${floor}/${workno.slice(0, 2)}${bucket}/${workno}`;
+  }
+
+  function validAsset(name) {
+    return typeof name === 'string' && name.trim() && name !== '.' && name !== '..' && !/[\\/?#\x00-\x1f]/.test(name);
+  }
+
+  async function catalog(workno, signal) {
+    const directory = workDirectory(workno);
+    async function fileTree() {
+      // A successful cookie grant may return 204 and has no JSON to parse.
+      await request(`${cdn}/api/v3/download/sign/cookie?workno=${workno}`, 'authorization', signal, 'include');
+      const minute = Math.floor(Date.now() / 60000) * 60;
+      const response = await request(`${directory}/ziptree.json?v=${minute}`, 'catalog', signal, 'include');
+      return json(response, 'catalog');
+    }
+    let manifest;
+    try {
+      manifest = await fileTree();
+    } catch (error) {
+      if (signal.aborted || error.phase !== 'catalog' || ![401, 403].includes(error.status)) throw error;
+      manifest = await fileTree();
+    }
+    if (!Array.isArray(manifest?.tree) || !manifest.playfile) throw failure('catalog');
+    const mediaRevision = String(manifest.revision ?? defaultRevision);
+    const revision = String(manifest.revision ?? manifest.hash ?? defaultRevision);
+    const tracks = [];
+    const found = new Set();
+    function visit(nodes, folder) {
+      for (const node of nodes) {
+        if (node?.type === 'folder' && Array.isArray(node.children)) {
+          visit(node.children, folder ? `${folder}/${node.name}` : node.name);
+        }
+        const file = node?.type === 'file' && manifest.playfile[node.hashname];
+        const asset = file?.type === 'audio' && file.audio?.optimized?.name;
+        if (!validAsset(asset) || found.has(asset)) continue;
+        found.add(asset);
+        const vtt = typeof file.audio.vtt === 'string' ? manifest.playfile[file.audio.vtt] : null;
+        const captionAsset = vtt?.[vtt.type]?.optimized?.name;
+        const track = { asset, name: node.name || asset, folder, order: tracks.length };
+        if (validAsset(captionAsset)) track.captionAsset = captionAsset;
+        tracks.push(track);
+      }
+    }
+    visit(manifest.tree, '');
+    return { directory, revision, mediaRevision, tracks };
+  }
+
+  function createDownloader(workno, { directory, mediaRevision }, signal) {
+    let grant;
+    async function authorize() {
+      const response = await request(`${play}/api/v4/download/sign/url?workno=${workno}`, 'authorization', signal);
+      const next = await json(response, 'authorization');
+      if (!next?.params || typeof next.params !== 'object' || !Object.keys(next.params).length) {
+        throw failure('authorization', response.status);
+      }
+      grant = { params: next.params, expires: new Date(next.expires).getTime() };
+    }
+
+    async function read(asset, credentials, caption) {
+      if (!grant || grant.expires <= Date.now() + 30000) await authorize();
+      const url = new URL(`${directory}/optimized/${encodeURIComponent(asset)}`);
+      url.search = new URLSearchParams({ v: mediaRevision, ...grant.params }).toString();
+      const response = await request(url, 'media', signal, credentials);
+      if (caption) {
+        const data = await json(response, 'media');
+        return DLookPlayCaptions.parse(data?.webvtt);
+      }
+      const mime = response.headers.get('content-type')?.split(';', 1)[0].trim().toLowerCase();
+      const media = mime?.startsWith('audio/') ||
+        ['application/octet-stream', 'binary/octet-stream', 'application/ogg', 'video/mp4'].includes(mime);
+      const range = /^bytes 0-(\d+)\/(\d+)$/.exec(response.headers.get('content-range') ?? '');
+      const fullRange = response.status === 206 && range && Number(range[1]) + 1 === Number(range[2]);
+      if (!media || (response.status !== 200 && !fullRange)) throw failure('media', response.status);
+      const blob = await response.blob();
+      if (!blob.size || (fullRange && blob.size !== Number(range[2]))) throw failure('media', response.status);
+      return blob;
+    }
+
+    async function download(asset, caption = false) {
+      try {
+        return await read(asset, 'omit', caption);
+      } catch (error) {
+        if (signal.aborted || error.phase !== 'media') throw error;
+        if (error.cause instanceof TypeError) return read(asset, 'include', caption);
+        if (![401, 403].includes(error.status)) throw error;
+        grant = undefined;
+        try {
+          return await read(asset, 'omit', caption);
+        } catch (retry) {
+          if (signal.aborted || retry.phase !== 'media' || ![401, 403].includes(retry.status)) throw retry;
+          return read(asset, 'include', caption);
+        }
+      }
+    }
+    return { audio: download, captions: asset => download(asset, true) };
+  }
+
+  return { identify, cover, catalog, createDownloader };
+})();
+
+const DLookOfflinePlayer = (() => {
+  const labels = {
+    'zh-cn': ['展开播放器', '收起播放器', '关闭播放器', '播放', '暂停', '上一轨', '下一轨', '播放进度', '随机播放', '循环播放', '播放速度', '打开音轨列表'],
+    'zh-tw': ['展開播放器', '收起播放器', '關閉播放器', '播放', '暫停', '上一軌', '下一軌', '播放進度', '隨機播放', '循環播放', '播放速度', '開啟音軌清單'],
+    ja: ['プレーヤーを開く', 'プレーヤーを縮小', 'プレーヤーを閉じる', '再生', '一時停止', '前のトラック', '次のトラック', '再生位置', 'シャッフル', 'リピート', '再生速度', '曲一覧を開く'],
+    ko: ['플레이어 펼치기', '플레이어 접기', '플레이어 닫기', '재생', '일시정지', '이전 트랙', '다음 트랙', '재생 위치', '셔플', '반복 재생', '재생 속도', '트랙 목록 열기'],
+    en: ['Expand player', 'Minimize player', 'Close player', 'Play', 'Pause', 'Previous track', 'Next track', 'Playback position', 'Shuffle', 'Repeat', 'Playback speed', 'Open track list'],
+  };
+  const subtitleLabels = { zh: '字幕', ja: '字幕', ko: '자막', en: 'Subtitles' };
+
+  function element(tag, className) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    return node;
+  }
+
+  function iconButton(name, label, action) {
+    const button = element('button', 'dlook-audio-button');
+    button.type = 'button';
+    button.setAttribute('aria-label', label);
+    if (name) button.append(DLookPlayIcons.create(name));
+    button.onclick = action;
+    return button;
+  }
+
+  function formatTime(value) {
+    const seconds = Math.max(0, Math.floor(value));
+    return [Math.floor(seconds / 60), seconds % 60].map(part => String(part).padStart(2, '0')).join(':');
+  }
+
+  function create(language, { cover, onClose, onSkip, onEnded, onShuffle, onRepeat, onQueue, onError }) {
+    const [expandLabel, minimizeLabel, closeLabel, playLabel, pauseLabel, previousLabel, nextLabel,
+      seekLabel, shuffleLabel, repeatLabel, speedLabel, queueLabel] =
+      labels[language] ?? labels[language.split('-')[0]] ?? labels.en;
+    const expanded = element('section', 'dlook-offline-player');
+    const stage = element('div', 'dlook-audio-stage');
+    const artwork = element('div', 'dlook-audio-art');
+    const image = element('img');
+    image.alt = '';
+    image.hidden = true;
+    artwork.append(DLookPlayIcons.create('playlist'), image);
+    const captions = element('div', 'dlook-audio-captions');
+    captions.hidden = true;
+    const renderCaptions = DLookPlayCaptions.timeline(captions);
+
+    const mini = element('div', 'dlook-offline-mini');
+    const audio = element('audio');
+    audio.hidden = true;
+    audio.preload = 'metadata';
+    let artworkKey, artworkUrl, artworkRequest = 0, artworkPending = false, playing;
+    let hasTrack = false;
+    let cues = [];
+    let showCaptions = true;
+
+    function setExpanded(open, focus = false) {
+      expanded.hidden = !hasTrack || !open;
+      mini.hidden = !hasTrack || open;
+      if (focus && hasTrack) (open ? minimize : openMini).focus({ preventScroll: true });
+    }
+
+    const minimize = iconButton('minimize', minimizeLabel, () => setExpanded(false, true));
+    minimize.classList.add('dlook-audio-minimize');
+    const queue = iconButton('playlist', queueLabel, () => {
+      onQueue();
+      setExpanded(false, true);
+    });
+    queue.classList.add('dlook-audio-queue');
+    const speed = element('select', 'dlook-audio-speed');
+    speed.setAttribute('aria-label', speedLabel);
+    for (const rate of [.5, .75, 1, 1.25, 1.5, 1.75, 2]) {
+      const option = element('option');
+      option.value = rate;
+      option.textContent = `${rate}×`;
+      speed.append(option);
+    }
+    speed.value = 1;
+    speed.onchange = () => { audio.playbackRate = Number(speed.value); };
+    const subtitleLabel = subtitleLabels[language.split('-')[0]] ?? subtitleLabels.en;
+    const subtitle = iconButton('captions', subtitleLabel, () => {
+      DLookPlayPlayer.animateCover(stage);
+      showCaptions = !showCaptions;
+      subtitle.setAttribute('aria-pressed', String(showCaptions));
+      captions.hidden = !showCaptions;
+    });
+    subtitle.className = 'dlook-caption-toggle';
+    subtitle.setAttribute('aria-pressed', 'true');
+    subtitle.hidden = true;
+    stage.append(artwork, captions, minimize, queue, speed, subtitle);
+
+    const controls = element('div', 'dlook-audio-controls');
+    const title = element('div', 'dlook-audio-title');
+    const album = element('div', 'dlook-audio-album');
+    const status = element('p', 'dlook-audio-status');
+    status.setAttribute('role', 'status');
+    const seek = element('div', 'dlook-audio-seek');
+    const position = element('input', 'dlook-audio-position');
+    position.type = 'range';
+    position.min = position.max = 0;
+    position.step = .1;
+    position.disabled = true;
+    position.setAttribute('aria-label', seekLabel);
+    position.oninput = () => { if (Number.isFinite(audio.duration)) audio.currentTime = Number(position.value); };
+    const elapsed = element('span', 'dlook-audio-elapsed');
+    const remaining = element('span', 'dlook-audio-remaining');
+    seek.append(position, elapsed, remaining);
+
+    function resume() {
+      audio.play().catch(error => { if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') onError(); });
+    }
+
+    function togglePlayback() {
+      if (audio.paused || audio.ended) resume();
+      else audio.pause();
+    }
+
+    const transport = element('div', 'dlook-audio-transport');
+    const play = iconButton(null, playLabel, togglePlayback);
+    play.dataset.control = 'play-pause';
+    const previous = iconButton('previous', previousLabel, () => onSkip(-1));
+    const next = iconButton('next', nextLabel, () => onSkip(1));
+    previous.dataset.control = 'backward';
+    next.dataset.control = 'forward';
+    const shuffle = iconButton('shuffle', shuffleLabel, () => shuffle.setAttribute('aria-pressed', String(onShuffle())));
+    shuffle.setAttribute('aria-pressed', 'false');
+    const repeat = iconButton('repeat', repeatLabel, () => {
+      const mode = onRepeat();
+      repeat.dataset.repeat = mode;
+      repeat.setAttribute('aria-pressed', String(mode !== 'off'));
+    });
+    repeat.setAttribute('aria-pressed', 'false');
+    transport.append(shuffle, previous, play, next, repeat);
+    controls.append(title, album, seek, transport, status);
+    expanded.append(stage, controls);
+
+    const openMini = iconButton(null, expandLabel, () => setExpanded(true, true));
+    openMini.classList.add('dlook-audio-mini-open');
+    const thumbnail = element('span', 'dlook-audio-mini-thumb');
+    const thumb = element('img');
+    thumb.alt = '';
+    thumb.hidden = true;
+    thumbnail.append(DLookPlayIcons.create('playlist'), thumb);
+    const miniText = element('span', 'dlook-audio-mini-text');
+    const miniTitle = element('strong');
+    const miniAlbum = element('small');
+    miniText.append(miniTitle, miniAlbum);
+    openMini.append(thumbnail, miniText);
+    const miniPlay = iconButton(null, playLabel, togglePlayback);
+    mini.append(openMini, miniPlay, iconButton('close', closeLabel, onClose));
+
+    function updateControls() {
+      const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+      const time = Math.min(duration, audio.currentTime || 0);
+      const progress = duration ? time / duration : 0;
+      renderCaptions(cues, time);
+      position.disabled = !duration;
+      position.max = duration;
+      position.value = time;
+      position.setAttribute('aria-valuetext', formatTime(time));
+      elapsed.textContent = formatTime(time);
+      remaining.textContent = formatTime(duration - time);
+      position.style.setProperty('--dlook-audio-progress', `${progress * 100}%`);
+      mini.style.setProperty('--dlook-audio-progress', `${progress * 100}%`);
+      const isPlaying = !audio.paused && !audio.ended;
+      if (isPlaying !== playing) {
+        playing = isPlaying;
+        for (const button of [play, miniPlay]) {
+          button.setAttribute('aria-label', playing ? pauseLabel : playLabel);
+          button.replaceChildren(DLookPlayIcons.create(playing ? 'pause' : 'play'));
+        }
+      }
+    }
+
+    function clearCover() {
+      artworkRequest += 1;
+      artworkPending = false;
+      if (artworkUrl) URL.revokeObjectURL(artworkUrl);
+      artworkUrl = artworkKey = undefined;
+      for (const node of [image, thumb]) {
+        node.hidden = true;
+        node.removeAttribute('src');
+      }
+      artwork.style.removeProperty('--dlook-cover-ratio');
+    }
+
+    function show(work, track, open, trackCaptions = []) {
+      hasTrack = true;
+      cues = trackCaptions;
+      subtitle.hidden = !cues.length;
+      captions.hidden = !cues.length || !showCaptions;
+      renderCaptions(cues, 0);
+      title.textContent = miniTitle.textContent = track.name;
+      album.textContent = miniAlbum.textContent = work.title;
+      status.textContent = '';
+      openMini.setAttribute('aria-label', `${expandLabel} · ${track.name}`);
+      setExpanded(open || !expanded.hidden, open);
+      if (work.workno === artworkKey && (artworkUrl || artworkPending)) return;
+      clearCover();
+      artworkKey = work.workno;
+      if (!work.hasCover) return;
+      const request = artworkRequest;
+      artworkPending = true;
+      cover(work.workno).then(data => {
+        if (request !== artworkRequest || !data?.bytes) return;
+        artworkUrl = URL.createObjectURL(new Blob([data.bytes], { type: data.type }));
+        for (const node of [image, thumb]) {
+          node.onload = () => {
+            if (request !== artworkRequest) return;
+            node.hidden = false;
+            if (node === image) DLookPlayPlayer.fitCover(artwork, node);
+          };
+          node.src = artworkUrl;
+        }
+      }).catch(() => {}).finally(() => { if (request === artworkRequest) artworkPending = false; });
+    }
+
+    for (const event of ['timeupdate', 'seeking', 'durationchange', 'play', 'pause', 'ended', 'emptied']) {
+      audio.addEventListener(event, updateControls);
+    }
+    audio.addEventListener('ended', onEnded);
+    audio.addEventListener('error', onError);
+    expanded.addEventListener('keydown', event => {
+      if (event.key === 'Escape') setExpanded(false, true);
+    });
+    setExpanded(false);
+    updateControls();
+    return {
+      audio, elements: [expanded, mini, audio], show, resume, collapse: () => setExpanded(false),
+      error(message) { status.textContent = message; },
+      hide() {
+        hasTrack = false;
+        cues = [];
+        captions.hidden = true;
+        subtitle.hidden = true;
+        renderCaptions(cues, 0);
+        setExpanded(false);
+        clearCover();
+      },
+    };
+  }
+
+  return { create };
+})();
+
+const DLookOffline = (() => {
+  const offlinePath = '/settings';
+  const offlineHash = '#dlook-offline';
+  const href = offlinePath + offlineHash;
+  const copy = {
+    'zh-cn': {
+      title: '离线暂存', save: '暂存音频', saved: '已暂存', saving: '正在暂存音频…', cancel: '取消暂存',
+      count: (saved, total) => `已暂存 ${saved}/${total} 轨`, retry: '重试暂存', stopped: '暂存已取消。',
+      authorization: '音频授权失败，请确认已登录且能在线播放。', catalog: '无法读取音轨列表，请重试。',
+      media: '音轨下载失败，请重试。', storage: '浏览器无法写入暂存，请检查本地存储。',
+      quota: '空间不足，请删除部分暂存作品后重试。', back: '返回离线暂存',
+      noAudio: '这个作品没有可暂存的音轨。', empty: '还没有暂存作品。联网时，在已购音频作品页点击「暂存音频」。',
+      remove: '删除暂存', confirm: title => `删除「${title}」的本地暂存？`, openFailed: '无法读取离线暂存，请重试。',
+      playFailed: '无法播放这条音轨，请尝试重新暂存。', removeFailed: '无法删除暂存，请重试。',
+    },
+    'zh-tw': {
+      title: '離線暫存', save: '暫存音訊', saved: '已暫存', saving: '正在暫存音訊…', cancel: '取消暫存',
+      count: (saved, total) => `已暫存 ${saved}/${total} 軌`, retry: '重試暫存', stopped: '已取消暫存。',
+      authorization: '音訊授權失敗，請確認已登入且可線上播放。', catalog: '無法讀取音軌清單，請再試一次。',
+      media: '音軌下載失敗，請再試一次。', storage: '瀏覽器無法寫入暫存，請檢查本機儲存空間。',
+      quota: '空間不足，請刪除部分暫存作品後再試。', back: '返回離線暫存',
+      noAudio: '這個作品沒有可暫存的音軌。', empty: '還沒有暫存作品。連線時，在已購音訊作品頁點選「暫存音訊」。',
+      remove: '刪除暫存', confirm: title => `刪除「${title}」的本機暫存？`, openFailed: '無法讀取離線暫存，請再試一次。',
+      playFailed: '無法播放此音軌，請嘗試重新暫存。', removeFailed: '無法刪除暫存，請再試一次。',
+    },
+    ja: {
+      title: 'オフライン', save: '音声を保存', saved: '保存済み', saving: '音声を保存中…', cancel: '保存をキャンセル',
+      count: (saved, total) => `${total} 曲中 ${saved} 曲を保存済み`, retry: '保存を再試行', stopped: '保存をキャンセルしました。',
+      authorization: '音声を認証できません。ログイン状態と再生権限を確認してください。', catalog: '曲一覧を取得できません。もう一度お試しください。',
+      media: '音声のダウンロードに失敗しました。', storage: '音声を保存できません。ブラウザのストレージを確認してください。',
+      quota: '空き容量が不足しています。保存済みの作品を削除してください。', back: 'オフラインに戻る',
+      noAudio: '保存できる音声がありません。', empty: 'オンライン時に購入済みの音声作品ページから音声を保存できます。',
+      remove: '保存を削除', confirm: title => `「${title}」の保存済み音声を削除しますか？`, openFailed: '保存済みの音声を読み込めませんでした。',
+      playFailed: 'この音声を再生できません。もう一度保存してください。', removeFailed: '保存済みの音声を削除できませんでした。',
+    },
+    en: {
+      title: 'Offline', save: 'Save audio offline', saved: 'Saved offline', saving: 'Saving audio…', cancel: 'Cancel saving',
+      count: (saved, total) => `${saved} of ${total} tracks saved`, retry: 'Retry saving', stopped: 'Saving canceled.',
+      authorization: 'Audio authorization failed. Check that you can play this work online.',
+      catalog: 'Could not load the track list. Try again.', media: 'Could not download the audio. Try again.',
+      storage: 'Could not write the offline copy. Check browser storage.', back: 'Back to offline',
+      quota: 'Storage is full. Remove some saved works and try again.',
+      noAudio: 'This work has no audio tracks available to save.',
+      empty: 'No saved works yet. While online, open a purchased audio work and select “Save audio offline.”',
+      remove: 'Remove saved audio', confirm: title => `Remove the saved audio for “${title}”?`,
+      openFailed: 'Could not read saved audio. Try again.', playFailed: 'Could not play this track. Try saving it again.',
+      removeFailed: 'Could not remove saved audio. Try again.',
+    },
+    ko: {
+      title: '오프라인', save: '오디오 저장', saved: '저장됨', saving: '오디오 저장 중…', cancel: '저장 취소',
+      count: (saved, total) => `${total}개 중 ${saved}개 저장됨`, retry: '저장 다시 시도', stopped: '저장을 취소했습니다.',
+      authorization: '오디오 인증에 실패했습니다. 온라인으로 재생할 수 있는지 확인하세요.', catalog: '트랙 목록을 읽을 수 없습니다.',
+      media: '오디오를 다운로드하지 못했습니다.', storage: '오디오를 저장할 수 없습니다. 브라우저 저장 공간을 확인하세요.',
+      quota: '저장 공간이 부족합니다. 저장된 작품을 삭제하세요.', back: '오프라인으로 돌아가기',
+      noAudio: '저장할 수 있는 오디오가 없습니다.', empty: '온라인 상태에서 구매한 오디오 작품 페이지의 저장 버튼을 누르세요.',
+      remove: '저장 삭제', confirm: title => `“${title}”의 저장된 오디오를 삭제할까요?`, openFailed: '저장된 오디오를 읽을 수 없습니다.',
+      playFailed: '이 트랙을 재생할 수 없습니다. 다시 저장해 보세요.', removeFailed: '저장된 오디오를 삭제할 수 없습니다.',
+    },
+  };
+  const text = language => copy[language] ?? copy[language.split('-')[0]] ?? copy.en;
+  const isOpen = () => location.pathname === offlinePath && location.hash === offlineHash;
+  const jobs = new Map();
+  let workView, library, warming;
+
+  function element(tag, className) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    return node;
+  }
+
+  function button() {
+    const node = element('button', 'dlook-offline-button');
+    node.type = 'button';
+    return node;
+  }
+
+  function setText(node, value) {
+    if (node.textContent !== value) node.textContent = value;
+  }
+
+  function warmOfflinePage() {
+    const worker = navigator.serviceWorker;
+    if (!worker) return;
+    if (!warming) {
+      warming = (async () => {
+        if (!worker.controller) {
+          await new Promise(resolve => {
+            const ready = () => {
+              clearTimeout(timeout);
+              worker.removeEventListener('controllerchange', ready);
+              resolve();
+            };
+            const timeout = setTimeout(ready, 3000);
+            worker.addEventListener('controllerchange', ready, { once: true });
+          });
+        }
+        if (!worker.controller) return;
+        // Play caches the settings document and can serve it with the offline hash.
+        const url = new URL(offlinePath, location.origin);
+        if (await window.caches?.match(url, { cacheName: 'content' }).catch(() => null)) return;
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        try {
+          const response = await fetch(url, {
+            cache: 'reload', credentials: 'same-origin', signal: controller.signal,
+          });
+          await response.text();
+        } finally {
+          clearTimeout(timeout);
+        }
+      })().catch(() => {}).finally(() => { warming = undefined; });
+    }
+    return warming;
+  }
+
+  const isSaved = state => state?.total > 0 && state.saved === state.total;
+
+  function paintWork(view) {
+    const job = jobs.get(view.workno);
+    const state = job ?? view.result;
+    const { labels } = view;
+    const retry = state?.message || (state && state.saved < state.total);
+    const complete = isSaved(state);
+    setText(view.saveLabel, job ? labels.saving : complete ? labels.saved : retry ? labels.retry : labels.save);
+    setText(view.cancel, labels.cancel);
+    view.save.disabled = Boolean(job || complete);
+    view.cancel.hidden = !job;
+    const progress = state?.total ? labels.count(state.saved, state.total) : '';
+    const message = state?.message ? labels[state.message] : '';
+    const code = state?.httpStatus >= 400 ? `(HTTP ${state.httpStatus})` : '';
+    setText(view.status, [progress, message, code].filter(Boolean).join(' '));
+  }
+
+  async function saveWork(view) {
+    if (jobs.has(view.workno) || isSaved(view.result)) return;
+    const job = { ...view.result, controller: new AbortController(), message: '', httpStatus: undefined };
+    const { signal } = job.controller;
+    jobs.set(view.workno, job);
+    const update = () => {
+      if (workView?.workno === view.workno) paintWork(workView);
+    };
+    update();
+    let offlinePage, artwork;
+    let phase = 'catalog';
+    try {
+      offlinePage = warmOfflinePage();
+      navigator.storage?.persist?.().catch(() => {});
+      const catalog = await DLookOfflineSource.catalog(view.workno, signal);
+      if (!catalog.tracks.length) {
+        job.message = 'noAudio';
+        return;
+      }
+      phase = 'storage';
+      const record = await DLookOfflineStore.start(view.work, catalog.revision, catalog.tracks);
+      if (!record.hasCover) {
+        artwork = DLookOfflineSource.cover(view.work.coverUrl, signal)
+          .then(cover => cover && !signal.aborted && DLookOfflineStore.saveCover(record, cover))
+          .catch(() => {});
+      }
+      const saved = new Set(record.tracks.map(track => track.asset));
+      job.saved = saved.size;
+      job.total = record.total;
+      update();
+      const download = DLookOfflineSource.createDownloader(view.workno, catalog, signal);
+      for (const track of catalog.tracks) {
+        if (signal.aborted) throw signal.reason;
+        if (saved.has(track.asset)) continue;
+        let blob;
+        try {
+          blob = await download.audio(track.asset);
+        } catch (error) {
+          if (signal.aborted || error.phase === 'authorization') throw error;
+          job.message = 'media';
+          job.httpStatus = error.status;
+          continue;
+        }
+        const captions = track.captionAsset && await download.captions(track.captionAsset).catch(() => undefined);
+        if (signal.aborted) throw signal.reason;
+        job.saved = await DLookOfflineStore.save(record, track, blob, captions);
+        update();
+      }
+    } catch (error) {
+      job.message = error?.name === 'AbortError' ? 'stopped' :
+        error?.name === 'QuotaExceededError' ? 'quota' : error?.phase ?? phase;
+      job.httpStatus = error?.status;
+    } finally {
+      if (job.saved && !signal.aborted) await Promise.all([offlinePage, artwork]);
+      jobs.delete(view.workno);
+      view.result = { saved: job.saved, total: job.total, message: job.message, httpStatus: job.httpStatus };
+      if (workView?.workno === view.workno) workView.result = view.result;
+      update();
+    }
+  }
+
+  function updateWork(page, path, language) {
+    const workno = page ? path.match(/^\/work\/((?:RJ|VJ|BJ)\d{6,10})(?:\/tree\/[^/]+)?$/)?.[1] : undefined;
+    if (workno !== workView?.workno) {
+      workView?.probe.abort();
+      workView?.node.remove();
+      workView = undefined;
+      if (workno) {
+        const node = element('section', 'dlook-offline-work');
+        const status = element('p');
+        status.setAttribute('role', 'status');
+        const save = button();
+        const saveLabel = element('span');
+        save.append(DLookPlayIcons.create('offline'), saveLabel);
+        const view = { workno, node, status, save, saveLabel, cancel: button(), probe: new AbortController() };
+        view.save.onclick = () => saveWork(view);
+        view.cancel.onclick = () => jobs.get(workno)?.controller.abort();
+        node.append(view.save, view.cancel, status);
+        workView = view;
+        const locale = { ja: 'ja_JP', en: 'en_US', ko: 'ko_KR', zh: 'zh_CN' }[language] ??
+          language.replace(/-([a-z]{2})$/, (_, suffix) => '_' + suffix.toUpperCase());
+        Promise.all([
+          DLookOfflineSource.identify(workno, locale, view.probe.signal).catch(() => null),
+          DLookOfflineStore.work(workno).catch(() => null),
+        ]).then(([work, cached]) => {
+          if ((!work && !cached) || workView !== view) return;
+          view.work = work ?? cached;
+          view.result ??= cached && { saved: cached.tracks.length, total: cached.total };
+          mountWork(view);
+        }).catch(() => {});
+      }
+    }
+    if (!workView) return;
+    workView.labels = text(language);
+    workView.pane = page.pane;
+    if (workView.work) mountWork(workView);
+  }
+
+  function mountWork(view) {
+    const listen = view.pane.querySelector('[data-dd-action-name="work_detail.resume"]') ??
+      view.pane.querySelector('[data-dd-action-name="work_detail.start"]');
+    const actions = listen?.closest('[class*="_actions_"]') ??
+      view.pane.querySelector('[class*="_contentSub_"] [class*="_actions_"]');
+    if (actions) {
+      if (view.node.parentElement !== actions) actions.prepend(view.node);
+    } else if (listen) {
+      if (view.node.nextElementSibling !== listen) listen.before(view.node);
+    } else if (view.node.parentElement !== view.pane) {
+      view.pane.prepend(view.node);
+    }
+    view.node.toggleAttribute('data-listen-group', Boolean(actions));
+    paintWork(view);
+  }
+
+  function show(language) {
+    if (library?.language === language) {
+      if (library.shell.hasAttribute('data-dlook-background')) {
+        library.shell.hidden = false;
+        library.shell.removeAttribute('data-dlook-background');
+        library.refresh();
+      }
+      return library.shell;
+    }
+    dispose();
+    const labels = text(language);
+    const shell = element('div', 'dlook-offline-page');
+    const heading = element('h1');
+    const back = button();
+    back.classList.add('dlook-offline-back');
+    back.setAttribute('aria-label', labels.back);
+    back.append(DLookPlayIcons.create('back'));
+    back.hidden = true;
+    const main = element('main');
+    const list = element('div', 'dlook-offline-list');
+    const detail = element('article', 'dlook-offline-detail');
+    detail.hidden = true;
+    const notice = element('p', 'dlook-offline-notice');
+    notice.setAttribute('role', 'status');
+    let shuffle = false, repeat = 'off', order = [];
+    const player = DLookOfflinePlayer.create(language, {
+      cover: DLookOfflineStore.cover,
+      onClose: stop,
+      onSkip: direction => stepTrack(direction),
+      onEnded: () => stepTrack(1, true),
+      onQueue: () => {
+        if (!selection) return;
+        showWork(selection.work);
+        if (!isOpen() && !DLookPlaySite.navigate(href)) location.assign(href);
+      },
+      onShuffle() {
+        shuffle = !shuffle;
+        if (selection) setOrder(selection.tracks.length, selection.index);
+        return shuffle;
+      },
+      onRepeat() {
+        repeat = { off: 'all', all: 'track', track: 'off' }[repeat];
+        player.audio.loop = repeat === 'track';
+        return repeat;
+      },
+      onError() {
+        if (selection) {
+          notice.textContent = labels.playFailed;
+          player.error(labels.playFailed);
+        }
+      },
+    });
+    const { audio } = player;
+    const current = { shell, language, stop, refresh, releaseCovers, collapse: player.collapse };
+    let selection, playingUrl, opened, selectionRequest = 0, refreshRequest = 0;
+    let displayedWorks;
+    const trackButtons = new Map();
+    const coverUrls = new Map();
+
+    function releaseCovers(all = true) {
+      for (const [node, url] of coverUrls) {
+        if (!all && node.isConnected) continue;
+        URL.revokeObjectURL(url);
+        coverUrls.delete(node);
+      }
+    }
+
+    function markTrack(current) {
+      for (const controls of trackButtons.values()) {
+        for (const control of controls) {
+          if (control === current) control.setAttribute('aria-current', 'true');
+          else control.removeAttribute('aria-current');
+        }
+      }
+    }
+
+    function stop() {
+      selectionRequest += 1;
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      if (playingUrl) URL.revokeObjectURL(playingUrl);
+      playingUrl = undefined;
+      selection = undefined;
+      player.hide();
+      markTrack(null);
+    }
+
+    function setOrder(length, current) {
+      order = Array.from({ length }, (_, index) => index);
+      if (!shuffle) return;
+      order.splice(current, 1);
+      for (let index = order.length - 1; index > 0; index--) {
+        const other = Math.floor(Math.random() * (index + 1));
+        [order[index], order[other]] = [order[other], order[index]];
+      }
+      order.unshift(current);
+    }
+
+    function stepTrack(direction, ended = false) {
+      if (!selection) return;
+      const { work, tracks, index } = selection;
+      const offset = order.indexOf(index) + direction;
+      const next = repeat === 'all' ? (offset + order.length) % order.length : offset;
+      if (direction < 0 && (audio.currentTime > 5 || next < 0)) {
+        audio.currentTime = 0;
+      } else if (order[next] === index && ended) {
+        audio.currentTime = 0;
+        player.resume();
+      } else if (next >= 0 && next < order.length) {
+        play(work, tracks, order[next], false);
+      }
+    }
+
+    async function play(work, tracks, index, open = true) {
+      const id = ++selectionRequest;
+      try {
+        const track = tracks[index];
+        const [blob, captions] = await Promise.all([
+          DLookOfflineStore.track(work, track.asset),
+          DLookOfflineStore.captions(work, track.asset).catch(() => []),
+        ]);
+        if (id !== selectionRequest) return;
+        if (!blob) throw new Error('Missing offline track');
+        if (open) {
+          document.querySelector('#App [data-dd-action-name="player.minimize"]')?.click();
+          if (!closeNativeMini()) requestAnimationFrame(closeNativeMini);
+        }
+        if (playingUrl) URL.revokeObjectURL(playingUrl);
+        playingUrl = URL.createObjectURL(blob);
+        if (open || selection?.work.workno !== work.workno) setOrder(tracks.length, index);
+        selection = { work, tracks, index };
+        audio.src = playingUrl;
+        audio.setAttribute('aria-label', track.name);
+        player.show(work, track, open, captions);
+        notice.textContent = '';
+        markTrack(trackButtons.get(work.workno)?.[index]);
+        player.resume();
+      } catch (error) {
+        if (id === selectionRequest && error.name !== 'NotAllowedError') {
+          notice.textContent = labels.playFailed;
+          player.error(labels.playFailed);
+        }
+      }
+    }
+
+    function workSummary(work) {
+      const cover = element('div', 'dlook-offline-cover');
+      const fallback = DLookPlayIcons.create('playlist');
+      cover.append(fallback);
+      if (work.hasCover) {
+        DLookOfflineStore.cover(work.workno).then(data => {
+          if (!data?.bytes || !cover.isConnected) return;
+          const url = URL.createObjectURL(new Blob([data.bytes], { type: data.type }));
+          const image = element('img');
+          coverUrls.set(image, url);
+          image.alt = '';
+          image.loading = 'lazy';
+          image.src = url;
+          image.onerror = () => {
+            coverUrls.delete(image);
+            URL.revokeObjectURL(url);
+            image.remove();
+          };
+          cover.append(image);
+        }).catch(() => {});
+      }
+      const text = element('div', 'dlook-offline-card-text');
+      const title = element('strong');
+      title.textContent = work.title;
+      text.append(title);
+      if (work.creator) {
+        const creator = element('small');
+        creator.className = 'dlook-offline-creator';
+        creator.textContent = work.creator;
+        text.append(creator);
+      }
+      const metadata = element('small');
+      const bytes = work.tracks.reduce((sum, track) => sum + track.size, 0);
+      const size = bytes < 1048576 ? `${Math.ceil(bytes / 1024)} KiB` : `${(bytes / 1048576).toFixed(1)} MiB`;
+      metadata.textContent = `${labels.count(work.tracks.length, work.total)} · ${size}`;
+      text.append(metadata);
+      return [cover, text];
+    }
+
+    function closeWork() {
+      const previous = opened;
+      opened = undefined;
+      back.hidden = detail.hidden = true;
+      list.hidden = false;
+      detail.replaceChildren();
+      releaseCovers(false);
+      trackButtons.clear();
+      main.scrollTop = 0;
+      if (previous) list.querySelector(`[data-workno="${CSS.escape(previous)}"]`)?.focus();
+    }
+
+    back.onclick = closeWork;
+
+    function showWork(work) {
+      const changed = opened !== work.workno;
+      opened = work.workno;
+      back.hidden = detail.hidden = false;
+      list.hidden = true;
+      if (changed) {
+        main.scrollTop = 0;
+        back.focus();
+      }
+      const hero = element('div', 'dlook-offline-detail-hero');
+      hero.append(...workSummary(work));
+      const tracks = work.tracks.slice().sort((left, right) => left.order - right.order);
+      const tracksList = element('ol');
+      const controls = tracks.map((track, index) => {
+        const row = element('li');
+        const control = button();
+        control.textContent = track.name;
+        if (track.folder) {
+          const folder = element('small');
+          folder.textContent = track.folder;
+          control.append(folder);
+        }
+        control.onclick = () => play(work, tracks, index);
+        if (selection?.work.workno === work.workno && selection.tracks[selection.index].asset === track.asset) {
+          control.setAttribute('aria-current', 'true');
+        }
+        row.append(control);
+        tracksList.append(row);
+        return control;
+      });
+      const remove = button();
+      remove.textContent = labels.remove;
+      remove.onclick = async () => {
+        if (!confirm(labels.confirm(work.title))) return;
+        remove.disabled = true;
+        try {
+          if (selection?.work.workno === work.workno) stop();
+          await DLookOfflineStore.remove(work.workno);
+          closeWork();
+          await refresh();
+        } catch {
+          notice.textContent = labels.removeFailed;
+          remove.disabled = false;
+        }
+      };
+      trackButtons.clear();
+      trackButtons.set(work.workno, controls);
+      detail.replaceChildren(hero, tracksList, remove);
+      releaseCovers(false);
+    }
+
+    function workRow(work) {
+      const card = button();
+      card.className = 'dlook-offline-card';
+      card.dataset.workno = work.workno;
+      card.append(...workSummary(work));
+      card.onclick = () => showWork(work);
+      return card;
+    }
+
+    async function refresh() {
+      const id = ++refreshRequest;
+      try {
+        const rows = await DLookOfflineStore.list();
+        if (library !== current || id !== refreshRequest) return;
+        const works = rows.filter(work => work.tracks.length).sort((left, right) => right.updated - left.updated);
+        const fingerprint = JSON.stringify(works.map(work => [work.workno, work.updated, work.hasCover, work.tracks.length]));
+        if (displayedWorks === fingerprint) return;
+        displayedWorks = fingerprint;
+        notice.textContent = works.length ? '' : labels.empty;
+        releaseCovers();
+        list.replaceChildren(...works.map(workRow));
+        if (opened) {
+          const selected = works.find(work => work.workno === opened);
+          if (selected) showWork(selected);
+          else closeWork();
+        }
+      } catch {
+        if (library === current && id === refreshRequest) notice.textContent = labels.openFailed;
+      }
+    }
+
+    heading.textContent = labels.title;
+    const headingGroup = element('div', 'dlook-offline-heading');
+    headingGroup.append(back, heading);
+    main.append(headingGroup, notice, list, detail);
+    shell.append(main, ...player.elements);
+    document.body.append(shell);
+    library = current;
+    window.addEventListener('focus', refresh);
+    refresh();
+    return shell;
+  }
+
+  function closeNativeMini() {
+    const close = document.querySelector('#App [data-dd-action-name="player.mini_close"]');
+    close?.click();
+    return Boolean(close);
+  }
+
+  function hide(showPlayer, nativeContainer) {
+    if (!library) return;
+    if (!library.shell.hasAttribute('data-dlook-background')) {
+      library.collapse();
+      library.shell.setAttribute('data-dlook-background', '');
+    }
+    library.shell.hidden = !showPlayer;
+    const nativePlaying = nativeContainer?.querySelector('[class*="_audioPlayer_"], [data-dd-action-name="player.mini_open"]');
+    if ((!showPlayer || nativePlaying) && library.shell.querySelector('audio[src]')) library.stop();
+  }
+
+  function dispose() {
+    if (!library) return;
+    window.removeEventListener('focus', library.refresh);
+    library.stop();
+    library.releaseCovers();
+    library.shell.remove();
+    library = undefined;
+  }
+
+  return { href, isOpen, label: language => text(language).title, updateWork, show, hide };
+})();
+
+(() => {
+  const tabs = { library: '/', mylist: '/mylist', playlist: '/playlist', offline: DLookOffline.href, settings: '/settings' };
+  const actions = {
+    sync: null,
+    dlsite: 'https://www.dlsite.com/home-touch/mypage',
+    help: '/help',
+    notifications: '/notifications',
+    logout: null,
+  };
+  const labels = {
+    'zh-cn': {
+      navigation: 'DLsite Play 导航', library: '媒体库', mylist: '我的列表', playlist: '播放列表', settings: '设置',
+      sync: '同步', dlsite: '返回DL', help: '帮助', notifications: '通知', logout: '登出',
+      unread: '有未读通知', syncRequested: '已请求同步媒体库。', failed: '操作未能启动，请重试。',
+    },
+    'zh-tw': {
+      navigation: 'DLsite Play 導覽', library: '媒體庫', mylist: '我的清單', playlist: '播放清單', settings: '設定',
+      sync: '同步', dlsite: '返回DL', help: '說明', notifications: '通知', logout: '登出',
+      unread: '有未讀通知', syncRequested: '已要求同步媒體庫。', failed: '無法啟動操作，請再試一次。',
+    },
+    ja: {
+      navigation: 'DLsite Play ナビゲーション', library: 'ライブラリ', mylist: 'マイリスト', playlist: 'プレイリスト', settings: '設定',
+      sync: '同期', dlsite: 'DLsiteへ', help: 'ヘルプ', notifications: 'お知らせ', logout: 'ログアウト',
+      unread: '未読のお知らせがあります', syncRequested: '同期をリクエストしました。',
+      failed: '操作を開始できませんでした。もう一度お試しください。',
+    },
+    en: {
+      navigation: 'DLsite Play navigation', library: 'Library', mylist: 'My lists', playlist: 'Playlists', settings: 'Settings',
+      sync: 'Sync', dlsite: 'DLsite', help: 'Help', notifications: 'Notices', logout: 'Log out',
+      unread: 'Unread notifications', syncRequested: 'Library sync requested.', failed: 'Could not start this action. Try again.',
+    },
+    ko: {
+      navigation: 'DLsite Play 탐색', library: '라이브러리', mylist: '내 목록', playlist: '재생 목록', settings: '설정',
+      sync: '동기화', dlsite: 'DLsite로', help: '도움말', notifications: '알림', logout: '로그아웃',
+      unread: '읽지 않은 알림', syncRequested: '라이브러리 동기화를 요청했습니다.',
+      failed: '작업을 시작할 수 없습니다. 다시 시도해 주세요.',
+    },
+  };
+  const nav = document.createElement('nav');
+  nav.className = 'dlook-play-nav';
+  nav.hidden = true;
+  const tabList = document.createElement('ul');
+  const indicator = document.createElement('li');
+  indicator.className = 'dlook-play-indicator';
+  indicator.setAttribute('aria-hidden', 'true');
+  tabList.append(indicator);
+  nav.append(tabList);
+  const slideDuration = 240;
+  nav.style.setProperty('--dlook-tab-slide', `${slideDuration}ms`);
+
+  const settings = document.createElement('section');
+  settings.className = 'dlook-play-settings';
+  const heading = document.createElement('h2');
+  heading.textContent = 'DLsite Play';
+  const actionList = document.createElement('ul');
+  const status = document.createElement('p');
+  status.setAttribute('role', 'status');
+  settings.append(heading, actionList, status);
+
+  let copy, locale, activeLayout, scheduled, handling, pendingTab;
+
+  function moveIndicator(name) {
+    const index = tabItems.findIndex(item => item.name === name);
+    if (index >= 0 && indicator.dataset.tab !== name) {
+      indicator.style.transform = `translateX(${index * 100}%)`;
+      indicator.dataset.tab = name;
+    }
+  }
+
+  function addItems(list, items, isTab) {
+    return Object.entries(items).map(([name, href]) => {
+      const item = document.createElement('li');
+      const control = document.createElement(href ? 'a' : 'button');
+      const label = document.createElement('span');
+      if (href) control.href = href;
+      else control.type = 'button';
+      control.append(DLookPlayIcons.create(name), label);
+      item.append(control);
+      list.append(item);
+
+      control.addEventListener('click', async event => {
+        if (event.defaultPrevented || event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        if (handling) return;
+        if (isTab && control.getAttribute('aria-current') === 'page' && control.href === location.href) return;
+        handling = true;
+        const from = location.href;
+        const started = performance.now();
+        if (isTab) {
+          pendingTab = { name, from };
+          moveIndicator(name);
+        }
+        try {
+          if (href && DLookPlaySite.navigate(href)) return;
+          const activated = name !== 'offline' && !DLookOffline.isOpen() && await DLookPlaySite.activate(name);
+          if (!activated && href) {
+            // Keep the slide visible before a route that requires a new document.
+            if (isTab && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              const remaining = slideDuration - (performance.now() - started);
+              if (remaining > 0) await new Promise(resolve => setTimeout(resolve, remaining));
+            }
+            if (location.href === from) location.assign(href);
+          }
+          else if (!href) status.textContent = activated ? (name === 'sync' ? copy.syncRequested : '') : copy.failed;
+        } finally {
+          handling = false;
+        }
+      });
+      return { name, control, label };
+    });
+  }
+
+  const tabItems = addItems(tabList, tabs, true);
+  const actionItems = addItems(actionList, actions);
+
+  function render() {
+    scheduled = false;
+    const path = location.pathname.replace(/\/+$/, '') || '/';
+    const offline = DLookOffline.isOpen();
+    // Leave standalone readers, account screens and admin mode in their native layouts.
+    const section = path.split('/')[1];
+    const tab = offline ? 'offline' : ['', 'library', 'series', 'work'].includes(section) ? 'library' :
+      ['help', 'notifications'].includes(section) ? 'settings' : section;
+    const supported = Object.hasOwn(tabs, tab) && !/^\/work\/[^/]+\/(?:view|viewer)(?:\/|$)/.test(path);
+    const page = supported && !offline ? DLookPlaySite.layout() : null;
+    const showNav = Boolean(page || offline || (supported && nav.isConnected && !nav.hidden));
+    if (activeLayout !== page?.container) {
+      activeLayout?.removeAttribute('data-dlook-play');
+      activeLayout = page?.container;
+    }
+    document.documentElement.toggleAttribute('data-dlook-play', showNav);
+    document.documentElement.toggleAttribute('data-dlook-offline', offline);
+    if (!offline) DLookOffline.hide(showNav, page?.container);
+    const language = document.documentElement.lang.toLowerCase().replaceAll('_', '-');
+    DLookPlayLibrary.update(page, path, language);
+    DLookPlayPlayer.update(offline ? null : page?.container);
+    DLookOffline.updateWork(page, path, language);
+    DLookPlayCollections.update(page, path, language);
+    nav.hidden = !showNav;
+    if (!showNav) {
+      pendingTab = undefined;
+      settings.remove();
+      return;
+    }
+    if (nav.parentElement !== document.body) document.body.append(nav);
+
+    if (language !== locale) {
+      locale = language;
+      copy = labels[language] ?? labels[language.split('-')[0]] ?? labels.en;
+      nav.setAttribute('aria-label', copy.navigation);
+      for (const { name, label } of [...tabItems, ...actionItems]) {
+        label.textContent = name === 'offline' ? DLookOffline.label(language) : copy[name];
+      }
+    }
+    const unread = page && DLookPlaySite.hasUnreadNotifications(page);
+    if (pendingTab && pendingTab.from !== location.href) pendingTab = undefined;
+    moveIndicator(pendingTab?.name ?? tab);
+    for (const { name, control } of tabItems) {
+      if (name === tab) control.setAttribute('aria-current', 'page');
+      else control.removeAttribute('aria-current');
+      if (name === 'settings') {
+        control.toggleAttribute('data-unread', unread);
+        const label = `${copy.settings}, ${copy.unread}`;
+        if (unread && control.getAttribute('aria-label') !== label) control.setAttribute('aria-label', label);
+        if (!unread) control.removeAttribute('aria-label');
+      }
+    }
+    if (offline) {
+      settings.remove();
+      DLookOffline.show(language);
+      return;
+    }
+    if (!page) {
+      settings.remove();
+      return;
+    }
+    page.container.setAttribute('data-dlook-play', '');
+    if (path === '/settings') {
+      if (settings.parentElement !== page.pane) {
+        status.textContent = '';
+        page.pane.prepend(settings);
+      }
+    } else settings.remove();
+  }
+
+  function schedule() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(render);
+  }
+
+  new MutationObserver(schedule).observe(document.documentElement, {
+    childList: true, subtree: true, attributes: true, attributeFilter: ['lang', 'data-dd-action-name', 'aria-label', 'data-active'],
+  });
+  window.addEventListener('popstate', schedule);
+  window.addEventListener('hashchange', schedule);
+  render();
+})();
+  return;
+}
+
 const dlookCardCss = ".dlook-price-low {\n  --dlook-band: #2147a1;\n  --dlook-muted: #415570;\n  --dlook-number: #b6dfff;\n  container: dlook-card / inline-size;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: stretch;\n  width: 100%;\n  min-width: 0;\n  box-sizing: border-box;\n  margin: 4px 0;\n  padding: 0;\n  border: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  background: var(--dlook-band);\n  color: white;\n  font: 500 13px/1.25 system-ui, sans-serif;\n  text-align: start;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-price-low *, .dlook-price-low *::after { box-sizing: border-box; }\n.dlook-price-low:is([data-state=\"low\"], [data-state=\"new-low\"]) {\n  --dlook-band: #775009;\n  --dlook-number: #ffe197;\n  --dlook-tag: #ffce61;\n}\n.dlook-price-low[data-state=\"new-low\"] { --dlook-band: #241c27; }\n.dlook-details {\n  display: flex;\n  flex: 1 1 100%;\n  flex-flow: row wrap;\n  align-items: center;\n  gap: 3px 12px;\n  min-width: 0;\n  padding: 4px 6px;\n}\n.dlook-low-labels, .dlook-low-amount {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 2px 4px;\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n.dlook-low-values {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  gap: 2px;\n  min-width: 0;\n  background: var(--dlook-band);\n}\n.dlook-recorded { color: #e1ecfa; }\n.dlook-low-amount { align-items: baseline; }\n.dlook-price-low .dlook-low-amount > strong {\n  color: var(--dlook-number);\n  font: 750 21px/1.12 system-ui, sans-serif;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-low-values .dlook-unit, .dlook-price-low .dlook-off-value { font: 600 10px/1 system-ui, sans-serif; }\n.dlook-low-amount :is(.dlook-unit, .dlook-off-value) { color: var(--dlook-number); }\n.dlook-price-low .dlook-low-tag {\n  padding: 2px 4px;\n  border-radius: 4px;\n  font: 700 12px/1.2 system-ui, sans-serif;\n  white-space: nowrap;\n}\n.dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }\n.dlook-price-low[data-state=\"new-low\"] .dlook-low-tag { color: #000; }\n.dlook-off-value { white-space: nowrap; }\n.dlook-price-low :is(img, .dlook-logo) {\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  background: transparent;\n  object-fit: contain;\n}\n.dlook-price-low a.dlook-history {\n  flex: 1 1 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  min-width: 0;\n  min-height: 27px;\n  padding: 3px 7px;\n  background: #295bc8;\n  color: white;\n  font: 600 12px/1.25 system-ui, sans-serif;\n  text-align: center;\n  text-decoration: none;\n}\n@container dlook-card (min-width: 240px) {\n  .dlook-details { flex: 1 1 0; }\n  .dlook-price-low a.dlook-history {\n    flex: 0 0 auto;\n    flex-direction: column;\n    gap: 2px;\n    padding-inline: 10px;\n  }\n}\n.dlook-price-low a.dlook-history:hover { background: #2147a1; text-decoration: underline; }\n.dlook-price-low :is(a, button):focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }\n.dlook-price-low:is([data-state=\"empty\"], [data-state=\"loading\"], [data-state=\"error\"]) {\n  align-items: center;\n  gap: 3px 7px;\n  padding: 4px 8px;\n  background: var(--dlook-muted);\n}\n.dlook-price-low[data-state=\"error\"] { background: #773747; }\n.dlook-price-low .dlook-note { flex: 1 1 6ch; font-size: 13px; overflow-wrap: anywhere; }\n.dlook-price-low > button {\n  min-height: 24px;\n  padding: 2px 6px;\n  border: 1px solid #ffffff80;\n  border-radius: 4px;\n  background: #994659;\n  color: white;\n  font: 600 13px/1.2 system-ui, sans-serif;\n  cursor: pointer;\n}\n.dlook-price-low:is([data-layout=\"touch\"], [data-layout=\"wishlist-touch\"]) > button { min-height: 44px; }\n.dlook-price-low[data-layout=\"touch\"] .dlook-low-amount > strong { font-size: 22px; }\n.dlook-price-low[data-layout=\"wishlist-touch\"] .dlook-low-amount > strong { font-size: 19px; }";
-const dlookLayoutCss = "/* The native touch price wrapper precedes the official campaign and genre tags. */\n:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }\n:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {\n  flex: 0 0 100%;\n  grid-column: 1 / -1;\n  margin: 4px 0 0;\n}\n.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }\n\n.dlook-wishlist-card {\n  /* In the wishlist the native details use a column flexbox. */\n  flex: none;\n  grid-column: 1 / -1;\n  box-sizing: border-box;\n  width: 100%;\n  min-width: 0;\n  margin: 3px 0;\n  list-style: none;\n  white-space: normal;\n}\n.n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }\n[data-dlook-wishlist-filtered] { display: none !important; }\n.dlook-wishlist-filter {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 12px;\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 6px 0;\n  padding: 3px 9px 5px;\n  border: 1px solid #b3c4e3;\n  border-radius: 5px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n.dlook-wishlist-filter legend { padding: 0 3px; font-weight: 700; }\n.dlook-wishlist-filter label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  min-height: 27px;\n  cursor: pointer;\n}\n.dlook-wishlist-filter input { accent-color: #2147a1; margin: 0; }\n.dlook-wishlist-filter-status:not(:empty) { margin-inline-start: auto; }\n#filter_drawer .dlook-wishlist-filter { margin: 8px 12px; }\n#filter_drawer .dlook-wishlist-filter label { min-height: 44px; }\n.dlook-wishlist-filter-summary:not(:empty) {\n  display: block;\n  padding: 5px 8px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n@media (pointer: coarse) {\n  .dlook-wishlist-filter label { min-height: 36px; }\n}\n\n/* Keep both price rows together, then show DLook, then the site's own campaign. */\n.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }\n.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  align-items: start;\n  gap: 3px 8px;\n}\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }\n.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }\n\n/* On desktop the campaign lives inside the title. Grid keeps all native nodes\n   in place for DLsite's cart updates, while sharing the wide details column. */\n.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr) auto;\n  gap: 0 12px;\n  align-items: start;\n  & > .work_thumb { grid-area: 1 / 1 / span 12; }\n  & > .work_setting { grid-area: 1 / 3 / span 12; }\n  & > .work_content, & > .work_content > .work_name { display: contents; }\n  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {\n    grid-column: 2;\n    min-width: 0;\n    order: 4;\n  }\n  & .work_name > a { order: 0; }\n  & > .work_content > .maker_name { order: 1; }\n  & > div.work_price {\n    order: 2;\n    display: flex;\n    flex-flow: row wrap;\n    align-items: baseline;\n    justify-content: flex-start;\n    gap: 1px 5px;\n    width: auto;\n    padding: 0;\n    text-align: start;\n  }\n  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }\n  & .work_name > .icon_wrap { order: 3; }\n}\n\n.dlook-cart-campaigns {\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 8px 0;\n  padding: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  color: #fff;\n  background: #2147a1;\n  font: 12px/1.45 system-ui, sans-serif;\n  text-align: start;\n  white-space: normal;\n  overflow-wrap: anywhere;\n}\n.dlook-cart-campaign-header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 5px 8px;\n  background: #295bc8;\n}\n.dlook-cart-campaign-header > :is(img, .dlook-logo) {\n  flex: 0 0 44px;\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  object-fit: contain;\n}\n.dlook-cart-campaign-header > h2 { margin: 0; color: inherit; font: inherit; font-weight: 700; }\n.dlook-cart-campaigns > ul { margin: 0; padding: 7px 10px; list-style: none; }\n.dlook-cart-campaigns li + li {\n  margin-top: 5px;\n  padding-top: 5px;\n  border-top: 1px solid #b6dfff45;\n}\n.dlook-cart-campaign-count { display: block; color: #b6dfff; }\n.cart_bill_content > .dlook-cart-campaigns {\n  width: 100%;\n  font-size: 13px;\n}\n.cart_bill_content > .dlook-cart-campaigns > ul { padding: 8px 12px; }";
+const dlookLayoutCss = "/* The native touch price wrapper precedes the official campaign and genre tags. */\n:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }\n:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {\n  flex: 0 0 100%;\n  grid-column: 1 / -1;\n  margin: 4px 0 0;\n}\n.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }\n\n.dlook-wishlist-card {\n  /* In the wishlist the native details use a column flexbox. */\n  flex: none;\n  grid-column: 1 / -1;\n  box-sizing: border-box;\n  width: 100%;\n  min-width: 0;\n  margin: 3px 0;\n  list-style: none;\n  white-space: normal;\n}\n.n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }\n\na.dlook-offer-link {\n  box-sizing: border-box;\n  display: flex;\n  min-height: 42px;\n  width: 100%;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  padding: 4px 8px;\n  border-radius: 6px;\n  background: #2147a1;\n  color: #fff !important;\n  font: 600 14px/1.2 system-ui, sans-serif;\n  text-decoration: none;\n}\na.dlook-offer-link:hover { background: #295bc8; text-decoration: none; }\na.dlook-offer-link:focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }\n.dlook-offer-link > span { color: #fff !important; }\n.dlook-offer-link :is(img, svg) { display: block; flex: 0 0 45px; width: 45px; height: 15px; }\na.dlook-cart-offer {\n  min-height: 64px;\n  gap: 12px;\n  margin-block-end: 8px;\n  font-size: 20px;\n  font-weight: 700;\n}\n.dlook-cart-offer :is(img, svg) { flex-basis: 56px; width: 56px; height: 19px; }\n\n/* Keep the native purchase controls inside their Vue-managed DOM. */\n:is(.p-purchaseButtonsPc, .p-purchaseBox__links) > .dlook-product-offer { order: -1; }\n:is(.p-purchaseButtonsPc, .p-purchaseBox__links):has(> .button_point):has(> .dlook-product-offer) {\n  reading-flow: flex-visual;\n  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(> .btn_buy) { display: contents; }\n  & > .btn_buy,\n  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase) > .btn_buy { order: 1; }\n  & > .button_point ~ :not(.dlook-product-offer) { order: 2; }\n}\n[data-dlook-wishlist-filtered] { display: none !important; }\n.dlook-wishlist-filter {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 12px;\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 6px 0;\n  padding: 3px 9px 5px;\n  border: 1px solid #b3c4e3;\n  border-radius: 5px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n.dlook-wishlist-filter legend { padding: 0 3px; font-weight: 700; }\n.dlook-wishlist-filter label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  min-height: 27px;\n  cursor: pointer;\n}\n.dlook-wishlist-filter input { accent-color: #2147a1; margin: 0; }\n.dlook-wishlist-filter-status:not(:empty) { margin-inline-start: auto; }\n#filter_drawer .dlook-wishlist-filter { margin: 8px 12px; }\n#filter_drawer .dlook-wishlist-filter label { min-height: 44px; }\n.dlook-wishlist-filter-summary:not(:empty) {\n  display: block;\n  padding: 5px 8px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n@media (pointer: coarse) {\n  .dlook-wishlist-filter label { min-height: 36px; }\n}\n\n/* Keep both price rows together, then show DLook, then the site's own campaign. */\n.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }\n.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  align-items: start;\n  gap: 3px 8px;\n}\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }\n.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }\n\n/* On desktop the campaign lives inside the title. Grid keeps all native nodes\n   in place for DLsite's cart updates, while sharing the wide details column. */\n.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr) auto;\n  gap: 0 12px;\n  align-items: start;\n  & > .work_thumb { grid-area: 1 / 1 / span 12; }\n  & > .work_setting { grid-area: 1 / 3 / span 12; }\n  & > .work_content, & > .work_content > .work_name { display: contents; }\n  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {\n    grid-column: 2;\n    min-width: 0;\n    order: 4;\n  }\n  & .work_name > a { order: 0; }\n  & > .work_content > .maker_name { order: 1; }\n  & > div.work_price {\n    order: 2;\n    display: flex;\n    flex-flow: row wrap;\n    align-items: baseline;\n    justify-content: flex-start;\n    gap: 1px 5px;\n    width: auto;\n    padding: 0;\n    text-align: start;\n  }\n  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }\n  & .work_name > .icon_wrap { order: 3; }\n}\n\n.dlook-cart-campaigns {\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 8px 0;\n  padding: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  color: #fff;\n  background: #2147a1;\n  font: 12px/1.45 system-ui, sans-serif;\n  text-align: start;\n  white-space: normal;\n  overflow-wrap: anywhere;\n}\n.dlook-cart-campaign-header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 5px 8px;\n  background: #295bc8;\n}\n.dlook-cart-campaign-header > :is(img, .dlook-logo) {\n  flex: 0 0 44px;\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  object-fit: contain;\n}\n.dlook-cart-campaign-header > h2 { margin: 0; color: inherit; font: inherit; font-weight: 700; }\n.dlook-cart-campaigns > ul { margin: 0; padding: 7px 10px; list-style: none; }\n.dlook-cart-campaigns li + li {\n  margin-top: 5px;\n  padding-top: 5px;\n  border-top: 1px solid #b6dfff45;\n}\n.dlook-cart-campaign-count { display: block; color: #b6dfff; }\n.cart_bill_content > .dlook-cart-campaigns {\n  width: 100%;\n  font-size: 13px;\n}\n.cart_bill_content > .dlook-cart-campaigns > ul { padding: 8px 12px; }";
 const dlookLogoMarkup = "<svg id=\"on-dark\" xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"380\" viewBox=\"0 0 120.109375 38\"><path fill=\"#bbdfff\" d=\"M27.7021 20.3623Q27.7021 24.4072 26.0044 27.5151Q24.3066 30.623 21.1523 32.3115Q17.998 34 13.8789 34H2.6162V7.3926H13.6377Q27.7021 7.3926 27.7021 20.3623ZM19.1855 20.4365Q19.1855 18.4883 18.397 16.9297Q17.6084 15.3711 16.1426 14.5176Q14.6768 13.6641 12.6914 13.6641H10.6318V27.7285H12.877Q15.7529 27.7285 17.4692 25.7524Q19.1855 23.7764 19.1855 20.4365Z\"/><path fill=\"#bbdfff\" d=\"M29.6475 34V7.3926H37.6631V27.7285H46.8291V34Z\"/><path fill=\"#ffd25d\" d=\"M68.8232 24.166Q68.8232 28.9717 65.9194 31.7178Q63.0156 34.4639 57.8018 34.4639Q52.625 34.4639 49.7397 31.7827Q46.8545 29.1016 46.8545 24.3887Q46.8545 21.3643 48.209 19.1377Q49.5635 16.9111 52.0684 15.7236Q54.5732 14.5361 57.8389 14.5361Q61.2158 14.5361 63.6929 15.7793Q66.1699 17.0225 67.4966 19.2305Q68.8232 21.4385 68.8232 24.166ZM60.8076 24.2031Q60.8076 20.3252 57.8389 20.3252Q54.8701 20.3252 54.8701 24.3887Q54.8701 28.6748 57.876 28.6748Q60.8076 28.6748 60.8076 24.2031Z\"/><path fill=\"#ffd25d\" d=\"M91.1045 24.166Q91.1045 28.9717 88.2007 31.7178Q85.2969 34.4639 80.083 34.4639Q74.9062 34.4639 72.021 31.7827Q69.1357 29.1016 69.1357 24.3887Q69.1357 21.3643 70.4902 19.1377Q71.8447 16.9111 74.3496 15.7236Q76.8545 14.5361 80.1201 14.5361Q83.4971 14.5361 85.9741 15.7793Q88.4512 17.0225 89.7778 19.2305Q91.1045 21.4385 91.1045 24.166ZM83.0889 24.2031Q83.0889 20.3252 80.1201 20.3252Q77.1514 20.3252 77.1514 24.3887Q77.1514 28.6748 80.1572 28.6748Q83.0889 28.6748 83.0889 24.2031Z\"/><path fill=\"#bbdfff\" d=\"M104.4766 34 100.2461 24.2402H100.1719V34H92.2676V5.8711H100.1719V23.9248H100.2461L104.0869 15H112.9932L107.8535 23.7021L113.29 34Z\"/><circle fill=\"#bbdfff\" cx=\"117.609375\" cy=\"30.5\" r=\"2.5\"/></svg>";
 
 const DLookLanguage = (() => {
@@ -120,6 +2225,7 @@ const DLookLanguage = (() => {
       recorded: '记录低价', newTag: '新史低',
       noDiscount: '暂无折扣史低记录', free: '当前免费', history: '查看价格走势',
       cartCampaigns: '活动提示', cartCampaignWorks: count => `${count} 件作品适用`,
+      buyWithOffer: '优惠购买', viewOffers: '查看优惠',
     },
     en: {
       language: 'Display language', auto: 'Match DLsite', low: 'Found for you', tag: 'At record low', loading: 'Loading…',
@@ -128,6 +2234,7 @@ const DLookLanguage = (() => {
       recorded: 'Recorded low', newTag: 'New low',
       noDiscount: 'No discount low on record', free: 'Currently free', history: 'View price history',
       cartCampaigns: 'Bundle offers', cartCampaignWorks: count => `${count} eligible ${count === 1 ? 'item' : 'items'}`,
+      buyWithOffer: 'Shop offers', viewOffers: 'View offers',
     },
     ja: {
       language: '表示言語', auto: 'DLsite に合わせる', low: 'お調べした価格', tag: '最安', loading: '確認中…',
@@ -136,6 +2243,7 @@ const DLookLanguage = (() => {
       recorded: '記録最安値', newTag: '最安値更新',
       noDiscount: 'セール最安値の記録なし', free: '現在無料', history: '価格履歴を見る',
       cartCampaigns: 'キャンペーン情報', cartCampaignWorks: count => `対象作品 ${count}点`,
+      buyWithOffer: 'お得に購入', viewOffers: '特典を見る',
     },
     ko: {
       language: '표시 언어', auto: 'DLsite 언어 따르기', low: '확인한 가격', tag: '최저가', loading: '조회 중…',
@@ -144,6 +2252,7 @@ const DLookLanguage = (() => {
       recorded: '기록된 최저가', newTag: '최저가 갱신',
       noDiscount: '할인 최저가 기록 없음', free: '현재 무료', history: '가격 기록 보기',
       cartCampaigns: '캠페인 안내', cartCampaignWorks: count => `대상 작품 ${count}개`,
+      buyWithOffer: '할인 구매', viewOffers: '혜택 보기',
     },
     th: {
       language: 'ภาษาที่แสดง', auto: 'ตามภาษา DLsite', low: 'ราคาที่ค้นพบ', tag: 'ต่ำสุด', loading: 'กำลังค้นหา…',
@@ -152,6 +2261,7 @@ const DLookLanguage = (() => {
       recorded: 'ราคาต่ำสุดที่บันทึกไว้', newTag: 'ต่ำสุดใหม่',
       noDiscount: 'ไม่มีบันทึกราคาต่ำสุดช่วงลดราคา', free: 'ฟรีในขณะนี้', history: 'ดูประวัติราคา',
       cartCampaigns: 'โปรโมชันซื้อชุด', cartCampaignWorks: count => `ใช้ได้กับ ${count} รายการ`,
+      buyWithOffer: 'ซื้อในราคาโปรโมชัน', viewOffers: 'ดูโปรโมชัน',
     },
   };
   function siteLocale() {
@@ -689,6 +2799,53 @@ const DLookCartCampaigns = (() => {
   return { create, summarySelector };
 })();
 
+const DLookPurchaseOffers = (() => {
+  const affiliateUrl = 'https://dlaf.jp/home/dlaf/=/aid/DL00k/url/https%3A%2F%2Fwww.dlsite.com%2Fhome%2Fcart%3Futm_medium%3Daffiliate%26utm_campaign%3Dbnlink%26utm_content%3Dtext';
+  const checkout = '.payment_confirm_box .payment_button_box:has(> :is(button, input[type="submit"], a.payment_confirm)), .cart_bill_content .btn_01:has(> [type="submit"][name="credit_x"])';
+  const productGroups = '.p-purchaseButtonsPc, .p-purchaseBox__links';
+  const purchaseActions = '.btn_buy, .btn_cart';
+  const visible = node => node.getClientRects().length > 0;
+
+  function productGroup() {
+    for (const group of document.querySelectorAll(productGroups)) {
+      if (Array.from(group.querySelectorAll(purchaseActions)).some(visible)) return group;
+    }
+  }
+
+  function create(cartPage) {
+    const link = document.createElement('a');
+    link.className = 'dlook-offer-link ' + (cartPage ? 'dlook-cart-offer' : 'dlook-product-offer');
+    link.href = affiliateUrl;
+    link.rel = 'sponsored noreferrer';
+    const logo = DLookPlatform.createLogo();
+    const caption = document.createElement('span');
+    link.append(logo, caption);
+
+    return {
+      update(language, copy) {
+        const anchor = cartPage ? Array.from(document.querySelectorAll(checkout)).find(visible) : productGroup();
+        if (!anchor) {
+          link.remove();
+          return;
+        }
+        if (link.lang !== language) {
+          link.lang = language;
+          caption.textContent = cartPage ? copy.viewOffers : copy.buyWithOffer;
+        }
+        if (cartPage) {
+          if (anchor.previousElementSibling !== link) anchor.before(link);
+        } else if (anchor.lastElementChild !== link) {
+          // An extra node before the native controls can be matched to a
+          // purchase button during hydration. Append and use CSS to move it.
+          anchor.append(link);
+        }
+      },
+    };
+  }
+
+  return { create };
+})();
+
 (() => {
   const productPattern = /\/work\/(?:[^/?#]+\/)*product_id\/((?:RJ|BJ|VJ)\d{6,10})(?=\.html(?:\/|$)|\/|$)/i;
   const workNumber = /^(?:RJ|BJ|VJ)\d{6,10}$/i;
@@ -716,6 +2873,7 @@ const DLookCartCampaigns = (() => {
   const cartCampaigns = cartPage ? DLookCartCampaigns.create({
     cartRows, cartItemId, lookupProductInfo, createLogo: DLookPlatform.createLogo, schedule
   }) : null;
+  const purchaseOffers = wishlistPage ? null : DLookPurchaseOffers.create(cartPage);
   const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart, ' + DLookCartCampaigns.summarySelector
     : wishlistPage ? '._wishlist_work_list, .one_column_work_list' + (touchPage ? ', .n_work_list_item, #filter_drawer' : '')
     : '.c-purchaseSide__main, .c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
@@ -995,6 +3153,7 @@ const DLookCartCampaigns = (() => {
     }
     wishlistFilter?.update(language, copy, mounted, wishlistQuotes);
     cartCampaigns?.update(language, copy);
+    purchaseOffers?.update(language, copy);
     for (let start = 0; start < needed.length; start += 50) void lookup(needed.slice(start, start + 50));
     for (let start = 0; start < missingQuotes.length; start += 50) void lookupWishlistQuotes(missingQuotes.slice(start, start + 50));
   }
@@ -1011,14 +3170,15 @@ const DLookCartCampaigns = (() => {
   }
   function affectsPrice(record) {
     const element = record.target.nodeType === Node.ELEMENT_NODE ? record.target : record.target.parentElement;
-    if (element?.closest('.dlook-price-low, .dlook-wishlist-filter, .dlook-wishlist-filter-status, .dlook-cart-campaigns')) return false;
+    if (element?.closest('.dlook-price-low, .dlook-wishlist-filter, .dlook-wishlist-filter-status, .dlook-cart-campaigns, .dlook-offer-link')) return false;
     const inside = element?.closest(priceScope);
     if (record.type === 'characterData') return Boolean(inside);
     // A change on an ancestor can hide a price or turn a cart into a different list.
     if (record.type === 'attributes') return inside || element.querySelector(priceScope + ', .dlook-price-low');
-    if (Array.from(record.removedNodes).some(node => node.matches?.('.dlook-price-low, .dlook-cart-campaigns'))) return true;
+    const injected = '.dlook-price-low, .dlook-cart-campaigns, .dlook-offer-link';
+    if (Array.from(record.removedNodes).some(node => node.matches?.(injected))) return true;
     if (inside) return record.removedNodes.length ||
-      Array.from(record.addedNodes).some(node => !node.matches?.('.dlook-price-low, .dlook-cart-campaigns'));
+      Array.from(record.addedNodes).some(node => !node.matches?.(injected));
     return [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === Node.ELEMENT_NODE &&
       (node.matches(priceScope) || node.querySelector(priceScope)));
   }

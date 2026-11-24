@@ -1,0 +1,339 @@
+html[data-dlook-offline] #App {
+  visibility: hidden;
+}
+
+.dlook-offline-page {
+  --offline-surface: #f3f6fc;
+  --offline-card: #fff;
+  --offline-text: #182e53;
+  --offline-muted: #415570;
+  --offline-border: #dce5f4;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: var(--offline-surface);
+  color: var(--offline-text);
+  font: 500 14px/1.5 system-ui, sans-serif;
+}
+
+.dlook-offline-page[hidden],
+.dlook-offline-page[data-dlook-background] > main { display: none; }
+
+.dlook-offline-page[data-dlook-background] {
+  background: transparent;
+  pointer-events: none;
+}
+
+.dlook-offline-page[data-dlook-background] > :is(.dlook-offline-player, .dlook-offline-mini) { pointer-events: auto; }
+
+body[data-theme="dark"] .dlook-offline-page {
+  --offline-surface: #151e2e;
+  --offline-card: #202d43;
+  --offline-text: #e1ecfa;
+  --offline-muted: #b6c8df;
+  --offline-border: #384d6b;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not([data-theme="light"]) .dlook-offline-page {
+    --offline-surface: #151e2e;
+    --offline-card: #202d43;
+    --offline-text: #e1ecfa;
+    --offline-muted: #b6c8df;
+    --offline-border: #384d6b;
+  }
+}
+
+.dlook-offline-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 840px);
+  margin: 0 auto 16px;
+}
+
+.dlook-offline-page h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.dlook-offline-heading:has(.dlook-offline-back[hidden]) { margin-bottom: 0; }
+
+.dlook-offline-page > main {
+  flex: 1;
+  overflow: auto;
+  box-sizing: border-box;
+  width: min(100%, 872px);
+  margin-inline: auto;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px var(--dlook-play-dock);
+}
+
+.dlook-offline-page:has(> .dlook-offline-mini:not([hidden])) > main {
+  padding-bottom: calc(var(--dlook-play-dock) + 60px);
+}
+
+.dlook-offline-notice {
+  margin: 0 0 12px;
+  color: var(--offline-muted);
+}
+
+.dlook-offline-notice:empty,
+.dlook-offline-page [hidden],
+.dlook-offline-work [hidden] {
+  display: none;
+}
+
+.dlook-offline-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--dlook-collection-gap);
+  width: min(100%, var(--dlook-collection-width));
+  margin-inline: auto;
+}
+
+.dlook-offline-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid var(--offline-border);
+  border-radius: 15px;
+  background: var(--offline-card);
+  color: var(--offline-text);
+  text-align: start;
+  cursor: pointer;
+}
+
+.dlook-offline-cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #172c53;
+  color: var(--dlook-play-accent);
+}
+
+.dlook-offline-cover svg {
+  width: 36px;
+  height: 36px;
+}
+
+.dlook-offline-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dlook-offline-card-text {
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px 13px;
+  min-width: 0;
+}
+
+.dlook-offline-card-text strong {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+  font: 700 15px/1.35 system-ui, sans-serif;
+}
+
+.dlook-offline-card .dlook-offline-creator {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dlook-offline-page small {
+  display: block;
+  font: 500 12px/1.35 system-ui, sans-serif;
+  color: var(--offline-muted);
+}
+
+.dlook-offline-detail {
+  width: min(100%, 640px);
+  margin-inline: auto;
+  border: 1px solid var(--offline-border);
+  border-radius: 15px;
+  overflow: hidden;
+  background: var(--offline-card);
+}
+
+.dlook-offline-detail-hero {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 14px;
+  text-align: center;
+  background: var(--offline-surface);
+}
+
+.dlook-offline-detail-hero .dlook-offline-cover {
+  width: min(100%, 236px);
+  border-radius: 12px;
+}
+
+.dlook-offline-detail ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dlook-offline-button {
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--dlook-play-action);
+  color: white;
+  font: 600 14px/1.3 system-ui, sans-serif;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.dlook-offline-button:disabled {
+  opacity: .75;
+  cursor: default;
+}
+
+.dlook-offline-button:focus-visible,
+.dlook-offline-card:focus-visible {
+  outline: 2px solid var(--dlook-play-focus);
+  outline-offset: -3px;
+}
+
+.dlook-offline-detail ol .dlook-offline-button {
+  display: block;
+  width: 100%;
+  border-bottom: 1px solid var(--offline-border);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+}
+
+.dlook-offline-detail ol .dlook-offline-button:is(:hover, [aria-current]) {
+  background: var(--offline-surface);
+}
+
+.dlook-offline-detail ol .dlook-offline-button[aria-current] {
+  box-shadow: inset 3px 0 var(--dlook-play-action);
+}
+
+.dlook-offline-detail > button {
+  display: block;
+  margin: 6px 10px;
+  background: transparent;
+  color: var(--offline-muted);
+}
+
+.dlook-offline-heading .dlook-offline-back {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  padding: 0;
+  background: var(--dlook-play-band);
+  color: var(--dlook-play-text);
+}
+
+.dlook-offline-heading .dlook-offline-back[hidden] {
+  display: none;
+}
+
+.dlook-offline-heading .dlook-offline-back svg {
+  width: 19px;
+  height: 19px;
+}
+
+.dlook-offline-work {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  box-sizing: border-box;
+  width: min(calc(100% - 24px), 840px);
+  margin: 12px auto;
+  padding: 7px;
+  border-radius: 7px;
+  background: var(--dlook-play-band);
+  color: var(--dlook-play-text);
+  font: 600 14px/1.3 system-ui, sans-serif;
+}
+
+.dlook-offline-work p {
+  flex: 1 1 180px;
+  margin: 0;
+}
+
+.dlook-offline-work p:empty {
+  display: none;
+}
+
+.dlook-offline-work button:first-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.dlook-offline-work button:first-child svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+#App [class*="_actions_"]:has(> .dlook-offline-work[data-listen-group]) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, auto));
+}
+
+.dlook-offline-work[data-listen-group] {
+  grid-column: 1 / -1;
+  justify-content: end;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--surface-on-surface, #182e53);
+}
+
+.dlook-offline-work[data-listen-group] button:first-child {
+  background: var(--dlook-play-band);
+}
+
+.dlook-offline-work button:disabled {
+  opacity: .68;
+  cursor: default;
+}
+
+.dlook-offline-work[data-listen-group] p {
+  flex: 0 1 auto;
+}
+
+@media (max-width: 760px) {
+  .dlook-offline-work[data-listen-group] button:first-child {
+    flex: 1 0 100%;
+  }
+}
+
+@container (width < 460px) {
+  [class*="_actions_"]:has(> .dlook-offline-work) > :is([data-dd-action-name="work_detail.resume"], [data-dd-action-name="work_detail.start"]) {
+    grid-column: 1 / -1;
+  }
+}

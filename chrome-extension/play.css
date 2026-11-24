@@ -1,0 +1,323 @@
+html[data-dlook-play] {
+  --dlook-play-band: #2147a1;
+  --dlook-play-action: #295bc8;
+  --dlook-play-accent: #b6dfff;
+  --dlook-play-text: #e1ecfa;
+  --dlook-play-focus: #ffe197;
+  --dlook-play-dock: calc(76px + env(safe-area-inset-bottom, 0px));
+  --dlook-header-height: 52px;
+  --dlook-tool-size: 44px;
+  --dlook-tool-gap: 6px;
+  --dlook-tool-end: max(12px, env(safe-area-inset-right, 0px));
+  --dlook-tool-start: max(12px, env(safe-area-inset-left, 0px));
+  --dlook-search-motion: dlook-expand-library-search 240ms cubic-bezier(.2, .75, .25, 1) both;
+}
+
+#App > .loContainer[data-dlook-play] > main {
+  --dlook-page-frame: 880px;
+  --dlook-page-gutter: max(0px, calc((100% - var(--dlook-page-frame)) / 2));
+}
+
+#App > .loContainer[data-dlook-play] > main [data-content-pane="true"] {
+  box-sizing: border-box;
+  padding-bottom: var(--dlook-play-dock);
+  scroll-padding-bottom: var(--dlook-play-dock);
+}
+
+#App > .loContainer[data-dlook-play]:has([data-dd-action-name="player.mini_open"]) > main [data-content-pane="true"] {
+  padding-bottom: calc(var(--dlook-play-dock) + 60px);
+  scroll-padding-bottom: calc(var(--dlook-play-dock) + 60px);
+}
+
+#App > .loContainer[data-dlook-play] > div:has(nav [data-dd-action-name="menu.library"]),
+#App > .loContainer[data-dlook-play] [data-dd-action-name="menu.hamburger_open"] {
+  display: none !important;
+}
+
+#App > .loContainer[data-dlook-play] > main :is(header[class*="_loHeader_"], [data-content-pane="true"]) {
+  left: 0 !important;
+  width: 100% !important;
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] {
+  top: env(safe-area-inset-top, 0px);
+  height: var(--dlook-header-height);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] > [class*="_headerInner_"] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--dlook-page-frame);
+  height: 100%;
+  margin-inline: auto;
+  padding-inline: var(--dlook-tool-start) var(--dlook-tool-end);
+}
+
+#App > .loContainer[data-dlook-play] > main [data-content-pane="true"] {
+  top: env(safe-area-inset-top, 0px);
+}
+
+#App > .loContainer[data-dlook-play] > main:has(> header [class*="_headerInner_"] :is(a[href], button:not([data-dd-action-name="menu.hamburger_open"]), input)) [data-content-pane="true"] {
+  top: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px));
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] :is([class*="_colCenter_"], [class*="_colLeft_"], [class*="_colRight_"]):not(:has(:is(a[href], button:not([data-dd-action-name="menu.hamburger_open"]), input))) {
+  visibility: hidden;
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] [class*="_headerInner_"] :is(a[href], button:not([data-dd-action-name="menu.hamburger_open"])) {
+  min-width: 38px;
+  min-height: 38px;
+  border: 1px solid #b6dfff35;
+  border-radius: 12px;
+  background: var(--dlook-play-band);
+  box-shadow: 0 2px 8px #0a275a26;
+  color: var(--dlook-play-text);
+  pointer-events: auto;
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] [class*="_headerInner_"] :is(a[href], button):hover {
+  background: var(--dlook-play-action);
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] [class*="_headerInner_"] :is(a[href], button):focus-visible {
+  outline: 2px solid var(--dlook-play-focus);
+  outline-offset: -2px;
+}
+
+#App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] input {
+  pointer-events: auto;
+}
+
+#App > .loContainer[data-dlook-play] > main [data-content-pane="true"],
+#App > .loContainer[data-dlook-play] [data-dd-action-name="player.mini_open"] {
+  --safe-area-inset-bottom: 0px;
+}
+
+/* The official mobile drawer mounts the menu actions on demand. */
+html[data-dlook-play] [data-dd-action-name="menu.overlay_close"],
+html[data-dlook-play] [role="presentation"]:has(> [role="dialog"] [data-dd-action-name="menu.header_close"]) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html[data-dlook-play]:has(.dlook-play-nav:not([hidden])):not(:has(#App [class*="_audioPlayer_"]:not([data-pc])))
+  [role="dialog"][class*="_bottomSheet_"]:not(:has([data-dd-action-name="menu.header_close"])) {
+  bottom: var(--dlook-play-dock);
+  max-height: calc(100dvh - var(--dlook-play-dock));
+}
+
+html[data-dlook-play]:has(.dlook-play-nav:not([hidden]))
+  [role="region"][class*="_viewport_"] > [class*="_group_"]:has([class*="_toast_"]) {
+  bottom: calc(var(--dlook-play-dock) + 8px);
+}
+
+.dlook-play-nav,
+.dlook-play-settings {
+  color: var(--dlook-play-text);
+  font: 600 14px/1.3 system-ui, sans-serif;
+}
+
+.dlook-play-nav {
+  position: fixed;
+  z-index: 5100;
+  inset: auto 0 0;
+  height: var(--dlook-play-dock);
+  box-sizing: border-box;
+  padding: 8px max(8px, env(safe-area-inset-right, 0px))
+    calc(8px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+  background: transparent;
+  pointer-events: none;
+}
+
+html[data-dlook-offline] .dlook-play-nav {
+  z-index: 10001;
+}
+
+.dlook-play-nav ul,
+.dlook-play-settings ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dlook-play-nav ul {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  box-sizing: border-box;
+  width: min(100%, 560px);
+  margin-inline: auto;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--dlook-play-band);
+  box-shadow: 0 4px 15px #0a275a2a;
+  pointer-events: auto;
+}
+
+.dlook-play-indicator {
+  position: absolute;
+  z-index: -1;
+  inset: 4px auto 4px 4px;
+  width: calc((100% - 8px) / 5);
+  border-radius: 999px;
+  background: var(--dlook-play-action);
+  transition: transform var(--dlook-tab-slide, 240ms) cubic-bezier(.2, .75, .25, 1);
+  pointer-events: none;
+}
+
+.dlook-play-settings ul {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(4px, 1.5vw, 8px);
+}
+
+.dlook-play-nav a,
+.dlook-play-settings :is(a, button) {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.dlook-play-nav a {
+  min-height: 52px;
+  border-radius: 999px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  position: relative;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.15;
+  transition: color 160ms ease, transform 180ms ease, background-color 160ms ease;
+}
+
+.dlook-play-nav a[aria-current="page"] {
+  color: white;
+}
+
+.dlook-play-nav a:hover {
+  background: #ffffff12;
+  color: white;
+}
+
+.dlook-play-nav a:active {
+  transform: scale(.94);
+}
+
+.dlook-play-nav a[aria-current="page"] svg,
+.dlook-play-settings svg {
+  color: var(--dlook-play-accent);
+}
+
+.dlook-play-nav a[data-unread]::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: calc(50% + 11px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dlook-play-focus);
+}
+
+.dlook-play-nav a:focus-visible,
+.dlook-play-settings :is(a, button):focus-visible {
+  outline: 2px solid var(--dlook-play-focus);
+  outline-offset: -3px;
+}
+
+.dlook-play-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dlook-play-nav svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+.dlook-play-settings {
+  box-sizing: border-box;
+  width: min(calc(100% - 24px), 464px);
+  margin: 16px auto 0;
+  color: var(--surface-on-surface, #182e53);
+}
+
+.dlook-play-settings h2 {
+  margin: 0;
+  padding: 0 0 9px;
+  color: inherit;
+  font: 700 14px/1.3 system-ui, sans-serif;
+}
+
+.dlook-play-settings :is(a, button) {
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  min-height: 64px;
+  padding: 7px 2px;
+  border-radius: 12px;
+  background: var(--dlook-play-band);
+  border: 0;
+  color: var(--dlook-play-text);
+  font-size: clamp(10px, 3vw, 13px);
+  overflow-wrap: anywhere;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+}
+
+.dlook-play-settings :is(a, button):hover {
+  background: var(--dlook-play-action);
+}
+
+.dlook-play-settings svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.dlook-play-settings [role="status"] {
+  margin: 0;
+}
+
+.dlook-play-settings [role="status"]:not(:empty) {
+  padding: 8px 0;
+}
+
+@media (max-width: 760px) {
+  .dlook-play-settings {
+    margin-top: 12px;
+  }
+}
+
+@media (min-width: 761px) {
+  #App > .loContainer[data-dlook-play] > main:not([data-dlook-library]):has(> [data-content-pane="true"] > div[class*="_wrapper_"]) {
+    --dlook-page-frame: min(840px, calc(100% - 48px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-dlook-play] {
+    --dlook-search-motion: none;
+  }
+  .dlook-play-indicator,
+  .dlook-play-nav a,
+  .dlook-play-settings :is(a, button) {
+    transition: none;
+  }
+}

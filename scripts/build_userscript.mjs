@@ -3,29 +3,32 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 const extension = new URL('../chrome-extension/', import.meta.url);
 const read = name => readFile(new URL(name, extension), 'utf8');
 const manifest = JSON.parse(await read('manifest.json'));
-const { matches, js, run_at: runAt } = manifest.content_scripts[0];
+const [store, play] = manifest.content_scripts;
+const matches = [...new Set(manifest.content_scripts.flatMap(entry => entry.matches))];
 const output = new URL('../public/dlook.user.js', import.meta.url);
 const releaseUrl = 'https://github.com/CbShuiMu/DLook/releases/latest/download/';
 const scriptName = 'DLook-Safari.user.js';
 const metadataName = 'DLook-Safari.meta.js';
 
-const [platform, sources, cardCss, layoutCss, logo] = await Promise.all([
+const [platform, sources, cardCss, layoutCss, logo, playSources, playCss] = await Promise.all([
   readFile(new URL('../userscripts/safari-platform.js', import.meta.url), 'utf8'),
-  Promise.all(js.filter(name => name !== 'platform.js').map(read)),
+  Promise.all(store.js.filter(name => name !== 'platform.js').map(read)),
   read('badge.css'),
   read('badge-layout.css'),
   read('dlook-logo.svg'),
+  Promise.all(play.js.map(read)),
+  Promise.all(play.css.map(read)),
 ]);
 const metadata = [
   '// ==UserScript==',
   '// @name         DLook — DLsite 史低价',
   '// @namespace    https://dlook.site/',
-  '// @description  在 DLsite 商品页、购物车和收藏夹显示 DLook 史低价、折扣和价格走势链接。',
+  '// @description  在 DLsite 显示 DLook 价格信息，并为 DLsite Play 提供底部导航。',
   '// @version      ' + manifest.version,
   '// @updateURL    ' + releaseUrl + metadataName,
   '// @downloadURL  ' + releaseUrl + scriptName,
   ...matches.map(match => '// @match        ' + match),
-  '// @run-at       ' + runAt.replaceAll('_', '-'),
+  '// @run-at       ' + store.run_at.replaceAll('_', '-'),
   '// @inject-into  content',
   '// @noframes',
   '// @grant        GM.xmlHttpRequest',
@@ -43,6 +46,12 @@ const source = [
   "  'use strict';",
   '',
   platform.trim(),
+  '',
+  "if (location.hostname === 'play.dlsite.com') {",
+  '  applyStyles(document, undefined, ' + JSON.stringify(playCss.map(css => css.trim()).join('\n\n')) + ');',
+  playSources.map(code => code.trim()).join('\n\n'),
+  '  return;',
+  '}',
   '',
   'const dlookCardCss = ' + JSON.stringify(cardCss.trim()) + ';',
   'const dlookLayoutCss = ' + JSON.stringify(layoutCss.trim()) + ';',

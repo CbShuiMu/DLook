@@ -19,6 +19,44 @@
   white-space: normal;
 }
 .n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }
+
+a.dlook-offer-link {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 42px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #2147a1;
+  color: #fff !important;
+  font: 600 14px/1.2 system-ui, sans-serif;
+  text-decoration: none;
+}
+a.dlook-offer-link:hover { background: #295bc8; text-decoration: none; }
+a.dlook-offer-link:focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }
+.dlook-offer-link > span { color: #fff !important; }
+.dlook-offer-link :is(img, svg) { display: block; flex: 0 0 45px; width: 45px; height: 15px; }
+a.dlook-cart-offer {
+  min-height: 64px;
+  gap: 12px;
+  margin-block-end: 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.dlook-cart-offer :is(img, svg) { flex-basis: 56px; width: 56px; height: 19px; }
+
+/* Keep the native purchase controls inside their Vue-managed DOM. */
+:is(.p-purchaseButtonsPc, .p-purchaseBox__links) > .dlook-product-offer { order: -1; }
+:is(.p-purchaseButtonsPc, .p-purchaseBox__links):has(> .button_point):has(> .dlook-product-offer) {
+  reading-flow: flex-visual;
+  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(> .btn_buy) { display: contents; }
+  & > .btn_buy,
+  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase) > .btn_buy { order: 1; }
+  & > .button_point ~ :not(.dlook-product-offer) { order: 2; }
+}
 [data-dlook-wishlist-filtered] { display: none !important; }
 .dlook-wishlist-filter {
   display: flex;
