@@ -27,10 +27,10 @@ const DLookCurrentPrice = (() => {
     return amount(row.getAttribute('data-price'));
   }
 
-  function saleDiscount(scope) {
-    for (const label of scope?.querySelectorAll(
-      '.c-purchaseBox__labels .label_sale, ._display_discount_rate:is(.type_sale, .icon_campaign, .icon_lead_01), .discount_rate, .rate_label'
-    ) || []) {
+  const saleLabels = '.c-purchaseBox__labels .label_sale, ._display_discount_rate:is(.type_sale, .icon_campaign, .icon_lead_01), .discount_rate, .rate_label';
+
+  function saleDiscount(scope, selector = saleLabels) {
+    for (const label of scope?.querySelectorAll(selector) || []) {
       const visible = label.checkVisibility ? label.checkVisibility() : label.getClientRects().length > 0;
       if (!visible) continue;
       const text = label.textContent.normalize('NFKC').trim();
@@ -54,6 +54,14 @@ const DLookCurrentPrice = (() => {
     if (off !== null) return off;
     const original = amount(row.getAttribute('data-official_price'));
     return current !== null && current > 0 && current === original ? 0 : null;
+  }
+
+  function wishlist(row, column) {
+    const price = column.matches('.work_price') ? column : column.querySelector('.work_price:not(.strike)');
+    const amountNode = price?.querySelector('.work_price_parts') || price || column;
+    const currentPrice = displayedYen(amountNode.textContent) ?? cart(row, column);
+    const currentOff = saleDiscount(row, saleLabels + ', .work_bottom div.discount, .secondary div.discount');
+    return { currentPrice, currentOff };
   }
 
   function productDiscount(priceBox, current) {
@@ -96,5 +104,5 @@ const DLookCurrentPrice = (() => {
     const legacy = document.querySelector(`#work_buy_box_wrapper [data-product_id="${id}"][data-price]`);
     return amount(legacy?.getAttribute('data-price'));
   }
-  return { cart, product, cartDiscount, productDiscount };
+  return { cart, product, wishlist, cartDiscount, productDiscount };
 })();

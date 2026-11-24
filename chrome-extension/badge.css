@@ -121,5 +121,6 @@
   font: 600 13px/1.2 system-ui, sans-serif;
   cursor: pointer;
 }
-.dlook-price-low[data-layout="touch"] > button { min-height: 44px; }
+.dlook-price-low:is([data-layout="touch"], [data-layout="wishlist-touch"]) > button { min-height: 44px; }
 .dlook-price-low[data-layout="touch"] .dlook-low-amount > strong { font-size: 22px; }
+.dlook-price-low[data-layout="wishlist-touch"] .dlook-low-amount > strong { font-size: 19px; }

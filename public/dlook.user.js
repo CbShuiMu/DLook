@@ -1,12 +1,17 @@
 // ==UserScript==
 // @name         DLook — DLsite 史低价
 // @namespace    https://dlook.site/
-// @description  在 DLsite 商品页和购物车显示 DLook 史低价、折扣和价格走势链接。
-// @version      1.8.1
+// @description  在 DLsite 商品页、购物车和收藏夹显示 DLook 史低价、折扣和价格走势链接。
+// @version      1.8.7
+// @updateURL    https://github.com/CbShuiMu/DLook/releases/latest/download/DLook-Safari.meta.js
+// @downloadURL  https://github.com/CbShuiMu/DLook/releases/latest/download/DLook-Safari.user.js
 // @match        https://*.dlsite.com/*/work/*
 // @match        https://*.dlsite.com/*/cart
 // @match        https://*.dlsite.com/*/cart?*
 // @match        https://*.dlsite.com/*/cart/*
+// @match        https://*.dlsite.com/*/mypage/wishlist
+// @match        https://*.dlsite.com/*/mypage/wishlist?*
+// @match        https://*.dlsite.com/*/mypage/wishlist/*
 // @run-at       document-end
 // @inject-into  content
 // @noframes
@@ -102,8 +107,8 @@ const DLookPlatform = {
   language: { getMode: () => languageMode },
 };
 
-const dlookCardCss = ".dlook-price-low {\n  --dlook-band: #2147a1;\n  --dlook-muted: #415570;\n  --dlook-number: #b6dfff;\n  container: dlook-card / inline-size;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: stretch;\n  width: 100%;\n  min-width: 0;\n  box-sizing: border-box;\n  margin: 4px 0;\n  padding: 0;\n  border: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  background: var(--dlook-band);\n  color: white;\n  font: 500 13px/1.25 system-ui, sans-serif;\n  text-align: start;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-price-low *, .dlook-price-low *::after { box-sizing: border-box; }\n.dlook-price-low:is([data-state=\"low\"], [data-state=\"new-low\"]) {\n  --dlook-band: #775009;\n  --dlook-number: #ffe197;\n  --dlook-tag: #ffce61;\n}\n.dlook-price-low[data-state=\"new-low\"] { --dlook-band: #241c27; }\n.dlook-details {\n  display: flex;\n  flex: 1 1 100%;\n  flex-flow: row wrap;\n  align-items: center;\n  gap: 3px 12px;\n  min-width: 0;\n  padding: 4px 6px;\n}\n.dlook-low-labels, .dlook-low-amount {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 2px 4px;\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n.dlook-low-values {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  gap: 2px;\n  min-width: 0;\n  background: var(--dlook-band);\n}\n.dlook-recorded { color: #e1ecfa; }\n.dlook-low-amount { align-items: baseline; }\n.dlook-price-low .dlook-low-amount > strong {\n  color: var(--dlook-number);\n  font: 750 21px/1.12 system-ui, sans-serif;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-low-values .dlook-unit, .dlook-price-low .dlook-off-value { font: 600 10px/1 system-ui, sans-serif; }\n.dlook-low-amount :is(.dlook-unit, .dlook-off-value) { color: var(--dlook-number); }\n.dlook-price-low .dlook-low-tag {\n  padding: 2px 4px;\n  border-radius: 4px;\n  font: 700 12px/1.2 system-ui, sans-serif;\n  white-space: nowrap;\n}\n.dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }\n.dlook-price-low[data-state=\"new-low\"] .dlook-low-tag { color: #000; }\n.dlook-off-value { white-space: nowrap; }\n.dlook-price-low :is(img, .dlook-logo) {\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  background: transparent;\n  object-fit: contain;\n}\n.dlook-price-low a.dlook-history {\n  flex: 1 1 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  min-width: 0;\n  min-height: 27px;\n  padding: 3px 7px;\n  background: #295bc8;\n  color: white;\n  font: 600 12px/1.25 system-ui, sans-serif;\n  text-align: center;\n  text-decoration: none;\n}\n@container dlook-card (min-width: 240px) {\n  .dlook-details { flex: 1 1 0; }\n  .dlook-price-low a.dlook-history {\n    flex: 0 0 auto;\n    flex-direction: column;\n    gap: 2px;\n    padding-inline: 10px;\n  }\n}\n.dlook-price-low a.dlook-history:hover { background: #2147a1; text-decoration: underline; }\n.dlook-price-low :is(a, button):focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }\n.dlook-price-low:is([data-state=\"empty\"], [data-state=\"loading\"], [data-state=\"error\"]) {\n  align-items: center;\n  gap: 3px 7px;\n  padding: 4px 8px;\n  background: var(--dlook-muted);\n}\n.dlook-price-low[data-state=\"error\"] { background: #773747; }\n.dlook-price-low .dlook-note { flex: 1 1 6ch; font-size: 13px; overflow-wrap: anywhere; }\n.dlook-price-low > button {\n  min-height: 24px;\n  padding: 2px 6px;\n  border: 1px solid #ffffff80;\n  border-radius: 4px;\n  background: #994659;\n  color: white;\n  font: 600 13px/1.2 system-ui, sans-serif;\n  cursor: pointer;\n}\n.dlook-price-low[data-layout=\"touch\"] > button { min-height: 44px; }\n.dlook-price-low[data-layout=\"touch\"] .dlook-low-amount > strong { font-size: 22px; }";
-const dlookLayoutCss = "/* The native touch price wrapper precedes the official campaign and genre tags. */\n:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }\n:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {\n  flex: 0 0 100%;\n  grid-column: 1 / -1;\n  margin: 4px 0 0;\n}\n.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }\n\n/* Keep both price rows together, then show DLook, then the site's own campaign. */\n.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }\n.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  align-items: start;\n  gap: 3px 8px;\n}\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }\n.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }\n\n/* On desktop the campaign lives inside the title. Grid keeps all native nodes\n   in place for DLsite's cart updates, while sharing the wide details column. */\n.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr) auto;\n  gap: 0 12px;\n  align-items: start;\n  & > .work_thumb { grid-area: 1 / 1 / span 12; }\n  & > .work_setting { grid-area: 1 / 3 / span 12; }\n  & > .work_content, & > .work_content > .work_name { display: contents; }\n  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {\n    grid-column: 2;\n    min-width: 0;\n    order: 4;\n  }\n  & .work_name > a { order: 0; }\n  & > .work_content > .maker_name { order: 1; }\n  & > div.work_price {\n    order: 2;\n    display: flex;\n    flex-flow: row wrap;\n    align-items: baseline;\n    justify-content: flex-start;\n    gap: 1px 5px;\n    width: auto;\n    padding: 0;\n    text-align: start;\n  }\n  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }\n  & .work_name > .icon_wrap { order: 3; }\n}";
+const dlookCardCss = ".dlook-price-low {\n  --dlook-band: #2147a1;\n  --dlook-muted: #415570;\n  --dlook-number: #b6dfff;\n  container: dlook-card / inline-size;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: stretch;\n  width: 100%;\n  min-width: 0;\n  box-sizing: border-box;\n  margin: 4px 0;\n  padding: 0;\n  border: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  background: var(--dlook-band);\n  color: white;\n  font: 500 13px/1.25 system-ui, sans-serif;\n  text-align: start;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-price-low *, .dlook-price-low *::after { box-sizing: border-box; }\n.dlook-price-low:is([data-state=\"low\"], [data-state=\"new-low\"]) {\n  --dlook-band: #775009;\n  --dlook-number: #ffe197;\n  --dlook-tag: #ffce61;\n}\n.dlook-price-low[data-state=\"new-low\"] { --dlook-band: #241c27; }\n.dlook-details {\n  display: flex;\n  flex: 1 1 100%;\n  flex-flow: row wrap;\n  align-items: center;\n  gap: 3px 12px;\n  min-width: 0;\n  padding: 4px 6px;\n}\n.dlook-low-labels, .dlook-low-amount {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 2px 4px;\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n.dlook-low-values {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  gap: 2px;\n  min-width: 0;\n  background: var(--dlook-band);\n}\n.dlook-recorded { color: #e1ecfa; }\n.dlook-low-amount { align-items: baseline; }\n.dlook-price-low .dlook-low-amount > strong {\n  color: var(--dlook-number);\n  font: 750 21px/1.12 system-ui, sans-serif;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-low-values .dlook-unit, .dlook-price-low .dlook-off-value { font: 600 10px/1 system-ui, sans-serif; }\n.dlook-low-amount :is(.dlook-unit, .dlook-off-value) { color: var(--dlook-number); }\n.dlook-price-low .dlook-low-tag {\n  padding: 2px 4px;\n  border-radius: 4px;\n  font: 700 12px/1.2 system-ui, sans-serif;\n  white-space: nowrap;\n}\n.dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }\n.dlook-price-low[data-state=\"new-low\"] .dlook-low-tag { color: #000; }\n.dlook-off-value { white-space: nowrap; }\n.dlook-price-low :is(img, .dlook-logo) {\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  background: transparent;\n  object-fit: contain;\n}\n.dlook-price-low a.dlook-history {\n  flex: 1 1 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  min-width: 0;\n  min-height: 27px;\n  padding: 3px 7px;\n  background: #295bc8;\n  color: white;\n  font: 600 12px/1.25 system-ui, sans-serif;\n  text-align: center;\n  text-decoration: none;\n}\n@container dlook-card (min-width: 240px) {\n  .dlook-details { flex: 1 1 0; }\n  .dlook-price-low a.dlook-history {\n    flex: 0 0 auto;\n    flex-direction: column;\n    gap: 2px;\n    padding-inline: 10px;\n  }\n}\n.dlook-price-low a.dlook-history:hover { background: #2147a1; text-decoration: underline; }\n.dlook-price-low :is(a, button):focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }\n.dlook-price-low:is([data-state=\"empty\"], [data-state=\"loading\"], [data-state=\"error\"]) {\n  align-items: center;\n  gap: 3px 7px;\n  padding: 4px 8px;\n  background: var(--dlook-muted);\n}\n.dlook-price-low[data-state=\"error\"] { background: #773747; }\n.dlook-price-low .dlook-note { flex: 1 1 6ch; font-size: 13px; overflow-wrap: anywhere; }\n.dlook-price-low > button {\n  min-height: 24px;\n  padding: 2px 6px;\n  border: 1px solid #ffffff80;\n  border-radius: 4px;\n  background: #994659;\n  color: white;\n  font: 600 13px/1.2 system-ui, sans-serif;\n  cursor: pointer;\n}\n.dlook-price-low:is([data-layout=\"touch\"], [data-layout=\"wishlist-touch\"]) > button { min-height: 44px; }\n.dlook-price-low[data-layout=\"touch\"] .dlook-low-amount > strong { font-size: 22px; }\n.dlook-price-low[data-layout=\"wishlist-touch\"] .dlook-low-amount > strong { font-size: 19px; }";
+const dlookLayoutCss = "/* The native touch price wrapper precedes the official campaign and genre tags. */\n:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }\n:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {\n  flex: 0 0 100%;\n  grid-column: 1 / -1;\n  margin: 4px 0 0;\n}\n.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }\n\n.dlook-wishlist-card {\n  /* In the wishlist the native details use a column flexbox. */\n  flex: none;\n  grid-column: 1 / -1;\n  box-sizing: border-box;\n  width: 100%;\n  min-width: 0;\n  margin: 3px 0;\n  list-style: none;\n  white-space: normal;\n}\n.n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }\n[data-dlook-wishlist-filtered] { display: none !important; }\n.dlook-wishlist-filter {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 12px;\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 6px 0;\n  padding: 3px 9px 5px;\n  border: 1px solid #b3c4e3;\n  border-radius: 5px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n.dlook-wishlist-filter legend { padding: 0 3px; font-weight: 700; }\n.dlook-wishlist-filter label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  min-height: 27px;\n  cursor: pointer;\n}\n.dlook-wishlist-filter input { accent-color: #2147a1; margin: 0; }\n.dlook-wishlist-filter-status:not(:empty) { margin-inline-start: auto; }\n#filter_drawer .dlook-wishlist-filter { margin: 8px 12px; }\n#filter_drawer .dlook-wishlist-filter label { min-height: 44px; }\n.dlook-wishlist-filter-summary:not(:empty) {\n  display: block;\n  padding: 5px 8px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n@media (pointer: coarse) {\n  .dlook-wishlist-filter label { min-height: 36px; }\n}\n\n/* Keep both price rows together, then show DLook, then the site's own campaign. */\n.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }\n.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  align-items: start;\n  gap: 3px 8px;\n}\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }\n.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }\n\n/* On desktop the campaign lives inside the title. Grid keeps all native nodes\n   in place for DLsite's cart updates, while sharing the wide details column. */\n.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr) auto;\n  gap: 0 12px;\n  align-items: start;\n  & > .work_thumb { grid-area: 1 / 1 / span 12; }\n  & > .work_setting { grid-area: 1 / 3 / span 12; }\n  & > .work_content, & > .work_content > .work_name { display: contents; }\n  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {\n    grid-column: 2;\n    min-width: 0;\n    order: 4;\n  }\n  & .work_name > a { order: 0; }\n  & > .work_content > .maker_name { order: 1; }\n  & > div.work_price {\n    order: 2;\n    display: flex;\n    flex-flow: row wrap;\n    align-items: baseline;\n    justify-content: flex-start;\n    gap: 1px 5px;\n    width: auto;\n    padding: 0;\n    text-align: start;\n  }\n  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }\n  & .work_name > .icon_wrap { order: 3; }\n}\n\n.dlook-cart-campaigns {\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 8px 0;\n  padding: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  color: #fff;\n  background: #2147a1;\n  font: 12px/1.45 system-ui, sans-serif;\n  text-align: start;\n  white-space: normal;\n  overflow-wrap: anywhere;\n}\n.dlook-cart-campaign-header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 5px 8px;\n  background: #295bc8;\n}\n.dlook-cart-campaign-header > :is(img, .dlook-logo) {\n  flex: 0 0 44px;\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  object-fit: contain;\n}\n.dlook-cart-campaign-header > h2 { margin: 0; color: inherit; font: inherit; font-weight: 700; }\n.dlook-cart-campaigns > ul { margin: 0; padding: 7px 10px; list-style: none; }\n.dlook-cart-campaigns li + li {\n  margin-top: 5px;\n  padding-top: 5px;\n  border-top: 1px solid #b6dfff45;\n}\n.dlook-cart-campaign-count { display: block; color: #b6dfff; }\n.cart_bill_content > .dlook-cart-campaigns {\n  width: 100%;\n  font-size: 13px;\n}\n.cart_bill_content > .dlook-cart-campaigns > ul { padding: 8px 12px; }";
 const dlookLogoMarkup = "<svg id=\"on-dark\" xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"380\" viewBox=\"0 0 120.109375 38\"><path fill=\"#bbdfff\" d=\"M27.7021 20.3623Q27.7021 24.4072 26.0044 27.5151Q24.3066 30.623 21.1523 32.3115Q17.998 34 13.8789 34H2.6162V7.3926H13.6377Q27.7021 7.3926 27.7021 20.3623ZM19.1855 20.4365Q19.1855 18.4883 18.397 16.9297Q17.6084 15.3711 16.1426 14.5176Q14.6768 13.6641 12.6914 13.6641H10.6318V27.7285H12.877Q15.7529 27.7285 17.4692 25.7524Q19.1855 23.7764 19.1855 20.4365Z\"/><path fill=\"#bbdfff\" d=\"M29.6475 34V7.3926H37.6631V27.7285H46.8291V34Z\"/><path fill=\"#ffd25d\" d=\"M68.8232 24.166Q68.8232 28.9717 65.9194 31.7178Q63.0156 34.4639 57.8018 34.4639Q52.625 34.4639 49.7397 31.7827Q46.8545 29.1016 46.8545 24.3887Q46.8545 21.3643 48.209 19.1377Q49.5635 16.9111 52.0684 15.7236Q54.5732 14.5361 57.8389 14.5361Q61.2158 14.5361 63.6929 15.7793Q66.1699 17.0225 67.4966 19.2305Q68.8232 21.4385 68.8232 24.166ZM60.8076 24.2031Q60.8076 20.3252 57.8389 20.3252Q54.8701 20.3252 54.8701 24.3887Q54.8701 28.6748 57.876 28.6748Q60.8076 28.6748 60.8076 24.2031Z\"/><path fill=\"#ffd25d\" d=\"M91.1045 24.166Q91.1045 28.9717 88.2007 31.7178Q85.2969 34.4639 80.083 34.4639Q74.9062 34.4639 72.021 31.7827Q69.1357 29.1016 69.1357 24.3887Q69.1357 21.3643 70.4902 19.1377Q71.8447 16.9111 74.3496 15.7236Q76.8545 14.5361 80.1201 14.5361Q83.4971 14.5361 85.9741 15.7793Q88.4512 17.0225 89.7778 19.2305Q91.1045 21.4385 91.1045 24.166ZM83.0889 24.2031Q83.0889 20.3252 80.1201 20.3252Q77.1514 20.3252 77.1514 24.3887Q77.1514 28.6748 80.1572 28.6748Q83.0889 28.6748 83.0889 24.2031Z\"/><path fill=\"#bbdfff\" d=\"M104.4766 34 100.2461 24.2402H100.1719V34H92.2676V5.8711H100.1719V23.9248H100.2461L104.0869 15H112.9932L107.8535 23.7021L113.29 34Z\"/><circle fill=\"#bbdfff\" cx=\"117.609375\" cy=\"30.5\" r=\"2.5\"/></svg>";
 
 const DLookLanguage = (() => {
@@ -114,6 +119,7 @@ const DLookLanguage = (() => {
       currentLow: '当前售价达到已记录的最低价', newLow: '当前售价低于已记录的最低价',
       recorded: '记录低价', newTag: '新史低',
       noDiscount: '暂无折扣史低记录', free: '当前免费', history: '查看价格走势',
+      cartCampaigns: '活动提示', cartCampaignWorks: count => `${count} 件作品适用`,
     },
     en: {
       language: 'Display language', auto: 'Match DLsite', low: 'Found for you', tag: 'At record low', loading: 'Loading…',
@@ -121,6 +127,7 @@ const DLookLanguage = (() => {
       currentLow: 'The current price matches the recorded low', newLow: 'The current price is below the recorded low',
       recorded: 'Recorded low', newTag: 'New low',
       noDiscount: 'No discount low on record', free: 'Currently free', history: 'View price history',
+      cartCampaigns: 'Bundle offers', cartCampaignWorks: count => `${count} eligible ${count === 1 ? 'item' : 'items'}`,
     },
     ja: {
       language: '表示言語', auto: 'DLsite に合わせる', low: 'お調べした価格', tag: '最安', loading: '確認中…',
@@ -128,6 +135,7 @@ const DLookLanguage = (() => {
       currentLow: '現在の価格は記録上の最安値です', newLow: '現在の価格は記録上の最安値を下回っています',
       recorded: '記録最安値', newTag: '最安値更新',
       noDiscount: 'セール最安値の記録なし', free: '現在無料', history: '価格履歴を見る',
+      cartCampaigns: 'キャンペーン情報', cartCampaignWorks: count => `対象作品 ${count}点`,
     },
     ko: {
       language: '표시 언어', auto: 'DLsite 언어 따르기', low: '확인한 가격', tag: '최저가', loading: '조회 중…',
@@ -135,6 +143,7 @@ const DLookLanguage = (() => {
       currentLow: '현재 가격이 기록된 최저가와 같습니다', newLow: '현재 가격이 기록된 최저가보다 낮습니다',
       recorded: '기록된 최저가', newTag: '최저가 갱신',
       noDiscount: '할인 최저가 기록 없음', free: '현재 무료', history: '가격 기록 보기',
+      cartCampaigns: '캠페인 안내', cartCampaignWorks: count => `대상 작품 ${count}개`,
     },
     th: {
       language: 'ภาษาที่แสดง', auto: 'ตามภาษา DLsite', low: 'ราคาที่ค้นพบ', tag: 'ต่ำสุด', loading: 'กำลังค้นหา…',
@@ -142,6 +151,7 @@ const DLookLanguage = (() => {
       currentLow: 'ราคาปัจจุบันเท่ากับราคาต่ำสุดที่บันทึกไว้', newLow: 'ราคาปัจจุบันต่ำกว่าราคาต่ำสุดที่บันทึกไว้',
       recorded: 'ราคาต่ำสุดที่บันทึกไว้', newTag: 'ต่ำสุดใหม่',
       noDiscount: 'ไม่มีบันทึกราคาต่ำสุดช่วงลดราคา', free: 'ฟรีในขณะนี้', history: 'ดูประวัติราคา',
+      cartCampaigns: 'โปรโมชันซื้อชุด', cartCampaignWorks: count => `ใช้ได้กับ ${count} รายการ`,
     },
   };
   function siteLocale() {
@@ -279,10 +289,10 @@ const DLookCurrentPrice = (() => {
     return amount(row.getAttribute('data-price'));
   }
 
-  function saleDiscount(scope) {
-    for (const label of scope?.querySelectorAll(
-      '.c-purchaseBox__labels .label_sale, ._display_discount_rate:is(.type_sale, .icon_campaign, .icon_lead_01), .discount_rate, .rate_label'
-    ) || []) {
+  const saleLabels = '.c-purchaseBox__labels .label_sale, ._display_discount_rate:is(.type_sale, .icon_campaign, .icon_lead_01), .discount_rate, .rate_label';
+
+  function saleDiscount(scope, selector = saleLabels) {
+    for (const label of scope?.querySelectorAll(selector) || []) {
       const visible = label.checkVisibility ? label.checkVisibility() : label.getClientRects().length > 0;
       if (!visible) continue;
       const text = label.textContent.normalize('NFKC').trim();
@@ -306,6 +316,14 @@ const DLookCurrentPrice = (() => {
     if (off !== null) return off;
     const original = amount(row.getAttribute('data-official_price'));
     return current !== null && current > 0 && current === original ? 0 : null;
+  }
+
+  function wishlist(row, column) {
+    const price = column.matches('.work_price') ? column : column.querySelector('.work_price:not(.strike)');
+    const amountNode = price?.querySelector('.work_price_parts') || price || column;
+    const currentPrice = displayedYen(amountNode.textContent) ?? cart(row, column);
+    const currentOff = saleDiscount(row, saleLabels + ', .work_bottom div.discount, .secondary div.discount');
+    return { currentPrice, currentOff };
   }
 
   function productDiscount(priceBox, current) {
@@ -348,7 +366,327 @@ const DLookCurrentPrice = (() => {
     const legacy = document.querySelector(`#work_buy_box_wrapper [data-product_id="${id}"][data-price]`);
     return amount(legacy?.getAttribute('data-price'));
   }
-  return { cart, product, cartDiscount, productDiscount };
+  return { cart, product, wishlist, cartDiscount, productDiscount };
+})();
+
+const DLookWishlistFilter = {
+  create(schedule, scheduleTargets, rows, touch) {
+    const states = ['new-low', 'low', 'record'];
+    const storageKey = 'dlook-wishlist-filter';
+    const labels = {
+      'zh-CN': ['DLook 史低筛选（本页）', '本页匹配', '件', '查价中…'],
+      en: ['DLook price filters (this page)', 'Matches on this page:', '', 'Checking prices…'],
+      ja: ['DLook 最安値フィルター（このページ）', 'このページの該当件数', '件', '価格を確認中…'],
+      ko: ['DLook 최저가 필터 (이 페이지)', '이 페이지에서 일치', '개', '가격 확인 중…'],
+      th: ['ตัวกรองราคาต่ำสุด DLook (หน้านี้)', 'ตรงเงื่อนไขในหน้านี้', 'รายการ', 'กำลังค้นหาราคา…'],
+    };
+    let saved = [];
+    try {
+      saved = (sessionStorage.getItem(storageKey) || '').split(',');
+    } catch {
+      // Keep filtering available if session storage is blocked.
+    }
+    let selected = new Set(states.filter(state => saved.includes(state)));
+    const fieldset = document.createElement('fieldset');
+    fieldset.className = 'dlook-wishlist-filter';
+    const heading = document.createElement('legend');
+    fieldset.append(heading);
+    const options = states.map(state => {
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.checked = selected.has(state);
+      const text = document.createElement('span');
+      label.append(input, text);
+      fieldset.append(label);
+      input.addEventListener('change', () => {
+        if (!fieldset.closest('#filter_drawer')) applySelection();
+      });
+      return { state, input, text };
+    });
+    const status = document.createElement('span');
+    status.className = 'dlook-wishlist-filter-status';
+    status.setAttribute('role', 'status');
+    fieldset.append(status);
+
+    function applySelection() {
+      selected = new Set(options.filter(({ input }) => input.checked).map(({ state }) => state));
+      try {
+        sessionStorage.setItem(storageKey, [...selected].join(','));
+      } catch {
+        // The current page can still apply the selection.
+      }
+      schedule();
+    }
+
+    if (touch) {
+      // Capture before DLsite's handlers reload the list or submit the form.
+      document.addEventListener('click', event => {
+        if (!fieldset.closest('#filter_drawer')) return;
+        if (event.target.closest?.('#filter_drawer .filter_clear')) {
+          for (const { input } of options) input.checked = false;
+        } else if (event.target.closest?.('#filter_drawer .drawer_filter')) {
+          applySelection();
+        }
+      }, true);
+      document.addEventListener('submit', event => {
+        if (event.submitter?.matches('#filter_drawer .drawer_filter')) applySelection();
+      }, true);
+    }
+
+    let currentDrawer;
+    let wasOpen = false;
+    function place() {
+      const drawer = touch ? document.querySelector('#filter_drawer .refine_drawer_content') : null;
+      if (drawer) {
+        if (!drawer.contains(fieldset)) drawer.append(fieldset);
+        if (!status.isConnected || fieldset.contains(status)) {
+          status.classList.add('dlook-wishlist-filter-summary');
+          placeOutside(status);
+        }
+      } else if (!fieldset.isConnected) {
+        placeOutside(fieldset);
+        status.classList.remove('dlook-wishlist-filter-summary');
+        fieldset.append(status);
+      }
+      const open = Boolean(drawer?.closest('.refine_drawer.active'));
+      if ((open && !wasOpen) || drawer !== currentDrawer) {
+        for (const { input, state } of options) input.checked = selected.has(state);
+      }
+      currentDrawer = drawer;
+      wasOpen = open;
+    }
+
+    function placeOutside(element) {
+      const filters = document.querySelector(touch ? '.wishlist_top' : 'form#showList');
+      if (filters) {
+        filters.after(element);
+      } else {
+        document.querySelector('._wishlist_work_list, .one_column_work_list, .n_work_list:has(> .n_work_list_item)')?.before(element);
+      }
+    }
+
+    let currentLanguage;
+    function update(language, copy, mounted, pendingQuotes) {
+      place();
+      const [title, matches, unit, loading] = labels[language] || labels.en;
+      if (currentLanguage !== language) {
+        currentLanguage = language;
+        fieldset.lang = language;
+        heading.textContent = title;
+        const names = [copy.newTag, copy.tag, copy.recorded];
+        options.forEach(({ text }, index) => { text.textContent = names[index]; });
+      }
+      const attribute = 'data-dlook-wishlist-filtered';
+      if (!selected.size) {
+        const hidden = document.querySelectorAll('[' + attribute + ']');
+        for (const element of hidden) element.removeAttribute(attribute);
+        if (hidden.length) scheduleTargets();
+        if (status.textContent) status.textContent = '';
+        return;
+      }
+      let count = 0;
+      let waiting = false;
+      let restored = false;
+      for (const row of document.querySelectorAll(rows)) {
+        const view = mounted.get(row);
+        const state = view?.panel.dataset.state;
+        const pending = state === 'loading' || (view && pendingQuotes.get(view.id) === null);
+        const visible = !pending && selected.has(state);
+        const item = row.closest('.search_result_img_box_inner') || row;
+        if (visible && item.hasAttribute(attribute)) restored = true;
+        item.toggleAttribute(attribute, !visible);
+        if (visible) count++;
+        waiting ||= Boolean(pending);
+      }
+      const message = waiting ? loading : [matches, count, unit].filter(Boolean).join(' ');
+      if (status.textContent !== message) status.textContent = message;
+      // Discount labels must be measured again after their item becomes visible.
+      if (restored) scheduleTargets();
+    }
+    return { update };
+  },
+};
+
+const DLookCartCampaigns = (() => {
+  const summarySelector = '.payment_confirm_box, .cart_bill_content';
+  const inactiveRow = '#buy_later, .buy_later, .cart_hold, ._removed, .is_actioned, .__non_purchasable_item, [hidden]';
+  const campaignKey = /^[a-z0-9][a-z0-9_-]*$/i;
+  const campaignField = /bulk.?buy|matome|set.?discount|bundle/i;
+
+  function optionTitle(option) {
+    if (option.tagName === 'OPTION') return option.textContent.trim();
+    const label = Array.from(option.labels || [], node => node.textContent.trim()).find(Boolean);
+    if (label) return label;
+    // Older DLsite forms place the caption next to the radio as a text node.
+    for (let node = option.nextSibling; node; node = node.nextSibling) {
+      if (node.matches?.('input, br') || node.querySelector?.('input')) break;
+      if (node.nodeType === Node.COMMENT_NODE) continue;
+      const text = node.textContent.trim();
+      if (text) return text;
+    }
+    return '';
+  }
+
+  async function lookupWishlist() {
+    const floor = location.pathname.split('/')[1].replace(/-touch$/, '');
+    const url = new URL(`/${floor}/mypage/wishlist`, location.origin);
+    const locale = new URLSearchParams(location.search).get('locale');
+    if (locale) url.searchParams.set('locale', locale);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(url, { credentials: 'same-origin', signal: controller.signal });
+      if (!response.ok || new URL(response.url).origin !== url.origin) return null;
+      // The template keeps DLsite's scripts, images and form controls inert.
+      const page = document.createElement('template');
+      page.innerHTML = await response.text();
+      const form = page.content.querySelector('form#showList');
+      if (!form) return null;
+      const campaigns = new Map();
+      const otherOptions = new Map();
+      for (const option of form.querySelectorAll('input[type="radio"][name][value], select[name] option[value]')) {
+        const key = option.value.trim();
+        if (!campaignKey.test(key) || key === '0') continue;
+        const title = optionTitle(option);
+        if (!title) continue;
+        const field = option.name || option.closest('select')?.name || '';
+        (campaignField.test(field) ? campaigns : otherOptions).set(key, title);
+      }
+      // An exact key from the cart or product API can also identify a renamed filter field.
+      return campaigns.size ? campaigns : otherOptions;
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function cartCampaignTitles() {
+    for (const script of document.querySelectorAll('script:not([src])')) {
+      const json = script.textContent.match(/\bvar Bulkbuy\s*=\s*\{\s*_list:\s*\{\s*\},\s*_info:\s*(\{[\s\S]*?\})\s*,\s*_detection:/)?.[1];
+      if (!json) continue;
+      try {
+        return new Map(Object.entries(JSON.parse(json))
+          .filter(([key, info]) => campaignKey.test(key) && typeof info?.label === 'string' && info.label.trim())
+          .map(([key, info]) => [key, info.label.trim()]));
+      } catch {
+        break;
+      }
+    }
+    return new Map();
+  }
+
+  function create({ cartRows, cartItemId, lookupProductInfo, createLogo, schedule }) {
+    const productKeys = new Map();
+    const card = document.createElement('section');
+    card.className = 'dlook-cart-campaigns';
+    const header = document.createElement('div');
+    header.className = 'dlook-cart-campaign-header';
+    const heading = document.createElement('h2');
+    heading.id = 'dlook-cart-campaigns-heading';
+    card.setAttribute('aria-labelledby', heading.id);
+    const list = document.createElement('ul');
+    header.append(createLogo(), heading);
+    card.append(header, list);
+    let wishlistRequested = false;
+    let campaignTitles;
+    let rendered;
+
+    async function lookupKeys(ids) {
+      try {
+        const products = await lookupProductInfo(ids);
+        for (const id of ids) productKeys.set(id, products?.[id]?.bulkbuy_key);
+      } catch {
+        // Cart rows with a native key still have a verified match.
+      } finally {
+        schedule();
+      }
+    }
+
+    function update(language, copy) {
+      const summaries = Array.from(document.querySelectorAll(summarySelector))
+        .filter(summary => summary.getClientRects().length);
+      const coupon = summaries.map(summary => summary.querySelector('.coupon_available'))
+        .find(box => box?.getClientRects().length);
+      const summary = coupon?.closest(summarySelector) || summaries[0];
+      if (!summary) {
+        card.remove();
+        return;
+      }
+      const works = new Map();
+      for (const row of document.querySelectorAll(cartRows)) {
+        if (row.closest(inactiveRow) || !row.getClientRects().length) continue;
+        const id = cartItemId(row);
+        if (!id) continue;
+        const value = row.getAttribute('data-bulkbuy_key')?.trim() || '';
+        const nativeKey = value !== '0' && campaignKey.test(value) ? value : '';
+        if (!works.has(id) || nativeKey) works.set(id, nativeKey);
+      }
+      if (!works.size) {
+        card.remove();
+        return;
+      }
+
+      if (!wishlistRequested) {
+        wishlistRequested = true;
+        void lookupWishlist().then(choices => {
+          campaignTitles = choices ?? new Map();
+          for (const [key, title] of cartCampaignTitles()) {
+            if (!campaignTitles.has(key)) campaignTitles.set(key, title);
+          }
+          schedule();
+        });
+      }
+      if (!campaignTitles?.size) return;
+
+      const missing = [];
+      const counts = new Map();
+      for (const [id, nativeKey] of works) {
+        if (!nativeKey && !productKeys.has(id)) {
+          productKeys.set(id, null);
+          missing.push(id);
+        }
+        const key = nativeKey || productKeys.get(id);
+        if (campaignTitles.has(key)) counts.set(key, (counts.get(key) || 0) + 1);
+      }
+      for (let start = 0; start < missing.length; start += 50) void lookupKeys(missing.slice(start, start + 50));
+      if (!counts.size) {
+        card.remove();
+        return;
+      }
+
+      const matches = Array.from(campaignTitles).filter(([key]) => counts.has(key));
+      const signature = JSON.stringify([language, matches.map(([key]) => [key, counts.get(key)])]);
+      if (signature !== rendered) {
+        card.lang = language;
+        heading.textContent = copy.cartCampaigns;
+        list.replaceChildren(...matches.map(([key, title]) => {
+          const item = document.createElement('li');
+          const name = document.createElement('span');
+          const count = document.createElement('span');
+          name.textContent = title;
+          count.className = 'dlook-cart-campaign-count';
+          count.textContent = copy.cartCampaignWorks(counts.get(key));
+          item.append(name, count);
+          return item;
+        }));
+        rendered = signature;
+      }
+
+      const subtotal = summary.querySelector('.payment_summary_table, .cart_bill_detail');
+      const anchor = coupon || subtotal;
+      if (anchor) {
+        if (anchor.nextElementSibling !== card) anchor.after(card);
+      } else if (summary.firstElementChild !== card) {
+        summary.prepend(card);
+      }
+    }
+
+    return { update };
+  }
+
+  return { create, summarySelector };
 })();
 
 (() => {
@@ -356,12 +694,14 @@ const DLookCurrentPrice = (() => {
   const workNumber = /^(?:RJ|BJ|VJ)\d{6,10}$/i;
   const buyPattern = /\/cart\/buynow\/1\/product_id\/((?:RJ|BJ|VJ)\d{6,10})\/?$/i;
   const cartPage = /^\/[^/]+\/cart(?:\/|$)/.test(location.pathname);
+  const wishlistPage = /^\/[^/]+\/mypage\/wishlist(?:\/|$)/.test(location.pathname);
   const touchPage = /^\/[^/]+-touch\//.test(location.pathname);
   const productId = path => path.match(productPattern)?.[1].toUpperCase();
-  if (!cartPage && !productId(location.pathname)) return;
+  if (!cartPage && !wishlistPage && !productId(location.pathname)) return;
   DLookPlatform.prepare();
 
   const prices = new Map();
+  const wishlistQuotes = new Map();
   const mounted = new Map();
   let language, copy;
   const validAmount = value => Number.isFinite(value) && value >= 0;
@@ -369,7 +709,15 @@ const DLookCurrentPrice = (() => {
   let selectedCurrency;
   let currentTargets, expiryTimer;
   let scheduledEnd = Infinity;
-  const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart'
+  const wishlistRows = '._wishlist_work_list .work_wrap, .one_column_work_list .one_column_work_item' +
+    (touchPage ? ', .n_work_list_item:has(> div > dl.n_work_item, > .n_work_item > dl.work_desc)' : '');
+  const cartRows = '#show_cart .cart_list_item, #show_cart li._cart_item, .cart_list > .cart_list_item, .type_cart > li._cart_item';
+  const wishlistFilter = wishlistPage ? DLookWishlistFilter.create(schedule, scheduleTargets, wishlistRows, touchPage) : null;
+  const cartCampaigns = cartPage ? DLookCartCampaigns.create({
+    cartRows, cartItemId, lookupProductInfo, createLogo: DLookPlatform.createLogo, schedule
+  }) : null;
+  const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart, ' + DLookCartCampaigns.summarySelector
+    : wishlistPage ? '._wishlist_work_list, .one_column_work_list' + (touchPage ? ', .n_work_list_item, #filter_drawer' : '')
     : '.c-purchaseSide__main, .c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
 
   function firstVisible(selector) {
@@ -386,14 +734,72 @@ const DLookCurrentPrice = (() => {
     return purchaseId?.toUpperCase() ?? productId(location.pathname);
   }
 
+  function wishlistTargets() {
+    const result = new Map();
+    const rows = document.querySelectorAll(wishlistRows);
+    for (const row of rows) {
+      const link = row.querySelector('.work_name a[href*="/product_id/"], a[href*="/work/"][href*="/product_id/"]');
+      const id = productId(link?.pathname || '');
+      const price = row.querySelector('.work_price_wrap, .n_work_price_wrap') || row.querySelector('.work_price:not(.strike)');
+      if (!id || !price) continue;
+      const rating = row.querySelector('.review_and_rating, .work_rating, .n_work_value, .work_value_trans, .star_rating');
+      const ratingRow = rating?.closest('dd, .review_and_rating, .work_rating, .n_work_value, .work_value_trans') || rating;
+      const afterPrice = ratingRow && Boolean(price.compareDocumentPosition(ratingRow) & Node.DOCUMENT_POSITION_FOLLOWING);
+      const anchor = afterPrice ? ratingRow : price.closest('.work_price_wrap, .n_work_price_wrap, li, dd, p') || price;
+      result.set(row, {
+        id, anchor, position: afterPrice ? 'beforebegin' : 'afterend',
+        touch: touchPage, ...DLookCurrentPrice.wishlist(row, price)
+      });
+    }
+    return result;
+  }
+
+  async function lookupProductInfo(ids) {
+    const floor = location.pathname.split('/')[1];
+    const url = new URL('/' + floor + '/product/info/ajax', location.origin);
+    url.search = new URLSearchParams({ product_id: ids.join(','), cdn_cache: '3' });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(url, {
+        credentials: 'omit', referrerPolicy: 'no-referrer', signal: controller.signal
+      });
+      if (!response.ok) throw new Error('DLsite product info lookup failed');
+      return await response.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function lookupWishlistQuotes(ids) {
+    try {
+      const quotes = await lookupProductInfo(ids);
+      for (const id of ids) {
+        const quote = quotes?.[id];
+        if (!validAmount(quote?.price)) continue;
+        const off = quote.discount_rate;
+        wishlistQuotes.set(id, { price: quote.price, off: validAmount(off) && off <= 100 ? off : null });
+      }
+    } catch {
+      // The historical card can still be shown when DLsite has no JPY quote.
+    } finally {
+      for (const id of ids) if (wishlistQuotes.get(id) === null) wishlistQuotes.set(id, undefined);
+      schedule();
+    }
+  }
+
+  function cartItemId(row) {
+    const raw = row.getAttribute('data-workno') || '';
+    return workNumber.test(raw) ? raw.toUpperCase()
+      : productId(row.querySelector('a[href*="/work/"][href*="/product_id/"]')?.pathname || '');
+  }
+
   function targets() {
+    if (wishlistPage) return wishlistTargets();
     const result = new Map();
     if (cartPage) {
-      const rows = document.querySelectorAll('#show_cart .cart_list_item, #show_cart li._cart_item, .cart_list > .cart_list_item, .type_cart > li._cart_item');
-      for (const row of rows) {
-        const raw = row.getAttribute('data-workno') || '';
-        const id = workNumber.test(raw) ? raw.toUpperCase()
-          : productId(row.querySelector('a[href*="/work/"][href*="/product_id/"]')?.pathname || '');
+      for (const row of document.querySelectorAll(cartRows)) {
+        const id = cartItemId(row);
         if (!id) continue;
         const priceColumn = row.querySelector('.n_work_price_wrap, .work_price_wrap, div.work_price');
         if (!priceColumn) continue;
@@ -529,15 +935,28 @@ const DLookCurrentPrice = (() => {
     let nextEnd = Infinity;
     let money;
     const needed = [];
-    for (const [node, { id, anchor, position, touch, currentPrice, currentOff }] of current) {
+    const missingQuotes = [];
+    for (const [node, target] of current) {
+      const { id, anchor, position, touch } = target;
+      if (wishlistPage && target.currentPrice === null && !wishlistQuotes.has(id)) {
+        wishlistQuotes.set(id, null);
+        missingQuotes.push(id);
+      }
+      const quote = wishlistQuotes.get(id);
+      const currentPrice = target.currentPrice ?? quote?.price ?? null;
+      const currentOff = target.currentOff ?? (quote?.price === currentPrice ? quote.off : null);
       if (!prices.has(id)) {
         needed.push(id);
         prices.set(id, { status: 'loading' });
       }
       if (!mounted.has(node)) {
-        const badge = document.createElement('div');
+        const parent = position === 'beforeend' ? anchor : anchor.parentElement;
+        const tag = wishlistPage && parent.matches('dl') ? 'dd'
+          : wishlistPage && parent.matches('ul, ol') ? 'li' : 'div';
+        const badge = document.createElement(tag);
         badge.className = 'dlook-price-low';
-        if (touch) badge.dataset.layout = 'touch';
+        if (wishlistPage) badge.classList.add('dlook-wishlist-card');
+        if (touch) badge.dataset.layout = wishlistPage ? 'wishlist-touch' : 'touch';
         anchor.insertAdjacentElement(position, badge);
         const panel = DLookPlatform.createPanel?.(badge) ?? badge;
         mounted.set(node, { id, anchor, badge, panel });
@@ -548,6 +967,7 @@ const DLookCurrentPrice = (() => {
       if (confirmedNewLow) nextEnd = Math.min(nextEnd, entry.newLowUntil);
       // Keep the card with its price when the site adds or rearranges price details.
       if (position === 'afterend' && anchor.nextElementSibling !== view.badge) anchor.after(view.badge);
+      if (position === 'beforebegin' && anchor.previousElementSibling !== view.badge) anchor.before(view.badge);
       if (cartPage && position === 'beforeend' && anchor.lastElementChild !== view.badge) anchor.append(view.badge);
       if (view.entry !== entry || view.language !== language || view.currentPrice !== currentPrice ||
           view.currentOff !== currentOff || view.confirmedNewLow !== confirmedNewLow ||
@@ -573,7 +993,10 @@ const DLookCurrentPrice = (() => {
         }, Math.min(2147483647, Math.max(0, nextEnd - Date.now())));
       }
     }
+    wishlistFilter?.update(language, copy, mounted, wishlistQuotes);
+    cartCampaigns?.update(language, copy);
     for (let start = 0; start < needed.length; start += 50) void lookup(needed.slice(start, start + 50));
+    for (let start = 0; start < missingQuotes.length; start += 50) void lookupWishlistQuotes(missingQuotes.slice(start, start + 50));
   }
 
   function schedule() {
@@ -588,14 +1011,14 @@ const DLookCurrentPrice = (() => {
   }
   function affectsPrice(record) {
     const element = record.target.nodeType === Node.ELEMENT_NODE ? record.target : record.target.parentElement;
-    if (element?.closest('.dlook-price-low')) return false;
+    if (element?.closest('.dlook-price-low, .dlook-wishlist-filter, .dlook-wishlist-filter-status, .dlook-cart-campaigns')) return false;
     const inside = element?.closest(priceScope);
     if (record.type === 'characterData') return Boolean(inside);
     // A change on an ancestor can hide a price or turn a cart into a different list.
     if (record.type === 'attributes') return inside || element.querySelector(priceScope + ', .dlook-price-low');
-    if (Array.from(record.removedNodes).some(node => node.classList?.contains('dlook-price-low'))) return true;
+    if (Array.from(record.removedNodes).some(node => node.matches?.('.dlook-price-low, .dlook-cart-campaigns'))) return true;
     if (inside) return record.removedNodes.length ||
-      Array.from(record.addedNodes).some(node => !node.classList?.contains('dlook-price-low'));
+      Array.from(record.addedNodes).some(node => !node.matches?.('.dlook-price-low, .dlook-cart-campaigns'));
     return [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === Node.ELEMENT_NODE &&
       (node.matches(priceScope) || node.querySelector(priceScope)));
   }
@@ -609,12 +1032,12 @@ const DLookCurrentPrice = (() => {
     else requestAnimationFrame(flush);
   }).observe(document.documentElement, {
     childList: true, characterData: true, subtree: true, attributes: true,
-    attributeFilter: ['id', 'href', 'class', 'style', 'hidden', 'data-workno', 'data-product_id', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
+    attributeFilter: ['id', 'href', 'class', 'style', 'hidden', 'v-cloak', 'data-workno', 'data-product_id', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
   });
   window.addEventListener('storage', event => {
     if (event.key === 'currency' || event.key === null) schedule();
   });
-  if (!cartPage) {
+  if (!cartPage && !wishlistPage) {
     window.addEventListener('resize', scheduleTargets);
     window.addEventListener('popstate', scheduleTargets);
     const id = detailProductId();

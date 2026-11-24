@@ -7,6 +7,57 @@
 }
 .n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }
 
+.dlook-wishlist-card {
+  /* In the wishlist the native details use a column flexbox. */
+  flex: none;
+  grid-column: 1 / -1;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 3px 0;
+  list-style: none;
+  white-space: normal;
+}
+.n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }
+[data-dlook-wishlist-filtered] { display: none !important; }
+.dlook-wishlist-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 6px 0;
+  padding: 3px 9px 5px;
+  border: 1px solid #b3c4e3;
+  border-radius: 5px;
+  color: #223a63;
+  background: #edf3ff;
+  font: 500 12px/1.3 system-ui, sans-serif;
+}
+.dlook-wishlist-filter legend { padding: 0 3px; font-weight: 700; }
+.dlook-wishlist-filter label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 27px;
+  cursor: pointer;
+}
+.dlook-wishlist-filter input { accent-color: #2147a1; margin: 0; }
+.dlook-wishlist-filter-status:not(:empty) { margin-inline-start: auto; }
+#filter_drawer .dlook-wishlist-filter { margin: 8px 12px; }
+#filter_drawer .dlook-wishlist-filter label { min-height: 44px; }
+.dlook-wishlist-filter-summary:not(:empty) {
+  display: block;
+  padding: 5px 8px;
+  color: #223a63;
+  background: #edf3ff;
+  font: 500 12px/1.3 system-ui, sans-serif;
+}
+@media (pointer: coarse) {
+  .dlook-wishlist-filter label { min-height: 36px; }
+}
+
 /* Keep both price rows together, then show DLook, then the site's own campaign. */
 .c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }
 .c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {
@@ -53,3 +104,47 @@
   & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }
   & .work_name > .icon_wrap { order: 3; }
 }
+
+.dlook-cart-campaigns {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 8px 0;
+  padding: 0;
+  border-radius: 7px;
+  overflow: hidden;
+  color: #fff;
+  background: #2147a1;
+  font: 12px/1.45 system-ui, sans-serif;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.dlook-cart-campaign-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: #295bc8;
+}
+.dlook-cart-campaign-header > :is(img, .dlook-logo) {
+  flex: 0 0 44px;
+  display: block;
+  width: 44px;
+  height: 15px;
+  margin: 0;
+  object-fit: contain;
+}
+.dlook-cart-campaign-header > h2 { margin: 0; color: inherit; font: inherit; font-weight: 700; }
+.dlook-cart-campaigns > ul { margin: 0; padding: 7px 10px; list-style: none; }
+.dlook-cart-campaigns li + li {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid #b6dfff45;
+}
+.dlook-cart-campaign-count { display: block; color: #b6dfff; }
+.cart_bill_content > .dlook-cart-campaigns {
+  width: 100%;
+  font-size: 13px;
+}
+.cart_bill_content > .dlook-cart-campaigns > ul { padding: 8px 12px; }

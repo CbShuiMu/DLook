@@ -1,10 +1,13 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 
 const extension = new URL('../chrome-extension/', import.meta.url);
 const read = name => readFile(new URL(name, extension), 'utf8');
 const manifest = JSON.parse(await read('manifest.json'));
 const { matches, js, run_at: runAt } = manifest.content_scripts[0];
 const output = new URL('../public/dlook.user.js', import.meta.url);
+const releaseUrl = 'https://github.com/CbShuiMu/DLook/releases/latest/download/';
+const scriptName = 'DLook-Safari.user.js';
+const metadataName = 'DLook-Safari.meta.js';
 
 const [platform, sources, cardCss, layoutCss, logo] = await Promise.all([
   readFile(new URL('../userscripts/safari-platform.js', import.meta.url), 'utf8'),
@@ -17,8 +20,10 @@ const metadata = [
   '// ==UserScript==',
   '// @name         DLook — DLsite 史低价',
   '// @namespace    https://dlook.site/',
-  '// @description  在 DLsite 商品页和购物车显示 DLook 史低价、折扣和价格走势链接。',
+  '// @description  在 DLsite 商品页、购物车和收藏夹显示 DLook 史低价、折扣和价格走势链接。',
   '// @version      ' + manifest.version,
+  '// @updateURL    ' + releaseUrl + metadataName,
+  '// @downloadURL  ' + releaseUrl + scriptName,
   ...matches.map(match => '// @match        ' + match),
   '// @run-at       ' + runAt.replaceAll('_', '-'),
   '// @inject-into  content',
@@ -48,8 +53,22 @@ const source = [
   '',
 ].join('\n');
 
-const existing = await readFile(output, 'utf8').catch(error => {
-  if (error.code !== 'ENOENT') throw error;
-});
-if (existing !== source) await writeFile(output, source);
+async function writeIfChanged(path, content) {
+  const existing = await readFile(path, 'utf8').catch(error => {
+    if (error.code !== 'ENOENT') throw error;
+  });
+  if (existing !== content) await writeFile(path, content);
+}
+
+await writeIfChanged(output, source);
 console.log('DLook Userscripts: public/dlook.user.js');
+
+if (process.argv.includes('--release')) {
+  const directory = new URL('../exports/' + manifest.version + '/', import.meta.url);
+  await mkdir(directory, { recursive: true });
+  await Promise.all([
+    writeIfChanged(new URL(scriptName, directory), source),
+    writeIfChanged(new URL(metadataName, directory), metadata.join('\n') + '\n'),
+  ]);
+  console.log('Safari Release assets: exports/' + manifest.version + '/');
+}

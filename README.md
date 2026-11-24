@@ -54,7 +54,7 @@
 
 ## DLsite 浏览器扩展
 
-扩展在 DLsite 商品页和购物车显示 DLook 记录的最低价、折扣和价格走势入口。语言和币种跟随 DLsite，扩展菜单支持手动选择界面语言。
+扩展在 DLsite 商品页、购物车和收藏夹显示最低价、折扣和价格走势入口。收藏夹支持按「新史低」「史低」「记录低价」筛选当前页的作品，购物车可查看适用的合购活动。语言和币种跟随 DLsite，扩展菜单支持手动选择界面语言。
 
 从 [GitHub Releases](https://github.com/CbShuiMu/DLook/releases) 下载对应平台的文件。
 

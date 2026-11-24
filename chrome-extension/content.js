@@ -3,12 +3,14 @@
   const workNumber = /^(?:RJ|BJ|VJ)\d{6,10}$/i;
   const buyPattern = /\/cart\/buynow\/1\/product_id\/((?:RJ|BJ|VJ)\d{6,10})\/?$/i;
   const cartPage = /^\/[^/]+\/cart(?:\/|$)/.test(location.pathname);
+  const wishlistPage = /^\/[^/]+\/mypage\/wishlist(?:\/|$)/.test(location.pathname);
   const touchPage = /^\/[^/]+-touch\//.test(location.pathname);
   const productId = path => path.match(productPattern)?.[1].toUpperCase();
-  if (!cartPage && !productId(location.pathname)) return;
+  if (!cartPage && !wishlistPage && !productId(location.pathname)) return;
   DLookPlatform.prepare();
 
   const prices = new Map();
+  const wishlistQuotes = new Map();
   const mounted = new Map();
   let language, copy;
   const validAmount = value => Number.isFinite(value) && value >= 0;
@@ -16,7 +18,15 @@
   let selectedCurrency;
   let currentTargets, expiryTimer;
   let scheduledEnd = Infinity;
-  const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart'
+  const wishlistRows = '._wishlist_work_list .work_wrap, .one_column_work_list .one_column_work_item' +
+    (touchPage ? ', .n_work_list_item:has(> div > dl.n_work_item, > .n_work_item > dl.work_desc)' : '');
+  const cartRows = '#show_cart .cart_list_item, #show_cart li._cart_item, .cart_list > .cart_list_item, .type_cart > li._cart_item';
+  const wishlistFilter = wishlistPage ? DLookWishlistFilter.create(schedule, scheduleTargets, wishlistRows, touchPage) : null;
+  const cartCampaigns = cartPage ? DLookCartCampaigns.create({
+    cartRows, cartItemId, lookupProductInfo, createLogo: DLookPlatform.createLogo, schedule
+  }) : null;
+  const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart, ' + DLookCartCampaigns.summarySelector
+    : wishlistPage ? '._wishlist_work_list, .one_column_work_list' + (touchPage ? ', .n_work_list_item, #filter_drawer' : '')
     : '.c-purchaseSide__main, .c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
 
   function firstVisible(selector) {
@@ -33,14 +43,72 @@
     return purchaseId?.toUpperCase() ?? productId(location.pathname);
   }
 
+  function wishlistTargets() {
+    const result = new Map();
+    const rows = document.querySelectorAll(wishlistRows);
+    for (const row of rows) {
+      const link = row.querySelector('.work_name a[href*="/product_id/"], a[href*="/work/"][href*="/product_id/"]');
+      const id = productId(link?.pathname || '');
+      const price = row.querySelector('.work_price_wrap, .n_work_price_wrap') || row.querySelector('.work_price:not(.strike)');
+      if (!id || !price) continue;
+      const rating = row.querySelector('.review_and_rating, .work_rating, .n_work_value, .work_value_trans, .star_rating');
+      const ratingRow = rating?.closest('dd, .review_and_rating, .work_rating, .n_work_value, .work_value_trans') || rating;
+      const afterPrice = ratingRow && Boolean(price.compareDocumentPosition(ratingRow) & Node.DOCUMENT_POSITION_FOLLOWING);
+      const anchor = afterPrice ? ratingRow : price.closest('.work_price_wrap, .n_work_price_wrap, li, dd, p') || price;
+      result.set(row, {
+        id, anchor, position: afterPrice ? 'beforebegin' : 'afterend',
+        touch: touchPage, ...DLookCurrentPrice.wishlist(row, price)
+      });
+    }
+    return result;
+  }
+
+  async function lookupProductInfo(ids) {
+    const floor = location.pathname.split('/')[1];
+    const url = new URL('/' + floor + '/product/info/ajax', location.origin);
+    url.search = new URLSearchParams({ product_id: ids.join(','), cdn_cache: '3' });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(url, {
+        credentials: 'omit', referrerPolicy: 'no-referrer', signal: controller.signal
+      });
+      if (!response.ok) throw new Error('DLsite product info lookup failed');
+      return await response.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function lookupWishlistQuotes(ids) {
+    try {
+      const quotes = await lookupProductInfo(ids);
+      for (const id of ids) {
+        const quote = quotes?.[id];
+        if (!validAmount(quote?.price)) continue;
+        const off = quote.discount_rate;
+        wishlistQuotes.set(id, { price: quote.price, off: validAmount(off) && off <= 100 ? off : null });
+      }
+    } catch {
+      // The historical card can still be shown when DLsite has no JPY quote.
+    } finally {
+      for (const id of ids) if (wishlistQuotes.get(id) === null) wishlistQuotes.set(id, undefined);
+      schedule();
+    }
+  }
+
+  function cartItemId(row) {
+    const raw = row.getAttribute('data-workno') || '';
+    return workNumber.test(raw) ? raw.toUpperCase()
+      : productId(row.querySelector('a[href*="/work/"][href*="/product_id/"]')?.pathname || '');
+  }
+
   function targets() {
+    if (wishlistPage) return wishlistTargets();
     const result = new Map();
     if (cartPage) {
-      const rows = document.querySelectorAll('#show_cart .cart_list_item, #show_cart li._cart_item, .cart_list > .cart_list_item, .type_cart > li._cart_item');
-      for (const row of rows) {
-        const raw = row.getAttribute('data-workno') || '';
-        const id = workNumber.test(raw) ? raw.toUpperCase()
-          : productId(row.querySelector('a[href*="/work/"][href*="/product_id/"]')?.pathname || '');
+      for (const row of document.querySelectorAll(cartRows)) {
+        const id = cartItemId(row);
         if (!id) continue;
         const priceColumn = row.querySelector('.n_work_price_wrap, .work_price_wrap, div.work_price');
         if (!priceColumn) continue;
@@ -176,15 +244,28 @@
     let nextEnd = Infinity;
     let money;
     const needed = [];
-    for (const [node, { id, anchor, position, touch, currentPrice, currentOff }] of current) {
+    const missingQuotes = [];
+    for (const [node, target] of current) {
+      const { id, anchor, position, touch } = target;
+      if (wishlistPage && target.currentPrice === null && !wishlistQuotes.has(id)) {
+        wishlistQuotes.set(id, null);
+        missingQuotes.push(id);
+      }
+      const quote = wishlistQuotes.get(id);
+      const currentPrice = target.currentPrice ?? quote?.price ?? null;
+      const currentOff = target.currentOff ?? (quote?.price === currentPrice ? quote.off : null);
       if (!prices.has(id)) {
         needed.push(id);
         prices.set(id, { status: 'loading' });
       }
       if (!mounted.has(node)) {
-        const badge = document.createElement('div');
+        const parent = position === 'beforeend' ? anchor : anchor.parentElement;
+        const tag = wishlistPage && parent.matches('dl') ? 'dd'
+          : wishlistPage && parent.matches('ul, ol') ? 'li' : 'div';
+        const badge = document.createElement(tag);
         badge.className = 'dlook-price-low';
-        if (touch) badge.dataset.layout = 'touch';
+        if (wishlistPage) badge.classList.add('dlook-wishlist-card');
+        if (touch) badge.dataset.layout = wishlistPage ? 'wishlist-touch' : 'touch';
         anchor.insertAdjacentElement(position, badge);
         const panel = DLookPlatform.createPanel?.(badge) ?? badge;
         mounted.set(node, { id, anchor, badge, panel });
@@ -195,6 +276,7 @@
       if (confirmedNewLow) nextEnd = Math.min(nextEnd, entry.newLowUntil);
       // Keep the card with its price when the site adds or rearranges price details.
       if (position === 'afterend' && anchor.nextElementSibling !== view.badge) anchor.after(view.badge);
+      if (position === 'beforebegin' && anchor.previousElementSibling !== view.badge) anchor.before(view.badge);
       if (cartPage && position === 'beforeend' && anchor.lastElementChild !== view.badge) anchor.append(view.badge);
       if (view.entry !== entry || view.language !== language || view.currentPrice !== currentPrice ||
           view.currentOff !== currentOff || view.confirmedNewLow !== confirmedNewLow ||
@@ -220,7 +302,10 @@
         }, Math.min(2147483647, Math.max(0, nextEnd - Date.now())));
       }
     }
+    wishlistFilter?.update(language, copy, mounted, wishlistQuotes);
+    cartCampaigns?.update(language, copy);
     for (let start = 0; start < needed.length; start += 50) void lookup(needed.slice(start, start + 50));
+    for (let start = 0; start < missingQuotes.length; start += 50) void lookupWishlistQuotes(missingQuotes.slice(start, start + 50));
   }
 
   function schedule() {
@@ -235,14 +320,14 @@
   }
   function affectsPrice(record) {
     const element = record.target.nodeType === Node.ELEMENT_NODE ? record.target : record.target.parentElement;
-    if (element?.closest('.dlook-price-low')) return false;
+    if (element?.closest('.dlook-price-low, .dlook-wishlist-filter, .dlook-wishlist-filter-status, .dlook-cart-campaigns')) return false;
     const inside = element?.closest(priceScope);
     if (record.type === 'characterData') return Boolean(inside);
     // A change on an ancestor can hide a price or turn a cart into a different list.
     if (record.type === 'attributes') return inside || element.querySelector(priceScope + ', .dlook-price-low');
-    if (Array.from(record.removedNodes).some(node => node.classList?.contains('dlook-price-low'))) return true;
+    if (Array.from(record.removedNodes).some(node => node.matches?.('.dlook-price-low, .dlook-cart-campaigns'))) return true;
     if (inside) return record.removedNodes.length ||
-      Array.from(record.addedNodes).some(node => !node.classList?.contains('dlook-price-low'));
+      Array.from(record.addedNodes).some(node => !node.matches?.('.dlook-price-low, .dlook-cart-campaigns'));
     return [...record.addedNodes, ...record.removedNodes].some(node => node.nodeType === Node.ELEMENT_NODE &&
       (node.matches(priceScope) || node.querySelector(priceScope)));
   }
@@ -256,12 +341,12 @@
     else requestAnimationFrame(flush);
   }).observe(document.documentElement, {
     childList: true, characterData: true, subtree: true, attributes: true,
-    attributeFilter: ['id', 'href', 'class', 'style', 'hidden', 'data-workno', 'data-product_id', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
+    attributeFilter: ['id', 'href', 'class', 'style', 'hidden', 'v-cloak', 'data-workno', 'data-product_id', 'data-price', 'data-official_price', 'data-bulkbuy_key', 'data-bulkbuy_price', 'data-bulkbuy_origin_price']
   });
   window.addEventListener('storage', event => {
     if (event.key === 'currency' || event.key === null) schedule();
   });
-  if (!cartPage) {
+  if (!cartPage && !wishlistPage) {
     window.addEventListener('resize', scheduleTargets);
     window.addEventListener('popstate', scheduleTargets);
     const id = detailProductId();

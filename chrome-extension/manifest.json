@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "1.8.1",
+  "version": "1.8.7",
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "icons": { "128": "icon-128.png" },
@@ -14,9 +14,12 @@
       "https://*.dlsite.com/*/work/*",
       "https://*.dlsite.com/*/cart",
       "https://*.dlsite.com/*/cart?*",
-      "https://*.dlsite.com/*/cart/*"
+      "https://*.dlsite.com/*/cart/*",
+      "https://*.dlsite.com/*/mypage/wishlist",
+      "https://*.dlsite.com/*/mypage/wishlist?*",
+      "https://*.dlsite.com/*/mypage/wishlist/*"
     ],
-    "js": ["language.js", "currency.js", "current-price.js", "platform.js", "content.js"],
+    "js": ["language.js", "currency.js", "current-price.js", "platform.js", "wishlist-filter.js", "cart-campaigns.js", "content.js"],
     "css": ["badge.css", "badge-layout.css"],
     "run_at": "document_end"
   }],
