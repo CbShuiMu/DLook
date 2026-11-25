@@ -1,5 +1,12 @@
 html[data-dlook-offline] #App {
   visibility: hidden;
+  pointer-events: none;
+  z-index: 10001;
+}
+
+html[data-dlook-offline] #App :is([data-dd-action-name="player.mini_open"], [class*="_audioPlayer_"]) {
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .dlook-offline-page {
@@ -74,7 +81,8 @@ body[data-theme="dark"] .dlook-offline-page {
   padding: max(16px, env(safe-area-inset-top, 0px)) 16px var(--dlook-play-dock);
 }
 
-.dlook-offline-page:has(> .dlook-offline-mini:not([hidden])) > main {
+.dlook-offline-page:has(> .dlook-offline-mini:not([hidden])) > main,
+html[data-dlook-offline]:has(#App [data-dd-action-name="player.mini_open"]) .dlook-offline-page > main {
   padding-bottom: calc(var(--dlook-play-dock) + 60px);
 }
 

@@ -1,7 +1,10 @@
 const DLookPurchaseOffers = (() => {
   const affiliateUrl = 'https://dlaf.jp/home/dlaf/=/aid/DL00k/url/https%3A%2F%2Fwww.dlsite.com%2Fhome%2Fcart%3Futm_medium%3Daffiliate%26utm_campaign%3Dbnlink%26utm_content%3Dtext';
-  const checkout = '.payment_confirm_box .payment_button_box:has(> :is(button, input[type="submit"], a.payment_confirm)), .cart_bill_content .btn_01:has(> [type="submit"][name="credit_x"])';
-  const productGroups = '.p-purchaseButtonsPc, .p-purchaseBox__links';
+  const checkout = '.payment_confirm_box .payment_button_box:has(> :is(button, input[type="submit"], a.payment_confirm))';
+  const cartBar = '.work_cart_column_container';
+  const bottomCartAction = cartBar + ' .btn_01 > :is(button, input[type="button"], input[type="submit"], a[href]):not(.dlook-offer-link)';
+  const bottomProduct = '.c-purchaseBottomBar__nav > .single:has(> a.btn_cart_in[href])';
+  const productGroups = '.p-purchaseButtonsPc';
   const purchaseActions = '.btn_buy, .btn_cart';
   const visible = node => node.getClientRects().length > 0;
 
@@ -11,7 +14,7 @@ const DLookPurchaseOffers = (() => {
     }
   }
 
-  function create(cartPage) {
+  function create(cartPage, touchPage) {
     const link = document.createElement('a');
     link.className = 'dlook-offer-link ' + (cartPage ? 'dlook-cart-offer' : 'dlook-product-offer');
     link.href = affiliateUrl;
@@ -19,10 +22,19 @@ const DLookPurchaseOffers = (() => {
     const logo = DLookPlatform.createLogo();
     const caption = document.createElement('span');
     link.append(logo, caption);
-
     return {
       update(language, copy) {
-        const anchor = cartPage ? Array.from(document.querySelectorAll(checkout)).find(visible) : productGroup();
+        let anchor, bottom = touchPage;
+        if (cartPage) {
+          const action = Array.from(document.querySelectorAll(bottomCartAction)).find(visible);
+          bottom = Boolean(action);
+          anchor = action?.parentElement;
+          if (!anchor && !touchPage) anchor = Array.from(document.querySelectorAll(checkout)).find(visible);
+        } else if (touchPage) {
+          anchor = Array.from(document.querySelectorAll(bottomProduct)).find(visible);
+        } else {
+          anchor = productGroup();
+        }
         if (!anchor) {
           link.remove();
           return;
@@ -31,7 +43,8 @@ const DLookPurchaseOffers = (() => {
           link.lang = language;
           caption.textContent = cartPage ? copy.viewOffers : copy.buyWithOffer;
         }
-        if (cartPage) {
+        link.classList.toggle('dlook-bottom-offer', bottom);
+        if (cartPage && !bottom) {
           if (anchor.previousElementSibling !== link) anchor.before(link);
         } else if (anchor.lastElementChild !== link) {
           // An extra node before the native controls can be matched to a
@@ -42,5 +55,5 @@ const DLookPurchaseOffers = (() => {
     };
   }
 
-  return { create };
+  return { create, cartBar };
 })();

@@ -169,7 +169,7 @@
     if (!offline) DLookOffline.hide(showNav, page?.container);
     const language = document.documentElement.lang.toLowerCase().replaceAll('_', '-');
     DLookPlayLibrary.update(page, path, language);
-    DLookPlayPlayer.update(offline ? null : page?.container);
+    DLookPlayPlayer.update(layout?.container);
     DLookOffline.updateWork(page, path, language);
     DLookPlayCollections.update(page, path, language);
     nav.hidden = !showNav;

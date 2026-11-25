@@ -135,7 +135,7 @@ html[data-dlook-play]:has(.dlook-play-nav:not([hidden]))
 }
 
 html[data-dlook-offline] .dlook-play-nav {
-  z-index: 10001;
+  z-index: 10002;
 }
 
 .dlook-play-nav ul,

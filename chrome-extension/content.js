@@ -25,10 +25,10 @@
   const cartCampaigns = cartPage ? DLookCartCampaigns.create({
     cartRows, cartItemId, lookupProductInfo, createLogo: DLookPlatform.createLogo, schedule
   }) : null;
-  const purchaseOffers = wishlistPage ? null : DLookPurchaseOffers.create(cartPage);
-  const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart, ' + DLookCartCampaigns.summarySelector
+  const purchaseOffers = wishlistPage ? null : DLookPurchaseOffers.create(cartPage, touchPage);
+  const priceScope = cartPage ? '#show_cart, .cart_list, .type_cart, ' + DLookCartCampaigns.summarySelector + ', ' + DLookPurchaseOffers.cartBar
     : wishlistPage ? '._wishlist_work_list, .one_column_work_list' + (touchPage ? ', .n_work_list_item, #filter_drawer' : '')
-    : '.c-purchaseSide__main, .c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
+    : '.c-purchaseSide__main, .c-purchaseBox, .c-purchaseBox__main, .c-purchaseBox__inner, .c-purchaseBox__priceInfo, .c-purchaseBottomBar, #work_buy_box, #work_buy_box_wrapper, #work_name, .c-productTitle, script[type="application/ld+json"]';
 
   function firstVisible(selector) {
     return Array.from(document.querySelectorAll(selector)).find(node => node.getClientRects().length);
@@ -349,8 +349,8 @@
   window.addEventListener('storage', event => {
     if (event.key === 'currency' || event.key === null) schedule();
   });
+  if (!wishlistPage) window.addEventListener('resize', scheduleTargets);
   if (!cartPage && !wishlistPage) {
-    window.addEventListener('resize', scheduleTargets);
     window.addEventListener('popstate', scheduleTargets);
     const id = detailProductId();
     prices.set(id, { status: 'loading' });

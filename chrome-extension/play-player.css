@@ -24,7 +24,7 @@ html[data-dlook-play] .dlook-offline-player {
   box-shadow: 0 16px 45px #08132880;
 }
 
-html[data-dlook-play]:not([data-dlook-offline]):has(#App [class*="_audioPlayer_"]:not([data-pc])) .dlook-play-nav {
+html[data-dlook-play]:has(#App [class*="_audioPlayer_"]:not([data-pc])) .dlook-play-nav {
   visibility: hidden;
 }
 
@@ -322,6 +322,11 @@ html[data-dlook-play]:not([data-dlook-offline]):has(#App [class*="_audioPlayer_"
 
 [data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [data-control="play-pause"] svg {
   fill: currentColor;
+}
+
+/* The native triangle needs optical centering within its square SVG. */
+html[data-dlook-play] #App :is([data-control="play-pause"], [data-dd-action-name="player.mini_play_pause"]) > svg[viewBox="0 0 80 100"] {
+  translate: 13.333% 0;
 }
 
 [data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player) [class*="_volumeWrapper_"] {

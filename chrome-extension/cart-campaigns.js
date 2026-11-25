@@ -3,6 +3,41 @@ const DLookCartCampaigns = (() => {
   const inactiveRow = '#buy_later, .buy_later, .cart_hold, ._removed, .is_actioned, .__non_purchasable_item, [hidden]';
   const campaignKey = /^[a-z0-9][a-z0-9_-]*$/i;
   const campaignField = /bulk.?buy|matome|set.?discount|bundle/i;
+  const bundleTarget = 'span.type_matome.__target';
+  const bundleTag = '.dlook-cart-bundle-tag';
+  const hiddenSource = 'data-dlook-bundle-source';
+  const languageTags = 'ARA BUL CHI CHI_HANS CHI_HANT CZE DAN DUT ENG EST FIN FRE GER GRE HUN ICE IND ITA JPN KO_KR LAV LIT NM OTL POL POR RUM RUS SLO SLV SPA SWE THA UKR VET VIE';
+  const languageClasses = new Set(languageTags.split(' ').map(code => 'icon_' + code));
+
+  function placeBundleTag(row) {
+    const source = row.querySelector(bundleTarget);
+    const previous = row.querySelector('[' + hiddenSource + ']');
+    let badge = row.querySelector(bundleTag);
+    if (!source && !badge && !previous) return;
+    const text = source?.textContent.trim();
+    const options = Array.from(row.querySelectorAll(':is(.work_genre, .n_work_option:not(.__matome_label), .n_work_genre_tags) span'));
+    const official = options.findLast(tag => tag.classList.contains('icon_DOT'));
+    const anchor = official || options.findLast(tag =>
+      [...tag.classList].some(name => languageClasses.has(name) || name.startsWith('icon_L_') || name === 'icon_language'));
+    if (!text || !anchor || source.hidden || source.style.display === 'none') {
+      previous?.removeAttribute(hiddenSource);
+      badge?.remove();
+      return;
+    }
+    const wrapper = source.closest('.icon_wrap--options, .__matome_label');
+    const hide = wrapper?.textContent.trim() === text && !wrapper.querySelector('a, button, input') ? wrapper : source;
+    if (previous !== hide) {
+      previous?.removeAttribute(hiddenSource);
+      hide.setAttribute(hiddenSource, '');
+    }
+    // Keep the native tag in place so DLsite can replace it when recalculating the cart.
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'dlook-cart-bundle-tag';
+    }
+    if (badge.textContent !== text) badge.textContent = text;
+    if (anchor.nextElementSibling !== badge) anchor.after(badge);
+  }
 
   function optionTitle(option) {
     if (option.tagName === 'OPTION') return option.textContent.trim();
@@ -95,6 +130,8 @@ const DLookCartCampaigns = (() => {
     }
 
     function update(language, copy) {
+      const rows = document.querySelectorAll(cartRows);
+      for (const row of rows) placeBundleTag(row);
       const summaries = Array.from(document.querySelectorAll(summarySelector))
         .filter(summary => summary.getClientRects().length);
       const coupon = summaries.map(summary => summary.querySelector('.coupon_available'))
@@ -105,7 +142,7 @@ const DLookCartCampaigns = (() => {
         return;
       }
       const works = new Map();
-      for (const row of document.querySelectorAll(cartRows)) {
+      for (const row of rows) {
         if (row.closest(inactiveRow) || !row.getClientRects().length) continue;
         const id = cartItemId(row);
         if (!id) continue;

@@ -20,7 +20,8 @@
 }
 .n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }
 
-a.dlook-offer-link {
+a.dlook-offer-link,
+.btn_01 > a.dlook-bottom-offer {
   box-sizing: border-box;
   display: flex;
   min-height: 42px;
@@ -48,9 +49,39 @@ a.dlook-cart-offer {
 }
 .dlook-cart-offer :is(img, svg) { flex-basis: 56px; width: 56px; height: 19px; }
 
+:is(.c-purchaseBottomBar__nav > .single, .work_cart_column_container .btn_01):has(> .dlook-bottom-offer) {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  reading-flow: grid-rows;
+}
+.c-purchaseBottomBar > .c-purchaseBottomBar__nav:has(.dlook-bottom-offer) { min-width: 0; }
+a.dlook-offer-link.dlook-bottom-offer {
+  grid-area: 1 / 1;
+  height: auto;
+  box-shadow: none;
+  min-height: 34px;
+  min-width: 0;
+  margin: 0;
+  gap: 5px;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+.dlook-bottom-offer :is(img, svg) { flex-basis: 44px; width: 44px; height: 15px; }
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in,
+.work_cart_column_container .btn_01:has(> .dlook-bottom-offer) >
+  :is(button, input[type="button"], input[type="submit"], a[href]):not(.dlook-offer-link) {
+  grid-area: 1 / 2;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
 /* Keep the native purchase controls inside their Vue-managed DOM. */
-:is(.p-purchaseButtonsPc, .p-purchaseBox__links) > .dlook-product-offer { order: -1; }
-:is(.p-purchaseButtonsPc, .p-purchaseBox__links):has(> .button_point):has(> .dlook-product-offer) {
+.p-purchaseButtonsPc > .dlook-product-offer { order: -1; }
+.p-purchaseButtonsPc:has(> .button_point):has(> .dlook-product-offer) {
   reading-flow: flex-visual;
   & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(> .btn_buy) { display: contents; }
   & > .btn_buy,
@@ -181,6 +212,22 @@ a.dlook-cart-offer {
   border-top: 1px solid #b6dfff45;
 }
 .dlook-cart-campaign-count { display: block; color: #b6dfff; }
+:is(.work_genre, .n_work_option, .n_work_genre_tags):has(> .dlook-cart-bundle-tag) { flex-wrap: wrap; }
+:is(.cart_list_item, ._cart_item) :is(span.dlook-cart-bundle-tag, span.type_matome.__target:not([hidden])) {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 2px;
+  color: #fff;
+  background: #2147a1;
+  font: 600 11px/18px system-ui, sans-serif;
+  vertical-align: middle;
+  white-space: normal;
+}
+span.dlook-cart-bundle-tag { margin-inline-start: 3px; }
+[data-dlook-bundle-source] { display: none !important; }
 .cart_bill_content > .dlook-cart-campaigns {
   width: 100%;
   font-size: 13px;
