@@ -147,14 +147,15 @@ a.dlook-offer-link.dlook-bottom-offer {
 /* Outrank DLsite's late-loaded scoped .p-purchaseButtonsPc[data-v-*] rule. */
 .p-purchaseButtonsPc:has(> a.dlook-product-cart-offer) {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 34px;
   gap: 8px;
   align-items: stretch;
   reading-flow: grid-rows;
   & > * { grid-column: 1 / -1; }
   & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(a.btn_cart_in) { display: contents; }
+  & a.btn_cart_in { grid-area: 1 / 2; }
   & > .dlook-product-cart-offer {
-    grid-area: 1 / 2;
+    grid-area: 1 / 1;
     min-width: 0;
     gap: 5px;
     padding-inline: 4px;

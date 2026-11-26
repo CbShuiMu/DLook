@@ -63,10 +63,9 @@ const DLookCartCampaigns = (() => {
     try {
       const response = await fetch(url, { credentials: 'same-origin', signal: controller.signal });
       if (!response.ok || new URL(response.url).origin !== url.origin) return null;
-      // The template keeps DLsite's scripts, images and form controls inert.
-      const page = document.createElement('template');
-      page.innerHTML = await response.text();
-      const form = page.content.querySelector('form#showList');
+      // Parse in a separate inert document; only extract strings, never insert its nodes.
+      const page = new DOMParser().parseFromString(await response.text(), 'text/html');
+      const form = page.querySelector('form#showList');
       if (!form) return null;
       const campaigns = new Map();
       const otherOptions = new Map();
