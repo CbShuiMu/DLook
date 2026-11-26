@@ -108,6 +108,7 @@ const DLookPlayLibrary = (() => {
       main?.setAttribute('data-dlook-library', '');
     }
     updateSearch(main, language);
+    DLookPlayCoverCache.update(main ? page.pane : undefined);
     if (!main) return;
     const dropdown = page.pane.querySelector('[data-dd-action-name="library.category_dropdown"]');
     if (dropdown) {

@@ -1,9 +1,4 @@
 html[data-dlook-play] {
-  --dlook-play-band: #2147a1;
-  --dlook-play-action: #295bc8;
-  --dlook-play-accent: #b6dfff;
-  --dlook-play-text: #e1ecfa;
-  --dlook-play-focus: #ffe197;
   --dlook-play-dock: calc(76px + env(safe-area-inset-bottom, 0px));
   --dlook-header-height: 52px;
   --dlook-tool-size: 44px;
@@ -72,10 +67,10 @@ html[data-dlook-play] {
 #App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] [class*="_headerInner_"] :is(a[href], button:not([data-dd-action-name="menu.hamburger_open"])) {
   min-width: 38px;
   min-height: 38px;
-  border: 1px solid #b6dfff35;
+  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 21%, transparent);
   border-radius: 12px;
   background: var(--dlook-play-band);
-  box-shadow: 0 2px 8px #0a275a26;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--dlook-play-shadow) 15%, transparent);
   color: var(--dlook-play-text);
   pointer-events: auto;
 }
@@ -156,7 +151,7 @@ html[data-dlook-offline] .dlook-play-nav {
   padding: 4px;
   border-radius: 999px;
   background: var(--dlook-play-band);
-  box-shadow: 0 4px 15px #0a275a2a;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--dlook-play-shadow) 16%, transparent);
   pointer-events: auto;
 }
 
@@ -173,7 +168,7 @@ html[data-dlook-offline] .dlook-play-nav {
 
 .dlook-play-settings ul {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: clamp(4px, 1.5vw, 8px);
 }
 
@@ -291,6 +286,14 @@ html[data-dlook-offline] .dlook-play-nav {
   fill: currentColor;
 }
 
+.dlook-play-settings svg.dlook-play-icon {
+  fill: none;
+}
+
+.dlook-play-settings button[aria-pressed="true"] {
+  box-shadow: inset 0 0 0 2px var(--dlook-play-accent);
+}
+
 .dlook-play-settings [role="status"] {
   margin: 0;
 }
@@ -302,6 +305,12 @@ html[data-dlook-offline] .dlook-play-nav {
 @media (max-width: 760px) {
   .dlook-play-settings {
     margin-top: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .dlook-play-settings ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

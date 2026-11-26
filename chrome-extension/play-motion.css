@@ -49,8 +49,8 @@
     z-index: 10101;
     width: 22px;
     height: 22px;
-    border: 2px solid #6689b650;
-    border-top-color: #6599e2;
+    border: 2px solid color-mix(in srgb, var(--dlook-play-accent) 31%, transparent);
+    border-top-color: var(--dlook-play-primary);
     border-radius: 50%;
     opacity: 0;
     pointer-events: none;
@@ -94,3 +94,49 @@
 @keyframes dlook-route-spin { to { rotate: 360deg; } }
 @keyframes dlook-content-in { from { opacity: .7; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }
 @keyframes dlook-player-in { from { opacity: .45; } to { opacity: 1; } }
+
+/* The outgoing copy lives outside React's live player tree. */
+html[data-dlook-play] [data-dlook-player-covered] { visibility: hidden !important; }
+html[data-dlook-play] :is(#App [class*="_audioPlayer_"], .dlook-offline-player)[data-dlook-player-morph] {
+  position: fixed;
+  z-index: 11000;
+  overflow: hidden;
+  pointer-events: none;
+  clip-path: none;
+  transform: none;
+  transition: none;
+  animation: none;
+}
+html[data-dlook-play] [data-dlook-player-morph] > *,
+html[data-dlook-play] #App [data-dlook-player-morph] [class*="_albumartWrapper_"] > * {
+  animation: none;
+  transform: none;
+}
+html[data-dlook-play] [data-dlook-player-morph] :is([class*="_albumart_"], .dlook-audio-art) { visibility: hidden; }
+/* The site's own mini-bar stand-in would sit at the old mini position. */
+html[data-dlook-play] [data-dlook-player-morph] [class*="_miniBarGhost_"] { display: none !important; }
+.dlook-player-mini-skin {
+  position: fixed;
+  z-index: 11001;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 21%, transparent);
+  background: var(--dlook-play-raised);
+  box-shadow: 0 5px 16px color-mix(in srgb, var(--dlook-play-shadow) 29%, transparent);
+  pointer-events: none;
+  contain: layout paint;
+}
+.dlook-player-mini-skin *, .dlook-player-mini-skin *::before, .dlook-player-mini-skin *::after {
+  animation: none !important;
+  transition: none !important;
+}
+.dlook-player-mini-skin[data-dlook-art] :is([class*="_thumbnail_"], .dlook-audio-mini-thumb) { visibility: hidden; }
+.dlook-player-flying-art {
+  position: fixed;
+  z-index: 11002;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--dlook-play-shadow) 31%, transparent);
+  pointer-events: none;
+}

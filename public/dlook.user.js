@@ -2,7 +2,7 @@
 // @name         DLook — DLsite 史低价
 // @namespace    https://dlook.site/
 // @description  在 DLsite 显示 DLook 价格信息，并为 DLsite Play 提供底部导航。
-// @version      2.0.5
+// @version      2.1.4
 // @updateURL    https://github.com/CbShuiMu/DLook/releases/latest/download/DLook-Safari.meta.js
 // @downloadURL  https://github.com/CbShuiMu/DLook/releases/latest/download/DLook-Safari.user.js
 // @match        https://*.dlsite.com/*/work/*
@@ -110,7 +110,50 @@ const DLookPlatform = {
 
 if (location.hostname === 'play.dlsite.com') {
   function startPlay() {
-  applyStyles(document.head ?? document.documentElement, undefined, "html[data-dlook-play] {\r\n  --dlook-play-band: #2147a1;\r\n  --dlook-play-action: #295bc8;\r\n  --dlook-play-accent: #b6dfff;\r\n  --dlook-play-text: #e1ecfa;\r\n  --dlook-play-focus: #ffe197;\r\n  --dlook-play-dock: calc(76px + env(safe-area-inset-bottom, 0px));\r\n  --dlook-header-height: 52px;\r\n  --dlook-tool-size: 44px;\r\n  --dlook-tool-gap: 6px;\r\n  --dlook-tool-end: max(12px, env(safe-area-inset-right, 0px));\r\n  --dlook-tool-start: max(12px, env(safe-area-inset-left, 0px));\r\n  --dlook-search-motion: dlook-expand-library-search 240ms cubic-bezier(.2, .75, .25, 1) both;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main {\r\n  --dlook-page-frame: 880px;\r\n  --dlook-page-gutter: max(0px, calc((100% - var(--dlook-page-frame)) / 2));\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"] {\r\n  box-sizing: border-box;\r\n  padding-bottom: var(--dlook-play-dock);\r\n  scroll-padding-bottom: var(--dlook-play-dock);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play]:has([data-dd-action-name=\"player.mini_open\"]) > main [data-content-pane=\"true\"] {\r\n  padding-bottom: calc(var(--dlook-play-dock) + 60px);\r\n  scroll-padding-bottom: calc(var(--dlook-play-dock) + 60px);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > div:has(nav [data-dd-action-name=\"menu.library\"]),\r\n#App > .loContainer[data-dlook-play] [data-dd-action-name=\"menu.hamburger_open\"] {\r\n  display: none !important;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main :is(header[class*=\"_loHeader_\"], [data-content-pane=\"true\"]) {\r\n  left: 0 !important;\r\n  width: 100% !important;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] {\r\n  top: env(safe-area-inset-top, 0px);\r\n  height: var(--dlook-header-height);\r\n  border: 0;\r\n  background: transparent;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] > [class*=\"_headerInner_\"] {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  max-width: var(--dlook-page-frame);\r\n  height: 100%;\r\n  margin-inline: auto;\r\n  padding-inline: var(--dlook-tool-start) var(--dlook-tool-end);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"] {\r\n  top: env(safe-area-inset-top, 0px);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main:has(> header [class*=\"_headerInner_\"] :is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"]), input)) [data-content-pane=\"true\"] {\r\n  top: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px));\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] :is([class*=\"_colCenter_\"], [class*=\"_colLeft_\"], [class*=\"_colRight_\"]):not(:has(:is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"]), input))) {\r\n  visibility: hidden;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"])) {\r\n  min-width: 38px;\r\n  min-height: 38px;\r\n  border: 1px solid #b6dfff35;\r\n  border-radius: 12px;\r\n  background: var(--dlook-play-band);\r\n  box-shadow: 0 2px 8px #0a275a26;\r\n  color: var(--dlook-play-text);\r\n  pointer-events: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button):hover {\r\n  background: var(--dlook-play-action);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button):focus-visible {\r\n  outline: 2px solid var(--dlook-play-focus);\r\n  outline-offset: -2px;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] input {\r\n  pointer-events: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"],\r\n#App > .loContainer[data-dlook-play] [data-dd-action-name=\"player.mini_open\"] {\r\n  --safe-area-inset-bottom: 0px;\r\n}\r\n\r\n/* The official mobile drawer mounts the menu actions on demand. */\r\nhtml[data-dlook-play] [data-dd-action-name=\"menu.overlay_close\"],\r\nhtml[data-dlook-play] [role=\"presentation\"]:has(> [role=\"dialog\"] [data-dd-action-name=\"menu.header_close\"]) {\r\n  opacity: 0 !important;\r\n  pointer-events: none !important;\r\n}\r\n\r\nhtml[data-dlook-play]:has(.dlook-play-nav:not([hidden])):not(:has(#App [class*=\"_audioPlayer_\"]:not([data-pc])))\r\n  [role=\"dialog\"][class*=\"_bottomSheet_\"]:not(:has([data-dd-action-name=\"menu.header_close\"])) {\r\n  bottom: var(--dlook-play-dock);\r\n  max-height: calc(100dvh - var(--dlook-play-dock));\r\n}\r\n\r\nhtml[data-dlook-play]:has(.dlook-play-nav:not([hidden]))\r\n  [role=\"region\"][class*=\"_viewport_\"] > [class*=\"_group_\"]:has([class*=\"_toast_\"]) {\r\n  bottom: calc(var(--dlook-play-dock) + 8px);\r\n}\r\n\r\n.dlook-play-nav,\r\n.dlook-play-settings {\r\n  color: var(--dlook-play-text);\r\n  font: 600 14px/1.3 system-ui, sans-serif;\r\n}\r\n\r\n.dlook-play-nav {\r\n  position: fixed;\r\n  z-index: 5100;\r\n  inset: auto 0 0;\r\n  height: var(--dlook-play-dock);\r\n  box-sizing: border-box;\r\n  padding: 8px max(8px, env(safe-area-inset-right, 0px))\r\n    calc(8px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));\r\n  background: transparent;\r\n  pointer-events: none;\r\n}\r\n\r\nhtml[data-dlook-offline] .dlook-play-nav {\r\n  z-index: 10002;\r\n}\r\n\r\n.dlook-play-nav ul,\r\n.dlook-play-settings ul {\r\n  list-style: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n\r\n.dlook-play-nav ul {\r\n  position: relative;\r\n  isolation: isolate;\r\n  display: grid;\r\n  grid-template-columns: repeat(5, minmax(0, 1fr));\r\n  box-sizing: border-box;\r\n  width: min(100%, 560px);\r\n  margin-inline: auto;\r\n  padding: 4px;\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-band);\r\n  box-shadow: 0 4px 15px #0a275a2a;\r\n  pointer-events: auto;\r\n}\r\n\r\n.dlook-play-indicator {\r\n  position: absolute;\r\n  z-index: -1;\r\n  inset: 4px auto 4px 4px;\r\n  width: calc((100% - 8px) / 5);\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-action);\r\n  transition: transform var(--dlook-tab-slide, 240ms) cubic-bezier(.2, .75, .25, 1);\r\n  pointer-events: none;\r\n}\r\n\r\n.dlook-play-settings ul {\r\n  display: grid;\r\n  grid-template-columns: repeat(5, minmax(0, 1fr));\r\n  gap: clamp(4px, 1.5vw, 8px);\r\n}\r\n\r\n.dlook-play-nav a,\r\n.dlook-play-settings :is(a, button) {\r\n  display: flex;\r\n  align-items: center;\r\n  box-sizing: border-box;\r\n  color: inherit;\r\n  font: inherit;\r\n  text-decoration: none;\r\n}\r\n\r\n.dlook-play-nav a {\r\n  min-height: 52px;\r\n  border-radius: 999px;\r\n  flex-direction: column;\r\n  justify-content: center;\r\n  gap: 3px;\r\n  position: relative;\r\n  text-align: center;\r\n  font-size: 12px;\r\n  line-height: 1.15;\r\n  transition: color 160ms ease, transform 180ms ease, background-color 160ms ease;\r\n}\r\n\r\n.dlook-play-nav a[aria-current=\"page\"] {\r\n  color: white;\r\n}\r\n\r\n.dlook-play-nav a:hover {\r\n  background: #ffffff12;\r\n  color: white;\r\n}\r\n\r\n.dlook-play-nav a:active {\r\n  transform: scale(.94);\r\n}\r\n\r\n.dlook-play-nav a[aria-current=\"page\"] svg,\r\n.dlook-play-settings svg {\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-play-nav a[data-unread]::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  top: 6px;\r\n  left: calc(50% + 11px);\r\n  width: 6px;\r\n  height: 6px;\r\n  border-radius: 50%;\r\n  background: var(--dlook-play-focus);\r\n}\r\n\r\n.dlook-play-nav a:focus-visible,\r\n.dlook-play-settings :is(a, button):focus-visible {\r\n  outline: 2px solid var(--dlook-play-focus);\r\n  outline-offset: -3px;\r\n}\r\n\r\n.dlook-play-icon {\r\n  fill: none;\r\n  stroke: currentColor;\r\n  stroke-width: 1.75;\r\n  stroke-linecap: round;\r\n  stroke-linejoin: round;\r\n}\r\n\r\n.dlook-play-nav svg {\r\n  width: 22px;\r\n  height: 22px;\r\n  flex: none;\r\n}\r\n\r\n.dlook-play-settings {\r\n  box-sizing: border-box;\r\n  width: min(calc(100% - 24px), 464px);\r\n  margin: 16px auto 0;\r\n  color: var(--surface-on-surface, #182e53);\r\n}\r\n\r\n.dlook-play-settings h2 {\r\n  margin: 0;\r\n  padding: 0 0 9px;\r\n  color: inherit;\r\n  font: 700 14px/1.3 system-ui, sans-serif;\r\n}\r\n\r\n.dlook-play-settings :is(a, button) {\r\n  justify-content: center;\r\n  flex-direction: column;\r\n  gap: 5px;\r\n  width: 100%;\r\n  min-height: 64px;\r\n  padding: 7px 2px;\r\n  border-radius: 12px;\r\n  background: var(--dlook-play-band);\r\n  border: 0;\r\n  color: var(--dlook-play-text);\r\n  font-size: clamp(10px, 3vw, 13px);\r\n  overflow-wrap: anywhere;\r\n  text-align: center;\r\n  cursor: pointer;\r\n  transition: background-color 160ms ease;\r\n}\r\n\r\n.dlook-play-settings :is(a, button):hover {\r\n  background: var(--dlook-play-action);\r\n}\r\n\r\n.dlook-play-settings svg {\r\n  width: 24px;\r\n  height: 24px;\r\n  fill: currentColor;\r\n}\r\n\r\n.dlook-play-settings [role=\"status\"] {\r\n  margin: 0;\r\n}\r\n\r\n.dlook-play-settings [role=\"status\"]:not(:empty) {\r\n  padding: 8px 0;\r\n}\r\n\r\n@media (max-width: 760px) {\r\n  .dlook-play-settings {\r\n    margin-top: 12px;\r\n  }\r\n}\r\n\r\n@media (min-width: 761px) {\r\n  #App > .loContainer[data-dlook-play] > main:not([data-dlook-library]):has(> [data-content-pane=\"true\"] > div[class*=\"_wrapper_\"]) {\r\n    --dlook-page-frame: min(840px, calc(100% - 48px));\r\n  }\r\n}\r\n\r\n@media (prefers-reduced-motion: reduce) {\r\n  html[data-dlook-play] {\r\n    --dlook-search-motion: none;\r\n  }\r\n  .dlook-play-indicator,\r\n  .dlook-play-nav a,\r\n  .dlook-play-settings :is(a, button) {\r\n    transition: none;\r\n  }\r\n}\n\n[data-dlook-collection] {\n  --dlook-collection-card: var(--surface-surface, white);\n  --dlook-collection-border: var(--surface-on-surface-border, #dce5f4);\n  --dlook-collection-ink: var(--surface-on-surface, #182e53);\n  --dlook-collection-muted: var(--surface-on-surface-variant-high, #415570);\n}\n\n[data-dlook-collection$=\"-index\"] ul:has(> li > a[data-dd-action-name$=\".card\"]) {\n  container-type: inline-size;\n  width: min(calc(100% - 24px), var(--dlook-collection-width));\n  margin: 12px auto 0;\n  background: transparent;\n}\n\n[data-dlook-collection$=\"-index\"] li:has(> :is([data-dd-action-name=\"mylist.card\"], [data-dd-action-name=\"playlist.card\"])) {\n  box-sizing: border-box;\n  max-height: none;\n  border: 0;\n  padding: 0 0 15px;\n}\n\n/* Play measures one item at a time. Each pair occupies two half-height slots,\n   with the second card aligned to the top of the first slot. */\n[data-dlook-collection$=\"-index\"] li[data-index]:has(> a[data-dd-action-name$=\".card\"]) {\n  --dlook-card-step: calc((100cqi - var(--dlook-collection-gap)) * .1875 + 50px);\n  position: relative;\n  height: var(--dlook-card-step);\n  padding: 0;\n  pointer-events: none;\n}\n\n[data-dlook-collection$=\"-index\"] li[data-index] > a[data-dd-action-name$=\".card\"] {\n  position: absolute;\n  inset-block-start: 0;\n  inset-inline-start: 0;\n  width: calc((100% - var(--dlook-collection-gap)) / 2);\n  height: calc(2 * var(--dlook-card-step) - var(--dlook-collection-gap));\n  box-sizing: border-box;\n  pointer-events: auto;\n}\n\n[data-dlook-collection$=\"-index\"] li:is([data-index$=\"1\"], [data-index$=\"3\"], [data-index$=\"5\"], [data-index$=\"7\"], [data-index$=\"9\"]) > a[data-dd-action-name$=\".card\"] {\n  inset-block-start: calc(-1 * var(--dlook-card-step));\n  inset-inline-start: auto;\n  inset-inline-end: 0;\n}\n\n[data-dlook-collection$=\"-index\"] div:has(> ul > li[data-index] > a[data-dd-action-name$=\".card\"]) {\n  box-sizing: content-box;\n  padding-block-end: min(calc((100vw - 36px) * .1875 + 50px), 139px);\n}\n\n[data-dlook-collection$=\"-index\"] :is([data-dd-action-name=\"mylist.card\"], [data-dd-action-name=\"playlist.card\"]) {\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n  border: 1px solid var(--dlook-collection-border);\n  border-radius: 15px;\n  background: var(--dlook-collection-card);\n  box-shadow: 0 3px 12px #19376414;\n  color: var(--dlook-collection-ink);\n  text-decoration: none;\n  overflow: hidden;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"]:focus-visible,\n.dlook-collection-actions button:focus-visible {\n  outline: 2px solid var(--dlook-play-action);\n  outline-offset: 2px;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_thumbnail_\"],\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_thumbnail_\"] {\n  position: relative;\n  align-content: center;\n  justify-content: center;\n  width: 100%;\n  height: auto;\n  aspect-ratio: 4 / 3;\n  margin: 0;\n  background-color: #172c53;\n  background-position: center;\n  background-size: cover;\n  overflow: hidden;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_thumbnail_\"] {\n  /* Single covers have an inline contain rule from the native thumbnail. */\n  background-size: cover !important;\n  background-position: center !important;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] > span {\n  width: 50%;\n  height: 50%;\n  background-position: center;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] > svg {\n  width: 52px;\n  height: 52px;\n  border-radius: 9px;\n  fill: #b6dfff;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_text_\"]:has(> p) {\n  box-sizing: border-box;\n  display: grid;\n  align-content: start;\n  gap: 4px;\n  width: 100%;\n  padding: 11px 14px 13px;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p {\n  margin: 0;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p:first-child {\n  display: -webkit-box;\n  overflow: hidden;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  line-clamp: 2;\n  overflow-wrap: anywhere;\n  white-space: normal;\n  font: 700 15px/1.35 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-index\"] li[data-index] > a[data-dd-action-name$=\".card\"] p:first-child {\n  min-height: 2lh;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p:not(:first-child) {\n  color: var(--dlook-collection-muted);\n  font: 500 12px/1.35 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-index\"] [class*=\"_text_\"]:has(> .dlook-collection-count) > p:nth-child(2) {\n  display: none;\n}\n\n#App > .loContainer[data-dlook-play] > main:has([data-dlook-collection$=\"-detail\"] > div > [class*=\"_info_hxvvl_\"]) > [data-content-pane=\"true\"][data-dlook-collection$=\"-detail\"] {\n  top: env(safe-area-inset-top, 0px);\n}\n\n[data-dlook-collection$=\"-detail\"] > div:has(> [class*=\"_info_hxvvl_\"]) {\n  padding-block-start: 0;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] {\n  --surface-on-surface: #edf5ff;\n  --surface-on-surface-variant-high: #b6dfff;\n  display: grid;\n  position: relative;\n  justify-items: center;\n  gap: 14px;\n  margin: 0 0 12px;\n  --dlook-collection-detail-padding: clamp(16px, 4vw, 28px);\n  padding: calc(var(--dlook-header-height) + var(--dlook-collection-detail-padding)) 16px var(--dlook-collection-detail-padding);\n  border-radius: 16px;\n  background: linear-gradient(160deg, #244b9d, #14284f 80%);\n  color: #edf5ff;\n  text-align: center;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a, button)[data-dlook-round-action],\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"] {\n  position: relative;\n  display: block;\n  box-sizing: border-box;\n  width: 42px;\n  height: 42px;\n  padding: 0;\n  border: 1px solid #c5e0ff4d;\n  border-radius: 50%;\n  background: #0d214b80;\n  box-shadow: 0 2px 8px #09152e40;\n  color: var(--dlook-play-text);\n  font-size: 0;\n  cursor: pointer;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a, button)[data-dlook-round-action]:hover {\n  background: #102751eb;\n}\n\n[data-dlook-round-action] > :not([data-dlook-action-icon]) {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip-path: inset(50%);\n}\n\n[data-dlook-action-icon] {\n  position: absolute;\n  inset: 0;\n  width: 21px;\n  height: 21px;\n  margin: auto;\n  pointer-events: none;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [class*=\"_btnDelete_\"]:has(> [data-dlook-round-action=\"delete\"]) {\n  position: absolute;\n  inset: calc((var(--dlook-header-height) - 42px) / 2) calc(var(--dlook-tool-end) + 52px) auto auto;\n  z-index: 1;\n  margin: 0;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"]:is(:hover, :focus-visible) {\n  background: #864358;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"]::before {\n  content: none;\n}\n\n[data-dlook-create] { cursor: pointer; }\n\n.dlook-collection-dialog {\n  box-sizing: border-box;\n  width: min(calc(100% - 32px), 400px);\n  max-width: none;\n  padding: 20px;\n  border: 1px solid var(--surface-on-surface-border, #dce5f4);\n  border-radius: 18px;\n  background: var(--surface-surface, #f3f6fc);\n  color: var(--surface-on-surface, #182e53);\n  font: 500 15px/1.4 system-ui, sans-serif;\n  box-shadow: 0 14px 50px #0b1c3e40;\n}\n\n.dlook-collection-dialog::backdrop { background: #10254db3; }\n.dlook-collection-dialog form { display: grid; gap: 12px; }\n.dlook-collection-dialog h2 { margin: 0; font-size: 20px; }\n.dlook-collection-dialog input {\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 44px;\n  padding: 8px 12px;\n  border: 1px solid var(--surface-on-surface-border, #c3d2eb);\n  border-radius: 10px;\n  background: var(--surface-surface-high, #fff);\n  color: inherit;\n  font: 500 16px/1.4 system-ui, sans-serif;\n}\n\n.dlook-collection-dialog p { margin: 0; color: var(--surface-on-surface-error, #a32d4e); }\n.dlook-collection-dialog p:empty { display: none; }\n.dlook-collection-dialog form > div { display: flex; justify-content: flex-end; gap: 8px; }\n.dlook-collection-dialog button {\n  min-height: 44px;\n  padding: 0 17px;\n  border: 1px solid var(--surface-on-surface-border, #c3d2eb);\n  border-radius: 999px;\n  background: transparent;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.dlook-collection-dialog button[type=\"submit\"] { background: var(--dlook-play-band); color: #fff; }\n.dlook-collection-dialog button:disabled { opacity: .55; cursor: default; }\n.dlook-collection-dialog :is(input, button):focus-visible { outline: 2px solid var(--dlook-play-action); outline-offset: 2px; }\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_thumbnail_\"] {\n  width: min(65vw, 248px);\n  aspect-ratio: 1;\n  border-radius: 13px;\n  box-shadow: 0 12px 36px #09163166;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_text_\"] {\n  width: min(100%, 460px);\n  padding: 0;\n  color: #edf5ff;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] h1 {\n  margin: 0 0 4px;\n  color: #edf5ff;\n  font: 750 clamp(20px, 5vw, 27px)/1.25 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_detail_hxvvl_\"] > p {\n  margin: 0;\n  color: var(--dlook-play-accent);\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] input {\n  box-sizing: border-box;\n  width: 100%;\n}\n\n[data-dlook-collection$=\"-detail\"] :is(li[data-dd-action-name=\"mylist.detail_item\"], li[data-dd-action-name=\"playlist.detail_item\"]) {\n  cursor: pointer;\n  background-color: var(--dlook-collection-card);\n}\n\n[data-dlook-collection$=\"-detail\"] > div > ol:has(> li[data-dd-action-name$=\".detail_item\"]) {\n  margin: 0 12px 16px;\n  overflow: clip;\n  border-radius: 12px;\n}\n\n[data-dlook-collection$=\"-detail\"] li[data-editing][data-dd-action-name$=\".detail_item\"] {\n  cursor: default;\n}\n\n.dlook-collection-actions {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 8px;\n  width: min(100%, 380px);\n}\n\n.dlook-collection-actions button {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  box-sizing: border-box;\n  min-height: 44px;\n  padding: 4px 6px;\n  border: 1px solid #ffffff26;\n  border-radius: 9px;\n  background: #ffffff19;\n  color: #edf5ff;\n  font: 650 13px/1.25 system-ui, sans-serif;\n  cursor: pointer;\n}\n\n.dlook-collection-actions button:first-child {\n  background: var(--dlook-play-action);\n}\n\n.dlook-collection-actions button:hover {\n  background: #3569c5;\n}\n\n.dlook-collection-actions svg {\n  width: 17px;\n  height: 17px;\n  flex-shrink: 0;\n}\n\n.dlook-collection-actions button:first-child svg {\n  fill: currentColor;\n}\n\n[data-dlook-collection] [class*=\"_btnFab_\"]:has(> a[data-dd-action-name^=\"mylist.\"], > a[data-dd-action-name^=\"playlist.\"]) {\n  bottom: calc(var(--dlook-play-dock) + 12px);\n}\n\n[data-dlook-collection] [class*=\"_btnFab_\"][data-mini-player-visible]:has(> a[data-dd-action-name^=\"mylist.\"], > a[data-dd-action-name^=\"playlist.\"]) {\n  bottom: calc(var(--dlook-play-dock) + 72px);\n}\nhtml[data-dlook-play] {\n  --dlook-collection-width: 484px;\n  --dlook-collection-gap: 12px;\n}\n\n#App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {\r\n  --dlook-page-frame: calc(var(--dlook-collection-width) + 24px);\r\n}\r\n\r\n@media (min-width: 900px) {\r\n  #App > .loContainer[data-dlook-play] > main[data-dlook-library]:not(:has([data-dlook-library-cards])) {\r\n    --dlook-page-frame: min(1480px, calc(100vw - 40px));\r\n  }\r\n\r\n  [data-dlook-library] :is([class*=\"_wrapper_1vmmi_\"], [class*=\"_searchConditionDisplay_1vmmi_\"], [class*=\"_searchConditionDisplayInner_1vmmi_\"], [class*=\"_container_7hqk3_\"]) {\r\n    max-width: var(--dlook-page-frame);\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_workGrid_\"] {\r\n    --tile-basis: clamp(154px, 13vw, 198px);\r\n  }\r\n\r\n  [data-dlook-library] [data-large] [class*=\"_workGrid_\"] {\r\n    --tile-basis: clamp(186px, 15vw, 240px);\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_carouselWrapper_7hqk3_\"] > [class*=\"_scrollArea_\"] {\r\n    flex: 1 1 auto;\r\n    min-width: 0;\r\n    max-width: none;\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_thumbnailWrapper_7hqk3_\"] {\r\n    width: clamp(175px, 15vw, 218px);\r\n    height: auto;\r\n    aspect-ratio: 4 / 3;\r\n  }\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools] {\r\n  display: flex;\r\n  gap: var(--dlook-tool-gap);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] [data-dlook-library-tools] > button {\r\n  display: grid;\r\n  place-items: center;\r\n  box-sizing: border-box;\r\n  width: var(--dlook-tool-size);\r\n  height: var(--dlook-tool-size);\r\n  padding: 0;\r\n  border-radius: 50%;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] [data-dlook-library-tools] > button:first-child:is([data-active=\"true\"], [aria-expanded=\"true\"]) {\r\n  position: relative;\r\n  z-index: 2;\r\n  border-color: transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.dlook-library-search svg {\r\n  display: block;\r\n  width: 22px;\r\n  height: 22px;\r\n  margin: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] :is(header [data-dlook-library-tools] > [class*=\"_searchBox_\"], [data-content-pane=\"true\"] [class*=\"_searchBox_\"]) {\r\n  --dlook-search-end: calc(var(--dlook-page-gutter) + var(--dlook-tool-end) + var(--dlook-tools-after-search, 0) * (var(--dlook-tool-size) + var(--dlook-tool-gap)));\r\n  position: fixed;\r\n  z-index: 1;\r\n  inset: calc(4px + env(safe-area-inset-top, 0px)) var(--dlook-search-end) auto auto;\r\n  box-sizing: border-box;\r\n  width: min(335px, calc(100% - var(--dlook-search-end) - var(--dlook-page-gutter) - var(--dlook-tool-start)));\r\n  min-width: 0;\r\n  height: var(--dlook-tool-size);\r\n  margin: 0;\r\n  padding: 0;\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-band);\r\n  animation: var(--dlook-search-motion);\r\n  pointer-events: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools]:not(:has(> .dlook-library-search[aria-expanded=\"true\"])) > [class*=\"_searchBox_\"] {\r\n  display: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] [class*=\"_searchInner_\"] {\r\n  position: relative;\r\n  display: flex;\r\n  align-items: center;\r\n  width: auto;\r\n  height: 100%;\r\n  margin: 0 var(--dlook-tool-size) 0 0;\r\n  padding: 0;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"]::before {\r\n  content: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: 100%;\r\n  margin: 0;\r\n  padding: 0 24px 0 14px;\r\n  border: 0;\r\n  border-radius: 999px 0 0 999px;\r\n  background: none;\r\n  color: white;\r\n  font: 500 16px/1.3 system-ui, sans-serif;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input::placeholder {\r\n  color: var(--dlook-play-text);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input:focus {\r\n  outline: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"]:focus-within {\r\n  box-shadow: inset 0 0 0 1px var(--dlook-play-accent);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] [data-dd-action-name=\"search.clear\"] {\r\n  top: 50%;\r\n  right: 5px;\r\n  bottom: auto;\r\n  transform: translateY(-50%);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [data-content-pane=\"true\"] > div:has(> [class*=\"_searchBox_\"]) {\r\n  height: 0;\r\n}\r\n\r\n@keyframes dlook-expand-library-search {\r\n  from { clip-path: inset(0 0 0 calc(100% - var(--dlook-tool-size)) round 999px); }\r\n  to { clip-path: inset(0 0 0 0 round 999px); }\r\n}\r\n\r\n/* The search field is in the toolbar, so Play's inline search spacer is unused. */\r\n[data-dlook-library] [data-content-pane] [class*=\"_inner_\"][data-search-input-visible] {\r\n  margin-top: 0;\r\n}\r\n\r\n#App [data-dlook-library] [data-dlook-library-filters] {\r\n  position: fixed;\r\n  inset: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px)) 0 auto;\r\n  display: flex;\r\n  box-sizing: border-box;\r\n  justify-content: end;\r\n  width: 100%;\r\n  max-width: var(--dlook-page-frame);\r\n  height: var(--dlook-header-height);\r\n  margin-inline: auto;\r\n  padding: 4px var(--dlook-tool-end) 4px var(--dlook-tool-start);\r\n  background: transparent;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n}\r\n\r\n[data-dlook-library-filters] [class*=\"_tab_\"] {\r\n  display: flex;\r\n  width: auto;\r\n  flex: none;\r\n  justify-content: flex-end;\r\n  align-items: center;\r\n  gap: var(--dlook-tool-gap);\r\n  padding: 0;\r\n  pointer-events: auto;\r\n}\r\n\r\n#App [data-dlook-library] button[data-dlook-library-filter] {\r\n  position: relative;\r\n  display: grid;\r\n  place-items: center;\r\n  box-sizing: border-box;\r\n  flex: none;\r\n  width: 40px;\r\n  height: 40px;\r\n  min-width: 0;\r\n  padding: 0;\r\n  border: 1px solid #b6dfff38;\r\n  border-radius: 50%;\r\n  background: var(--dlook-play-band);\r\n  color: var(--dlook-play-text);\r\n  font-size: 0;\r\n  box-shadow: 0 2px 7px #0a275a26;\r\n}\r\n\r\n#App [data-dlook-library] button[data-dlook-library-filter]:is([data-active], [aria-expanded=\"true\"]) {\r\n  background: var(--dlook-play-accent);\r\n  color: #15356e;\r\n}\r\n\r\n#App [data-dlook-library] [data-dlook-library-filter] > :not(.dlook-play-icon) {\r\n  position: absolute;\r\n  width: 1px;\r\n  height: 1px;\r\n  clip-path: inset(50%);\r\n  overflow: hidden;\r\n}\r\n\r\n[data-dlook-library-filter] > .dlook-play-icon {\r\n  position: absolute;\r\n  inset: 0;\r\n  width: 21px;\r\n  height: 21px;\r\n  margin: auto;\r\n  pointer-events: none;\r\n}\r\n[data-dlook-library-filter]:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: -2px; }\r\n\r\n[data-dlook-library-cards] :is([class*=\"_virtualScrollContainer_\"], [class*=\"_list_\"]) {\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] {\r\n  --dlook-library-columns: 2;\r\n  container-type: inline-size;\r\n  width: min(calc(100% - var(--dlook-library-grid-inset, 24px)), calc(var(--dlook-page-frame) - 24px));\r\n  margin: 12px auto 0;\r\n}\r\n\r\n[data-dlook-library-cards] :has(> [data-dlook-library-grid]) {\r\n  box-sizing: content-box;\r\n  padding-bottom: calc(var(--dlook-library-grid-tail, min(calc((100vw - 36px) * .1875 + 44px), 132px)) + var(--dlook-play-dock));\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {\r\n  --dlook-library-tile-width: calc((100cqi - (var(--dlook-library-columns) - 1) * var(--dlook-collection-gap)) / var(--dlook-library-columns));\r\n  --dlook-library-card-step: calc((var(--dlook-library-tile-width) * .75 + 88px) / var(--dlook-library-columns));\r\n  --dlook-library-column: 0;\r\n  position: relative;\r\n  height: var(--dlook-library-card-step);\r\n  pointer-events: none;\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] [data-dlook-library-card] {\r\n  position: absolute;\r\n  inset-block-start: calc(-1 * var(--dlook-library-column) * var(--dlook-library-card-step));\r\n  inset-inline-start: calc(var(--dlook-library-column) * (var(--dlook-library-tile-width) + var(--dlook-collection-gap)));\r\n  display: flex;\r\n  flex-direction: column;\r\n  box-sizing: border-box;\r\n  width: var(--dlook-library-tile-width);\r\n  height: calc(var(--dlook-library-columns) * var(--dlook-library-card-step) - var(--dlook-collection-gap));\r\n  overflow: hidden;\r\n  padding: 0;\r\n  border: 1px solid var(--surface-on-surface-border, #dce5f4);\r\n  border-radius: 15px;\r\n  background: var(--surface-surface, white);\r\n  color: var(--surface-on-surface, #182e53);\r\n  text-decoration: none;\r\n  box-shadow: 0 3px 12px #19376414;\r\n  pointer-events: auto;\r\n}\r\n\r\n/* Each native virtual item reserves one fraction of a card row. */\r\n@supports (top: calc(mod(3, 2) * 1px)) {\r\n  [data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {\r\n    --dlook-library-column: mod(var(--dlook-library-item-index, 0), var(--dlook-library-columns));\r\n  }\r\n\r\n  @media (min-width: 900px) {\r\n    #App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {\r\n      --dlook-page-frame: min(1320px, calc(100vw - 40px));\r\n      --dlook-library-grid-inset: 0px;\r\n      --dlook-library-grid-tail: 236px;\r\n    }\r\n\r\n    [data-dlook-library-cards] [class*=\"_wrapper_\"]:has([data-dlook-library-grid]),\r\n    [data-dlook-library-cards]:not(:has([data-dlook-library-filters])) > [class*=\"_inner_\"]:has([data-dlook-library-grid]) {\r\n      max-width: var(--dlook-page-frame);\r\n    }\r\n\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 3; }\r\n  }\r\n\r\n  @media (min-width: 1150px) {\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 4; }\r\n  }\r\n\r\n  @media (min-width: 1460px) {\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 5; }\r\n  }\r\n}\r\n\r\n@supports not (top: calc(mod(3, 2) * 1px)) {\r\n  [data-dlook-library-cards] [data-dlook-library-grid] > :is([data-index$=\"1\"], [data-index$=\"3\"], [data-index$=\"5\"], [data-index$=\"7\"], [data-index$=\"9\"]) {\r\n    --dlook-library-column: 1;\r\n  }\r\n}\r\n\r\n[data-dlook-library-card] > [class*=\"_container_\"] { display: contents; }\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] {\r\n  flex: none;\r\n  width: 100%;\r\n  height: auto;\r\n  aspect-ratio: 4 / 3;\r\n  margin: 0;\r\n  overflow: hidden;\r\n  background: #172c53;\r\n}\r\n\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] :is([class*=\"_thumbs_\"], [class*=\"_cover_\"], [class*=\"_imageContainer_\"]) {\r\n  width: 100%;\r\n  height: 100%;\r\n}\r\n\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] img {\r\n  width: 100%;\r\n  height: 100%;\r\n  object-fit: cover;\r\n}\r\n\r\n[data-dlook-library-card] :is([class*=\"_creatorName_\"], [class*=\"_title_\"]) {\r\n  display: -webkit-box;\r\n  overflow: hidden;\r\n  -webkit-box-orient: vertical;\r\n  -webkit-line-clamp: 2;\r\n  white-space: normal;\r\n  overflow-wrap: anywhere;\r\n  font: 700 14px/1.35 system-ui, sans-serif;\r\n}\r\n\r\n[data-dlook-library-card] :is([class*=\"_content_\"], [class*=\"_information_\"]) {\r\n  width: 100%;\r\n  box-sizing: border-box;\r\n  padding: 9px 12px;\r\n}\n\nhtml[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) {\r\n  --dlook-player-text: #f1f7ff;\r\n  --dlook-player-muted: #b9cbea;\r\n  --surface-surface-high: #162951;\r\n  --surface-on-surface: var(--dlook-player-text);\r\n  --surface-on-surface-primary: #91c8ff;\r\n  --surface-on-surface-disabled: #8096ba;\r\n  --surface-on-surface-border: #ffffff25;\r\n  --overlay-overlay-surface: #ffffff16;\r\n  --primary-primary: #90c6ff;\r\n  box-sizing: border-box;\r\n  background: radial-gradient(ellipse at 50% 17%, #314f89 0%, #1b315e 48%, #101e3b 100%);\r\n  color: var(--dlook-player-text);\r\n}\r\n\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"][data-pc],\r\nhtml[data-dlook-play] .dlook-offline-player {\r\n  right: 16px;\r\n  bottom: calc(var(--dlook-play-dock) + 12px);\r\n  width: min(440px, calc(100vw - 32px));\r\n  height: min(690px, calc(100dvh - var(--dlook-play-dock) - 24px));\r\n  border: 1px solid #afcaff29;\r\n  border-radius: 23px;\r\n  box-shadow: 0 16px 45px #08132880;\r\n}\r\n\r\nhtml[data-dlook-play]:has(#App [class*=\"_audioPlayer_\"]:not([data-pc])) .dlook-play-nav {\r\n  visibility: hidden;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_albumartWrapper_\"], .dlook-audio-stage) {\r\n  --dlook-caption-room: 0px;\r\n  display: grid;\r\n  grid-template-columns: minmax(0, 1fr);\r\n  --dlook-speed-inset: clamp(20px, 6vw, 36px);\r\n  align-content: start;\r\n  justify-items: center;\r\n  flex: 1 1 0;\r\n  min-height: 0;\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: auto;\r\n  container-type: size;\r\n  padding: calc(56px + env(safe-area-inset-top, 0px)) clamp(20px, 6vw, 36px) 34px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_albumartWrapper_\"], .dlook-audio-stage):has(> [class*=\"_textTrack_\"], > .dlook-audio-captions:not([hidden])) {\r\n  --dlook-caption-room: min(46cqh, 228px);\r\n  --dlook-cover-offset: 0px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_albumartWrapper_\"]::before {\r\n  position: absolute;\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n  --dlook-cover-ratio: 1.333333;\r\n  --dlook-cover-width: min(100cqw, 410px, calc(max(0px, 100cqh - var(--dlook-caption-room)) * var(--dlook-cover-ratio)));\r\n  --dlook-cover-height: calc(var(--dlook-cover-width) / var(--dlook-cover-ratio));\r\n  grid-area: 1 / 1;\r\n  box-sizing: border-box;\r\n  flex: none;\r\n  width: var(--dlook-cover-width);\r\n  height: var(--dlook-cover-height);\r\n  margin-block-start: var(--dlook-cover-offset, max(0px, calc((100cqh - var(--dlook-cover-height)) / 2)));\r\n  background-color: #101e3b;\r\n  background-size: contain;\r\n  border-radius: 16px;\r\n  box-shadow: 0 0 0 1px #afcaff29, 0 14px 40px #09173380;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n  transition: width 240ms ease, height 240ms ease, margin-block-start 240ms ease;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) {\r\n  position: static;\r\n  grid-area: 2 / 1;\r\n  justify-self: start;\r\n  box-sizing: border-box;\r\n  width: min(100%, 460px);\r\n  max-width: none;\r\n  height: var(--dlook-caption-room);\r\n  max-height: none;\r\n  margin: 0;\r\n  padding: clamp(12px, 3vh, 24px) 0 0;\r\n  overflow: auto;\r\n  overscroll-behavior: contain;\r\n  transform: none;\r\n  background: transparent;\r\n  color: var(--dlook-player-text);\r\n  text-align: left;\r\n  font: 740 clamp(17px, 5vw, 25px)/1.4 system-ui, sans-serif;\r\n  overflow-wrap: anywhere;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_subtitle_\"] {\r\n  position: static;\r\n  margin: 0;\r\n  padding: 0;\r\n  background: transparent;\r\n  text-align: inherit;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_textTrack_\"] {\r\n  display: block;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [data-dlook-caption-enhanced] [class*=\"_subtitle_\"] {\r\n  display: none;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) p {\r\n  margin: 0;\r\n  color: inherit;\r\n  font: inherit;\r\n  white-space: pre-line;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) p + p {\r\n  margin-top: 3px;\r\n  color: var(--dlook-player-muted);\r\n}\r\n\r\n.dlook-caption-cue + .dlook-caption-cue { margin-top: .62em; }\r\n.dlook-caption-cue[data-offset=\"1\"] { opacity: .48; }\r\n.dlook-caption-cue[data-offset=\"2\"] { opacity: .24; }\r\n.dlook-caption-cue[data-offset=\"0\"] { animation: dlook-caption-current 170ms ease-out; }\r\n\r\n@keyframes dlook-caption-current {\r\n  from { opacity: .62; transform: translateY(4px); }\r\n  to { opacity: 1; transform: translateY(0); }\r\n}\r\n\r\n@media (prefers-reduced-motion: reduce) {\r\n  .dlook-caption-cue[data-offset=\"0\"] { animation: none; }\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_optionButtons_\"] {\r\n  inset-inline: 0;\r\n  top: env(safe-area-inset-top, 0px);\r\n  background: none;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_hiddenButton_\"] {\r\n  top: 10px;\r\n  left: 16px;\r\n  width: 40px;\r\n  height: 40px;\r\n  background: #1a2d54;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playlistMenuButton_\"] {\r\n  right: 16px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButtonWrapper_\"] {\r\n  display: grid;\r\n  place-items: center;\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  height: 32px;\r\n  min-height: 32px;\r\n  padding: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :has(> .dlook-caption-toggle:not([hidden])) > :is([class*=\"_playbackButtonWrapper_\"], .dlook-audio-speed) {\r\n  right: calc(var(--dlook-speed-inset) + 44px);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-caption-toggle {\r\n  position: absolute;\r\n  z-index: 1;\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  width: 36px;\r\n  height: 32px;\r\n  display: grid;\r\n  place-items: center;\r\n  padding: 0;\r\n  border: 1px solid #b6dfff40;\r\n  border-radius: 999px;\r\n  background: #1a2d54;\r\n  color: var(--dlook-player-text);\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-caption-toggle svg { width: 19px; height: 19px; }\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-caption-toggle[aria-pressed=\"true\"] {\r\n  background: #b6dfff;\r\n  color: #142852;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-caption-toggle[hidden],\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] :is([data-dlook-subtitle-source], [class*=\"_row_\"]:has(> [data-dlook-subtitle-source]:only-child)) {\r\n  display: none;\r\n}\r\n\r\n@media (prefers-reduced-motion: reduce) {\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n    transition: none;\r\n  }\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButton_\"] {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  min-width: 44px;\r\n  min-height: 32px;\r\n  text-align: center;\r\n  border: 1px solid #b6dfff40;\r\n  border-radius: 100px;\r\n  background: #1a2d54;\r\n  color: var(--dlook-player-text);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButton_\"] span {\r\n  color: inherit;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) {\r\n  display: grid;\r\n  grid-template-areas: \"title\" \"album\" \"seek\" \"controls\" \"status\";\r\n  grid-template-columns: minmax(0, 1fr);\r\n  flex: 0 0 auto;\r\n  box-sizing: border-box;\r\n  width: min(100%, 475px);\r\n  margin-inline: auto;\r\n  padding: 10px clamp(20px, 6vw, 36px) calc(13px + env(safe-area-inset-bottom, 0px));\r\n  background: transparent;\r\n  text-align: start;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) > :is([class*=\"_title_\"], .dlook-audio-title) {\r\n  grid-area: title;\r\n  margin: 0;\r\n  padding: 0;\r\n  font: 760 clamp(19px, 5vw, 24px)/1.25 system-ui, sans-serif;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_titleInner_\"] {\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) > :is([class*=\"_album_\"], .dlook-audio-album) {\r\n  grid-area: album;\r\n  margin: 3px 0 7px;\r\n  color: var(--dlook-player-muted);\r\n  font-size: 13px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_sliderWrapper_\"] {\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([data-time], .dlook-audio-seek) {\r\n  grid-area: seek;\r\n  display: grid;\r\n  grid-template: \"position position\" 26px \"elapsed remaining\" auto / 1fr 1fr;\r\n  height: auto;\r\n  padding: 0;\r\n  color: var(--dlook-player-muted);\r\n  font-variant-numeric: tabular-nums;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-time] > [class*=\"_playerSlider_\"] {\r\n  grid-area: position;\r\n  width: 100%;\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playerSlider_\"] [class*=\"_track_\"] {\r\n  background: #b6dfff46;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playerSlider_\"] [class*=\"_indicator_\"] {\r\n  background: #b6dfff;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_elapsedTime_\"], .dlook-audio-elapsed) {\r\n  grid-area: elapsed;\r\n  justify-self: start;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_remainingTime_\"], .dlook-audio-remaining) {\r\n  grid-area: remaining;\r\n  justify-self: end;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlButtons_\"], .dlook-audio-transport) {\r\n  grid-area: controls;\r\n  margin-top: 8px;\r\n  padding: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([data-align=\"space-between\"]:has(> [data-control=\"play-pause\"]), .dlook-audio-transport) {\r\n  display: grid;\r\n  grid-template-columns: repeat(2, minmax(0, 1fr)) 64px repeat(2, minmax(0, 1fr));\r\n  align-items: center;\r\n  justify-items: center;\r\n  height: 68px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_shuffle_\"], [class*=\"_repeat_\"]) {\r\n  width: min(100%, 44px);\r\n  min-height: 44px;\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control] {\r\n  border-radius: 50%;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control=\"play-pause\"] {\r\n  width: 60px;\r\n  height: 60px;\r\n  background: #b6dfff;\r\n  color: #132654;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control=\"play-pause\"] svg {\r\n  fill: currentColor;\r\n}\r\n\r\n/* The native triangle needs optical centering within its square SVG. */\r\nhtml[data-dlook-play] #App :is([data-control=\"play-pause\"], [data-dd-action-name=\"player.mini_play_pause\"]) > svg[viewBox=\"0 0 80 100\"] {\r\n  translate: 13.333% 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_volumeWrapper_\"] {\r\n  margin-inline: 0;\r\n}\r\n\r\nhtml[data-dlook-play] {\r\n  --dlook-mini-width: min(calc(100% - 20px), 556px);\r\n  --dlook-mini-bottom: calc(var(--dlook-play-dock) - 4px);\r\n  --dlook-mini-radius: 14px;\r\n}\r\n\r\nhtml[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini) {\r\n  position: fixed;\r\n  inset-inline: 0;\r\n  left: 0 !important;\r\n  bottom: var(--dlook-mini-bottom);\r\n  width: var(--dlook-mini-width);\r\n  height: 60px;\r\n  margin-inline: auto;\r\n  padding: 0;\r\n  overflow: hidden;\r\n  border: 1px solid #b6dfff35;\r\n  border-radius: var(--dlook-mini-radius);\r\n  box-sizing: border-box;\r\n  color: #f1f7ff;\r\n  --surface-on-surface: #f1f7ff;\r\n  --surface-on-surface-primary: var(--dlook-play-accent);\r\n}\r\n\r\nhtml[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini):not([data-handing-off]),\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_miniBarGhost_\"] {\r\n  background: #172b52;\r\n  box-shadow: 0 5px 16px #0716334a;\r\n}\r\n\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_miniBarGhost_\"] {\r\n  width: var(--dlook-mini-width);\r\n  height: 60px;\r\n  margin-inline: auto;\r\n  bottom: var(--dlook-mini-bottom);\r\n  border-radius: var(--dlook-mini-radius);\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_info_\"] {\r\n  grid-template-columns: 40px minmax(0, 1fr);\r\n  min-width: 0;\r\n  padding: 9px 8px 9px 11px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_thumbnail_\"] {\r\n  overflow: hidden;\r\n  border-radius: 8px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_thumbnail_\"]::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: 0;\r\n  background: var(--dlook-mini-cover, none) center / cover no-repeat;\r\n  pointer-events: none;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_buttons_\"] {\r\n  grid-template-columns: repeat(2, 44px);\r\n  padding-inline-end: 4px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_titleInner_\"] {\r\n  margin-inline-start: 0;\r\n  font-weight: 650;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_album_\"] {\r\n  color: #b9cbea;\r\n}\r\n\r\n.dlook-offline-mini {\r\n  display: flex;\r\n  align-items: center;\r\n  z-index: 2;\r\n}\r\n\r\n.dlook-offline-mini > :last-child { margin-inline-end: 4px; }\r\n\r\n.dlook-offline-mini::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: auto 0 0;\r\n  width: var(--dlook-audio-progress, 0%);\r\n  height: 2px;\r\n  background: var(--dlook-play-accent);\r\n  pointer-events: none;\r\n}\r\n\r\n.dlook-audio-mini-thumb {\r\n  display: grid;\r\n  place-items: center;\r\n  width: 40px;\r\n  height: 40px;\r\n  flex: none;\r\n  overflow: hidden;\r\n  position: relative;\r\n  border-radius: 8px;\r\n  background: #101e3b;\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-audio-mini-thumb img,\r\n.dlook-audio-art img {\r\n  position: absolute;\r\n  inset: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  object-fit: cover;\r\n}\r\n\r\n.dlook-audio-mini-open {\r\n  gap: 10px;\r\n  flex: 1;\r\n  min-width: 0;\r\n  padding-inline: 11px 8px;\r\n  text-align: start;\r\n}\r\n\r\n.dlook-audio-mini-text {\r\n  flex: 1;\r\n  min-width: 0;\r\n}\r\n\r\n.dlook-audio-mini-text > *,\r\n.dlook-audio-title,\r\n.dlook-audio-album {\r\n  display: block;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.dlook-audio-mini-text strong {\r\n  font: 650 13px/1.4 system-ui, sans-serif;\r\n}\r\n\r\n.dlook-offline-mini .dlook-audio-mini-text small {\r\n  color: #b9cbea;\r\n  font-size: 11px;\r\n}\r\n\r\n.dlook-offline-player {\r\n  position: fixed;\r\n  z-index: 3;\r\n  display: flex;\r\n  flex-direction: column;\r\n  overflow: auto;\r\n  overscroll-behavior: contain;\r\n}\r\n\r\n.dlook-audio-stage {\r\n  display: grid;\r\n  place-items: center;\r\n  position: relative;\r\n}\r\n\r\n.dlook-audio-art {\r\n  display: grid;\r\n  place-items: center;\r\n  position: relative;\r\n  overflow: hidden;\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-audio-art > svg {\r\n  width: 42px;\r\n  height: 42px;\r\n}\r\n\r\n.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue, .dlook-audio-speed) {\r\n  position: absolute;\r\n  z-index: 1;\r\n  border: 1px solid #b6dfff40;\r\n  background: #1a2d54;\r\n  color: #f1f7ff;\r\n}\r\n\r\n.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue) {\r\n  width: 40px;\r\n  height: 40px;\r\n  top: calc(10px + env(safe-area-inset-top, 0px));\r\n  border-radius: 50%;\r\n}\r\n\r\n.dlook-audio-minimize { left: 16px; }\r\n.dlook-audio-queue { right: 16px; }\r\n\r\n.dlook-audio-speed {\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  appearance: none;\r\n  box-sizing: border-box;\r\n  min-width: 44px;\r\n  min-height: 32px;\r\n  border-radius: 999px;\r\n  padding: 0 8px;\r\n  font: 500 12px/1.2 system-ui, sans-serif;\r\n  text-align: center;\r\n  text-align-last: center;\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-button {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  min-height: 44px;\r\n  padding-block: 0;\r\n  border: 0;\r\n  background: transparent;\r\n  color: inherit;\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-button:is(:hover, [aria-pressed=\"true\"]) { color: var(--dlook-play-accent); }\r\n.dlook-audio-button:focus-visible,\r\n.dlook-caption-toggle:focus-visible,\r\n.dlook-audio-speed:focus-visible,\r\n.dlook-audio-position:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: 2px; }\r\n.dlook-audio-button svg { width: 22px; height: 22px; flex: none; }\r\n.dlook-audio-transport .dlook-audio-button { position: relative; min-width: 44px; }\r\n.dlook-audio-transport [data-control=\"play-pause\"] svg { width: 28px; height: 28px; }\r\n.dlook-audio-transport [data-repeat=\"track\"]::after { content: \"1\"; position: absolute; top: 2px; right: 5px; font-size: 10px; }\r\n.dlook-offline-mini > .dlook-audio-button:not(.dlook-audio-mini-open) { flex: 0 0 44px; }\r\n.dlook-offline-mini > .dlook-audio-button:nth-child(2) svg { fill: currentColor; }\r\n\r\n.dlook-audio-position {\r\n  grid-area: position;\r\n  appearance: none;\r\n  width: 100%;\r\n  height: 26px;\r\n  margin: 0;\r\n  background: transparent;\r\n  accent-color: var(--dlook-play-accent);\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-position::-webkit-slider-runnable-track {\r\n  height: 4px;\r\n  border-radius: 10px;\r\n  background: linear-gradient(to right, #b6dfff var(--dlook-audio-progress, 0%), #b6dfff46 0);\r\n}\r\n\r\n.dlook-audio-position::-webkit-slider-thumb {\r\n  appearance: none;\r\n  width: 16px;\r\n  height: 16px;\r\n  margin-top: -6px;\r\n  border-radius: 50%;\r\n  background: #b6dfff;\r\n}\r\n\r\n.dlook-audio-position::-moz-range-track { height: 4px; border-radius: 10px; background: #b6dfff46; }\r\n.dlook-audio-position::-moz-range-progress { height: 4px; border-radius: 10px; background: #b6dfff; }\r\n.dlook-audio-position::-moz-range-thumb { border: 0; border-radius: 50%; background: #b6dfff; }\r\n.dlook-audio-seek span { font: 500 11px/1.3 system-ui, sans-serif; }\r\n.dlook-audio-status { grid-area: status; margin: 6px 0 0; color: #ffe197; }\r\n.dlook-audio-status:empty, .dlook-offline-mini[hidden], .dlook-offline-player[hidden] { display: none; }\r\n\r\n@media (max-width: 760px) {\r\n  html[data-dlook-play] .dlook-offline-player {\r\n    inset: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    border: 0;\r\n    border-radius: 0;\r\n  }\r\n\r\n  html[data-dlook-play]:has(.dlook-offline-page:not([hidden]) > .dlook-offline-player:not([hidden])) .dlook-play-nav,\r\n  .dlook-offline-page:has(> .dlook-offline-player:not([hidden])) > main {\r\n    visibility: hidden;\r\n  }\r\n}\r\n\r\n@media (max-height: 550px) and (orientation: landscape) {\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"]:not([data-pc]), .dlook-offline-player) {\r\n    flex-direction: row;\r\n  }\r\n\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"]:not([data-pc]), .dlook-offline-player) > :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) {\r\n    align-content: center;\r\n    width: 49%;\r\n  }\r\n}\n\nhtml[data-dlook-offline] #App {\n  visibility: hidden;\n  pointer-events: none;\n  z-index: 10001;\n}\n\nhtml[data-dlook-offline] #App :is([data-dd-action-name=\"player.mini_open\"], [class*=\"_audioPlayer_\"]) {\n  visibility: visible;\n  pointer-events: auto;\n}\n\n.dlook-offline-page {\n  --offline-surface: #f3f6fc;\n  --offline-card: #fff;\n  --offline-text: #182e53;\n  --offline-muted: #415570;\n  --offline-border: #dce5f4;\n  position: fixed;\n  inset: 0;\n  z-index: 10000;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;\n  background: var(--offline-surface);\n  color: var(--offline-text);\n  font: 500 14px/1.5 system-ui, sans-serif;\n}\n\n.dlook-offline-page[hidden],\n.dlook-offline-page[data-dlook-background] > main { display: none; }\n\n.dlook-offline-page[data-dlook-background] {\n  background: transparent;\n  pointer-events: none;\n}\n\n.dlook-offline-page[data-dlook-background] > :is(.dlook-offline-player, .dlook-offline-mini) { pointer-events: auto; }\n\nbody[data-theme=\"dark\"] .dlook-offline-page {\n  --offline-surface: #151e2e;\n  --offline-card: #202d43;\n  --offline-text: #e1ecfa;\n  --offline-muted: #b6c8df;\n  --offline-border: #384d6b;\n}\n\n@media (prefers-color-scheme: dark) {\n  body:not([data-theme=\"light\"]) .dlook-offline-page {\n    --offline-surface: #151e2e;\n    --offline-card: #202d43;\n    --offline-text: #e1ecfa;\n    --offline-muted: #b6c8df;\n    --offline-border: #384d6b;\n  }\n}\n\n.dlook-offline-heading {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  width: min(100%, 840px);\n  margin: 0 auto 16px;\n}\n\n.dlook-offline-page h1 {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip-path: inset(50%);\n}\n\n.dlook-offline-heading:has(.dlook-offline-back[hidden]) { margin-bottom: 0; }\n\n.dlook-offline-page > main {\n  flex: 1;\n  overflow: auto;\n  box-sizing: border-box;\n  width: min(100%, 872px);\n  margin-inline: auto;\n  padding: max(16px, env(safe-area-inset-top, 0px)) 16px var(--dlook-play-dock);\n}\n\n.dlook-offline-page:has(> .dlook-offline-mini:not([hidden])) > main,\nhtml[data-dlook-offline]:has(#App [data-dd-action-name=\"player.mini_open\"]) .dlook-offline-page > main {\n  padding-bottom: calc(var(--dlook-play-dock) + 60px);\n}\n\n.dlook-offline-notice {\n  margin: 0 0 12px;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-notice:empty,\n.dlook-offline-page [hidden],\n.dlook-offline-work [hidden] {\n  display: none;\n}\n\n.dlook-offline-list {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: var(--dlook-collection-gap);\n  width: min(100%, var(--dlook-collection-width));\n  margin-inline: auto;\n}\n\n.dlook-offline-card {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  overflow: hidden;\n  padding: 0;\n  border: 1px solid var(--offline-border);\n  border-radius: 15px;\n  background: var(--offline-card);\n  color: var(--offline-text);\n  text-align: start;\n  cursor: pointer;\n}\n\n.dlook-offline-cover {\n  position: relative;\n  display: grid;\n  place-items: center;\n  width: 100%;\n  aspect-ratio: 4 / 3;\n  overflow: hidden;\n  background: #172c53;\n  color: var(--dlook-play-accent);\n}\n\n.dlook-offline-cover svg {\n  width: 36px;\n  height: 36px;\n}\n\n.dlook-offline-cover img {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.dlook-offline-card-text {\n  display: grid;\n  gap: 4px;\n  padding: 11px 12px 13px;\n  min-width: 0;\n}\n\n.dlook-offline-card-text strong {\n  display: -webkit-box;\n  overflow: hidden;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  overflow-wrap: anywhere;\n  font: 700 15px/1.35 system-ui, sans-serif;\n}\n\n.dlook-offline-card .dlook-offline-creator {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.dlook-offline-page small {\n  display: block;\n  font: 500 12px/1.35 system-ui, sans-serif;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-detail {\n  width: min(100%, 640px);\n  margin-inline: auto;\n  border: 1px solid var(--offline-border);\n  border-radius: 15px;\n  overflow: hidden;\n  background: var(--offline-card);\n}\n\n.dlook-offline-detail-hero {\n  display: grid;\n  justify-items: center;\n  gap: 8px;\n  padding: 14px;\n  text-align: center;\n  background: var(--offline-surface);\n}\n\n.dlook-offline-detail-hero .dlook-offline-cover {\n  width: min(100%, 236px);\n  border-radius: 12px;\n}\n\n.dlook-offline-detail ol {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n.dlook-offline-button {\n  min-height: 44px;\n  box-sizing: border-box;\n  padding: 6px 12px;\n  border: 0;\n  border-radius: 7px;\n  background: var(--dlook-play-action);\n  color: white;\n  font: 600 14px/1.3 system-ui, sans-serif;\n  cursor: pointer;\n  overflow-wrap: anywhere;\n}\n\n.dlook-offline-button:disabled {\n  opacity: .75;\n  cursor: default;\n}\n\n.dlook-offline-button:focus-visible,\n.dlook-offline-card:focus-visible {\n  outline: 2px solid var(--dlook-play-focus);\n  outline-offset: -3px;\n}\n\n.dlook-offline-detail ol .dlook-offline-button {\n  display: block;\n  width: 100%;\n  border-bottom: 1px solid var(--offline-border);\n  border-radius: 0;\n  background: transparent;\n  color: inherit;\n  text-align: start;\n}\n\n.dlook-offline-detail ol .dlook-offline-button:is(:hover, [aria-current]) {\n  background: var(--offline-surface);\n}\n\n.dlook-offline-detail ol .dlook-offline-button[aria-current] {\n  box-shadow: inset 3px 0 var(--dlook-play-action);\n}\n\n.dlook-offline-detail > button {\n  display: block;\n  margin: 6px 10px;\n  background: transparent;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-heading .dlook-offline-back {\n  display: grid;\n  place-items: center;\n  width: 36px;\n  min-height: 36px;\n  border-radius: 50%;\n  padding: 0;\n  background: var(--dlook-play-band);\n  color: var(--dlook-play-text);\n}\n\n.dlook-offline-heading .dlook-offline-back[hidden] {\n  display: none;\n}\n\n.dlook-offline-heading .dlook-offline-back svg {\n  width: 19px;\n  height: 19px;\n}\n\n.dlook-offline-work {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px 12px;\n  box-sizing: border-box;\n  width: min(calc(100% - 24px), 840px);\n  margin: 12px auto;\n  padding: 7px;\n  border-radius: 7px;\n  background: var(--dlook-play-band);\n  color: var(--dlook-play-text);\n  font: 600 14px/1.3 system-ui, sans-serif;\n}\n\n.dlook-offline-work p {\n  flex: 1 1 180px;\n  margin: 0;\n}\n\n.dlook-offline-work p:empty {\n  display: none;\n}\n\n.dlook-offline-work button:first-child {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 7px;\n}\n\n.dlook-offline-work button:first-child svg {\n  width: 18px;\n  height: 18px;\n  flex: none;\n}\n\n#App [class*=\"_actions_\"]:has(> .dlook-offline-work[data-listen-group]) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, auto));\n}\n\n.dlook-offline-work[data-listen-group] {\n  grid-column: 1 / -1;\n  justify-content: end;\n  width: auto;\n  margin: 0;\n  padding: 0;\n  background: transparent;\n  color: var(--surface-on-surface, #182e53);\n}\n\n.dlook-offline-work[data-listen-group] button:first-child {\n  background: var(--dlook-play-band);\n}\n\n.dlook-offline-work button:disabled {\n  opacity: .68;\n  cursor: default;\n}\n\n.dlook-offline-work[data-listen-group] p {\n  flex: 0 1 auto;\n}\n\n@media (max-width: 760px) {\n  .dlook-offline-work[data-listen-group] button:first-child {\n    flex: 1 0 100%;\n  }\n}\n\n@container (width < 460px) {\n  [class*=\"_actions_\"]:has(> .dlook-offline-work) > :is([data-dd-action-name=\"work_detail.resume\"], [data-dd-action-name=\"work_detail.start\"]) {\n    grid-column: 1 / -1;\n  }\n}\n\n:root[data-dlook-route-phase] {\r\n  --dlook-route-fallback: #f4f4f4;\r\n}\r\n\r\n:root[data-dlook-route-phase] body[data-theme=\"dark\"] { --dlook-route-fallback: #151e2e; }\r\n\r\n@media (prefers-color-scheme: dark) {\r\n  :root[data-dlook-route-phase] body:not([data-theme=\"light\"]) { --dlook-route-fallback: #151e2e; }\r\n}\r\n\r\n:root[data-dlook-route-phase=\"wait\"] #App > .loContainer > div:has(nav [data-dd-action-name=\"menu.library\"]) {\r\n  visibility: hidden;\r\n}\r\n\r\n/* The route cover belongs to the page, below the dock and the player. */\r\n:root[data-dlook-route-phase] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main) {\r\n  isolation: isolate;\r\n}\r\n\r\n:root[data-dlook-route-phase] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {\r\n  content: \"\";\r\n  position: fixed;\r\n  inset: 0;\r\n  z-index: 10100;\r\n  background: var(--offline-surface, var(--background-background, var(--dlook-route-fallback)));\r\n}\r\n\r\n:root[data-dlook-route-phase] #App > .loContainer > main > :is(\r\n  [data-dd-action-name=\"player.mini_open\"], [class*=\"_audioPlayer_\"]\r\n) {\r\n  z-index: 10102;\r\n}\r\n\r\n@media (prefers-reduced-motion: no-preference) {\r\n  :root[data-dlook-route-phase=\"out\"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {\r\n    animation: dlook-route-cover-in 85ms ease-out both;\r\n  }\r\n\r\n  :root[data-dlook-route-phase=\"in\"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {\r\n    pointer-events: none;\r\n    animation: dlook-route-cover-out 200ms ease-out both;\r\n  }\r\n\r\n  :root[data-dlook-route-phase=\"wait\"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::before {\r\n    content: \"\";\r\n    position: fixed;\r\n    inset: 0;\r\n    margin: auto;\r\n    z-index: 10101;\r\n    width: 22px;\r\n    height: 22px;\r\n    border: 2px solid #6689b650;\r\n    border-top-color: #6599e2;\r\n    border-radius: 50%;\r\n    opacity: 0;\r\n    pointer-events: none;\r\n    animation: dlook-route-cover-in 110ms ease-out 160ms forwards, dlook-route-spin 680ms linear 160ms infinite;\r\n  }\r\n\r\n  :root[data-dlook-route-phase=\"in\"] #App main :is(\r\n    [data-dlook-library-card], [class*=\"_workTile_\"], [data-dd-action-name$=\".card\"],\r\n    .dlook-play-settings li, [data-dlook-library-filters] button, [data-dlook-library-tools] > button, [data-dlook-round-action]\r\n  ),\r\n  html[data-dlook-offline] :is(.dlook-offline-list:not([hidden]) > .dlook-offline-card, .dlook-offline-detail:not([hidden]), .dlook-offline-back:not([hidden])) {\r\n    animation: dlook-content-in 200ms ease-out both;\r\n  }\r\n\r\n  html[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player:not([hidden])) > :is(\r\n    [class*=\"_albumartWrapper_\"], [class*=\"_controlWrapper_\"], .dlook-audio-stage, .dlook-audio-controls\r\n  ),\r\n  html[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini:not([hidden])) > :is(\r\n    [class*=\"_info_\"], .dlook-audio-mini-open\r\n  ) {\r\n    animation: dlook-player-in 190ms ease-out both;\r\n  }\r\n\r\n  html[data-dlook-play] :is(\r\n    #App [data-control], .dlook-audio-button, .dlook-caption-toggle,\r\n    [data-dlook-library-tools] > button, [data-dlook-library-filter], [data-dlook-round-action], .dlook-collection-actions > button\r\n  ) {\r\n    transition: scale 125ms ease-out, background-color 150ms ease-out;\r\n  }\r\n\r\n  html[data-dlook-play] :is(\r\n    #App [data-control], .dlook-audio-button, .dlook-caption-toggle,\r\n    [data-dlook-library-tools] > button, [data-dlook-library-filter], [data-dlook-round-action], .dlook-collection-actions > button\r\n  ):active {\r\n    scale: .94;\r\n  }\r\n}\r\n\r\n@keyframes dlook-route-cover-in { from { opacity: 0; } to { opacity: 1; } }\r\n@keyframes dlook-route-cover-out { from { opacity: 1; } to { opacity: 0; } }\r\n@keyframes dlook-route-spin { to { rotate: 360deg; } }\r\n@keyframes dlook-content-in { from { opacity: .7; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }\r\n@keyframes dlook-player-in { from { opacity: .45; } to { opacity: 1; } }");
+  applyStyles(document.head ?? document.documentElement, undefined, "/* Theme tokens shared by every DLsite Play enhancement. Other play-*.css files\n * only reference these variables, so a theme is a single block of overrides. */\nhtml {\n  --dlook-play-band: #2147a1;\n  --dlook-play-action: #295bc8;\n  --dlook-play-accent: #b6dfff;\n  --dlook-play-on-accent: #142852;\n  --dlook-play-text: #e1ecfa;\n  --dlook-play-light: #f1f7ff;\n  --dlook-play-muted: #b9cbea;\n  --dlook-play-disabled: #8096ba;\n  --dlook-play-primary: #91c8ff;\n  --dlook-play-deep: #101e3b;\n  --dlook-play-raised: #1a2d54;\n  --dlook-play-shadow: #0a275a;\n  --dlook-play-focus: #ffe197;\n}\n\nhtml[data-dlook-theme=\"pink\"] {\n  --dlook-play-band: #a8396f;\n  --dlook-play-action: #c44a86;\n  --dlook-play-accent: #ffc4de;\n  --dlook-play-on-accent: #4b0f2f;\n  --dlook-play-text: #fde7f1;\n  --dlook-play-light: #fff3f8;\n  --dlook-play-muted: #ecbdd3;\n  --dlook-play-disabled: #b98aa1;\n  --dlook-play-primary: #ff9fcb;\n  --dlook-play-deep: #2c1020;\n  --dlook-play-raised: #44193a;\n  --dlook-play-shadow: #4f0f2e;\n  --dlook-play-focus: #ffe197;\n}\n\nhtml[data-dlook-play] {\n  --dlook-play-dock: calc(76px + env(safe-area-inset-bottom, 0px));\n  --dlook-header-height: 52px;\n  --dlook-tool-size: 44px;\n  --dlook-tool-gap: 6px;\n  --dlook-tool-end: max(12px, env(safe-area-inset-right, 0px));\n  --dlook-tool-start: max(12px, env(safe-area-inset-left, 0px));\n  --dlook-search-motion: dlook-expand-library-search 240ms cubic-bezier(.2, .75, .25, 1) both;\n}\n\n#App > .loContainer[data-dlook-play] > main {\n  --dlook-page-frame: 880px;\n  --dlook-page-gutter: max(0px, calc((100% - var(--dlook-page-frame)) / 2));\n}\n\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"] {\n  box-sizing: border-box;\n  padding-bottom: var(--dlook-play-dock);\n  scroll-padding-bottom: var(--dlook-play-dock);\n}\n\n#App > .loContainer[data-dlook-play]:has([data-dd-action-name=\"player.mini_open\"]) > main [data-content-pane=\"true\"] {\n  padding-bottom: calc(var(--dlook-play-dock) + 60px);\n  scroll-padding-bottom: calc(var(--dlook-play-dock) + 60px);\n}\n\n#App > .loContainer[data-dlook-play] > div:has(nav [data-dd-action-name=\"menu.library\"]),\n#App > .loContainer[data-dlook-play] [data-dd-action-name=\"menu.hamburger_open\"] {\n  display: none !important;\n}\n\n#App > .loContainer[data-dlook-play] > main :is(header[class*=\"_loHeader_\"], [data-content-pane=\"true\"]) {\n  left: 0 !important;\n  width: 100% !important;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] {\n  top: env(safe-area-inset-top, 0px);\n  height: var(--dlook-header-height);\n  border: 0;\n  background: transparent;\n  box-shadow: none;\n  pointer-events: none;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] > [class*=\"_headerInner_\"] {\n  box-sizing: border-box;\n  width: 100%;\n  max-width: var(--dlook-page-frame);\n  height: 100%;\n  margin-inline: auto;\n  padding-inline: var(--dlook-tool-start) var(--dlook-tool-end);\n}\n\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"] {\n  top: env(safe-area-inset-top, 0px);\n}\n\n#App > .loContainer[data-dlook-play] > main:has(> header [class*=\"_headerInner_\"] :is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"]), input)) [data-content-pane=\"true\"] {\n  top: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px));\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] :is([class*=\"_colCenter_\"], [class*=\"_colLeft_\"], [class*=\"_colRight_\"]):not(:has(:is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"]), input))) {\n  visibility: hidden;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button:not([data-dd-action-name=\"menu.hamburger_open\"])) {\n  min-width: 38px;\n  min-height: 38px;\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 21%, transparent);\n  border-radius: 12px;\n  background: var(--dlook-play-band);\n  box-shadow: 0 2px 8px color-mix(in srgb, var(--dlook-play-shadow) 15%, transparent);\n  color: var(--dlook-play-text);\n  pointer-events: auto;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button):hover {\n  background: var(--dlook-play-action);\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a[href], button):focus-visible {\n  outline: 2px solid var(--dlook-play-focus);\n  outline-offset: -2px;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] input {\n  pointer-events: auto;\n}\n\n#App > .loContainer[data-dlook-play] > main [data-content-pane=\"true\"],\n#App > .loContainer[data-dlook-play] [data-dd-action-name=\"player.mini_open\"] {\n  --safe-area-inset-bottom: 0px;\n}\n\n/* The official mobile drawer mounts the menu actions on demand. */\nhtml[data-dlook-play] [data-dd-action-name=\"menu.overlay_close\"],\nhtml[data-dlook-play] [role=\"presentation\"]:has(> [role=\"dialog\"] [data-dd-action-name=\"menu.header_close\"]) {\n  opacity: 0 !important;\n  pointer-events: none !important;\n}\n\nhtml[data-dlook-play]:has(.dlook-play-nav:not([hidden])):not(:has(#App [class*=\"_audioPlayer_\"]:not([data-pc])))\n  [role=\"dialog\"][class*=\"_bottomSheet_\"]:not(:has([data-dd-action-name=\"menu.header_close\"])) {\n  bottom: var(--dlook-play-dock);\n  max-height: calc(100dvh - var(--dlook-play-dock));\n}\n\nhtml[data-dlook-play]:has(.dlook-play-nav:not([hidden]))\n  [role=\"region\"][class*=\"_viewport_\"] > [class*=\"_group_\"]:has([class*=\"_toast_\"]) {\n  bottom: calc(var(--dlook-play-dock) + 8px);\n}\n\n.dlook-play-nav,\n.dlook-play-settings {\n  color: var(--dlook-play-text);\n  font: 600 14px/1.3 system-ui, sans-serif;\n}\n\n.dlook-play-nav {\n  position: fixed;\n  z-index: 5100;\n  inset: auto 0 0;\n  height: var(--dlook-play-dock);\n  box-sizing: border-box;\n  padding: 8px max(8px, env(safe-area-inset-right, 0px))\n    calc(8px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));\n  background: transparent;\n  pointer-events: none;\n}\n\nhtml[data-dlook-offline] .dlook-play-nav {\n  z-index: 10002;\n}\n\n.dlook-play-nav ul,\n.dlook-play-settings ul {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n.dlook-play-nav ul {\n  position: relative;\n  isolation: isolate;\n  display: grid;\n  grid-template-columns: repeat(5, minmax(0, 1fr));\n  box-sizing: border-box;\n  width: min(100%, 560px);\n  margin-inline: auto;\n  padding: 4px;\n  border-radius: 999px;\n  background: var(--dlook-play-band);\n  box-shadow: 0 4px 15px color-mix(in srgb, var(--dlook-play-shadow) 16%, transparent);\n  pointer-events: auto;\n}\n\n.dlook-play-indicator {\n  position: absolute;\n  z-index: -1;\n  inset: 4px auto 4px 4px;\n  width: calc((100% - 8px) / 5);\n  border-radius: 999px;\n  background: var(--dlook-play-action);\n  transition: transform var(--dlook-tab-slide, 240ms) cubic-bezier(.2, .75, .25, 1);\n  pointer-events: none;\n}\n\n.dlook-play-settings ul {\n  display: grid;\n  grid-template-columns: repeat(6, minmax(0, 1fr));\n  gap: clamp(4px, 1.5vw, 8px);\n}\n\n.dlook-play-nav a,\n.dlook-play-settings :is(a, button) {\n  display: flex;\n  align-items: center;\n  box-sizing: border-box;\n  color: inherit;\n  font: inherit;\n  text-decoration: none;\n}\n\n.dlook-play-nav a {\n  min-height: 52px;\n  border-radius: 999px;\n  flex-direction: column;\n  justify-content: center;\n  gap: 3px;\n  position: relative;\n  text-align: center;\n  font-size: 12px;\n  line-height: 1.15;\n  transition: color 160ms ease, transform 180ms ease, background-color 160ms ease;\n}\n\n.dlook-play-nav a[aria-current=\"page\"] {\n  color: white;\n}\n\n.dlook-play-nav a:hover {\n  background: #ffffff12;\n  color: white;\n}\n\n.dlook-play-nav a:active {\n  transform: scale(.94);\n}\n\n.dlook-play-nav a[aria-current=\"page\"] svg,\n.dlook-play-settings svg {\n  color: var(--dlook-play-accent);\n}\n\n.dlook-play-nav a[data-unread]::after {\n  content: \"\";\n  position: absolute;\n  top: 6px;\n  left: calc(50% + 11px);\n  width: 6px;\n  height: 6px;\n  border-radius: 50%;\n  background: var(--dlook-play-focus);\n}\n\n.dlook-play-nav a:focus-visible,\n.dlook-play-settings :is(a, button):focus-visible {\n  outline: 2px solid var(--dlook-play-focus);\n  outline-offset: -3px;\n}\n\n.dlook-play-icon {\n  fill: none;\n  stroke: currentColor;\n  stroke-width: 1.75;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n.dlook-play-nav svg {\n  width: 22px;\n  height: 22px;\n  flex: none;\n}\n\n.dlook-play-settings {\n  box-sizing: border-box;\n  width: min(calc(100% - 24px), 464px);\n  margin: 16px auto 0;\n  color: var(--surface-on-surface, #182e53);\n}\n\n.dlook-play-settings h2 {\n  margin: 0;\n  padding: 0 0 9px;\n  color: inherit;\n  font: 700 14px/1.3 system-ui, sans-serif;\n}\n\n.dlook-play-settings :is(a, button) {\n  justify-content: center;\n  flex-direction: column;\n  gap: 5px;\n  width: 100%;\n  min-height: 64px;\n  padding: 7px 2px;\n  border-radius: 12px;\n  background: var(--dlook-play-band);\n  border: 0;\n  color: var(--dlook-play-text);\n  font-size: clamp(10px, 3vw, 13px);\n  overflow-wrap: anywhere;\n  text-align: center;\n  cursor: pointer;\n  transition: background-color 160ms ease;\n}\n\n.dlook-play-settings :is(a, button):hover {\n  background: var(--dlook-play-action);\n}\n\n.dlook-play-settings svg {\n  width: 24px;\n  height: 24px;\n  fill: currentColor;\n}\n\n.dlook-play-settings svg.dlook-play-icon {\n  fill: none;\n}\n\n.dlook-play-settings button[aria-pressed=\"true\"] {\n  box-shadow: inset 0 0 0 2px var(--dlook-play-accent);\n}\n\n.dlook-play-settings [role=\"status\"] {\n  margin: 0;\n}\n\n.dlook-play-settings [role=\"status\"]:not(:empty) {\n  padding: 8px 0;\n}\n\n@media (max-width: 760px) {\n  .dlook-play-settings {\n    margin-top: 12px;\n  }\n}\n\n@media (max-width: 420px) {\n  .dlook-play-settings ul {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n  }\n}\n\n@media (min-width: 761px) {\n  #App > .loContainer[data-dlook-play] > main:not([data-dlook-library]):has(> [data-content-pane=\"true\"] > div[class*=\"_wrapper_\"]) {\n    --dlook-page-frame: min(840px, calc(100% - 48px));\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  html[data-dlook-play] {\n    --dlook-search-motion: none;\n  }\n  .dlook-play-indicator,\n  .dlook-play-nav a,\n  .dlook-play-settings :is(a, button) {\n    transition: none;\n  }\n}\n\n[data-dlook-collection] {\n  --dlook-collection-card: var(--surface-surface, white);\n  --dlook-collection-border: var(--surface-on-surface-border, #dce5f4);\n  --dlook-collection-ink: var(--surface-on-surface, #182e53);\n  --dlook-collection-muted: var(--surface-on-surface-variant-high, #415570);\n}\n\n[data-dlook-collection$=\"-index\"] ul:has(> li > a[data-dd-action-name$=\".card\"]) {\n  container-type: inline-size;\n  width: min(calc(100% - 24px), var(--dlook-collection-width));\n  margin: 12px auto 0;\n  background: transparent;\n}\n\n[data-dlook-collection$=\"-index\"] li:has(> :is([data-dd-action-name=\"mylist.card\"], [data-dd-action-name=\"playlist.card\"])) {\n  box-sizing: border-box;\n  max-height: none;\n  border: 0;\n  padding: 0 0 15px;\n}\n\n/* Play measures one item at a time. Each pair occupies two half-height slots,\n   with the second card aligned to the top of the first slot. */\n[data-dlook-collection$=\"-index\"] li[data-index]:has(> a[data-dd-action-name$=\".card\"]) {\n  --dlook-card-step: calc((100cqi - var(--dlook-collection-gap)) * .1875 + 40px);\n  position: relative;\n  height: var(--dlook-card-step);\n  padding: 0;\n  pointer-events: none;\n}\n\n[data-dlook-collection$=\"-index\"] li[data-index] > a[data-dd-action-name$=\".card\"] {\n  position: absolute;\n  inset-block-start: 0;\n  inset-inline-start: 0;\n  width: calc((100% - var(--dlook-collection-gap)) / 2);\n  height: calc(2 * var(--dlook-card-step) - var(--dlook-collection-gap));\n  box-sizing: border-box;\n  pointer-events: auto;\n}\n\n[data-dlook-collection$=\"-index\"] li:is([data-index$=\"1\"], [data-index$=\"3\"], [data-index$=\"5\"], [data-index$=\"7\"], [data-index$=\"9\"]) > a[data-dd-action-name$=\".card\"] {\n  inset-block-start: calc(-1 * var(--dlook-card-step));\n  inset-inline-start: auto;\n  inset-inline-end: 0;\n}\n\n[data-dlook-collection$=\"-index\"] div:has(> ul > li[data-index] > a[data-dd-action-name$=\".card\"]) {\n  box-sizing: content-box;\n  padding-block-end: min(calc((100vw - 36px) * .1875 + 40px), 129px);\n}\n\n[data-dlook-collection$=\"-index\"] :is([data-dd-action-name=\"mylist.card\"], [data-dd-action-name=\"playlist.card\"]) {\n  display: flex;\n  flex-direction: column;\n  padding: 0;\n  border: 1px solid var(--dlook-collection-border);\n  border-radius: 15px;\n  background: var(--dlook-collection-card);\n  box-shadow: 0 3px 12px color-mix(in srgb, var(--dlook-play-shadow) 8%, transparent);\n  color: var(--dlook-collection-ink);\n  text-decoration: none;\n  overflow: hidden;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"]:focus-visible,\n.dlook-collection-actions button:focus-visible {\n  outline: 2px solid var(--dlook-play-action);\n  outline-offset: 2px;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_thumbnail_\"],\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_thumbnail_\"] {\n  position: relative;\n  align-content: center;\n  justify-content: center;\n  width: 100%;\n  height: auto;\n  aspect-ratio: 4 / 3;\n  margin: 0;\n  background-color: var(--dlook-play-raised);\n  background-position: center;\n  background-size: cover;\n  overflow: hidden;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] {\n  /* Single covers have an inline contain rule from the native thumbnail. */\n  background-size: cover !important;\n  background-position: center !important;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] > span {\n  width: 50%;\n  height: 50%;\n  background-position: center;\n  background-size: cover !important;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] img,\n[data-dlook-collection$=\"-detail\"] [data-dd-action-name$=\".detail_item\"] [class*=\"_thumbnail_\"] img {\n  display: block;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n  object-position: center;\n}\n\n[data-dlook-collection$=\"-detail\"] [data-dd-action-name$=\".detail_item\"] [class*=\"_thumbnail_\"] {\n  flex: none;\n  width: 70px;\n  height: 70px;\n  aspect-ratio: 1;\n  border-radius: 8px;\n  overflow: hidden;\n  background-size: cover !important;\n  background-position: center !important;\n}\n\n[data-dlook-collection$=\"-detail\"] [data-dd-action-name$=\".detail_item\"] [class*=\"_thumbnail_\"] > span,\n[data-dlook-collection$=\"-detail\"] [data-dd-action-name$=\".detail_item\"] [class*=\"_thumbnail_\"] :is([class*=\"_thumbs_\"], [class*=\"_cover_\"], [class*=\"_imageContainer_\"], [class*=\"_thumb_\"]) {\n  width: 100%;\n  height: 100%;\n  aspect-ratio: auto;\n  background-size: cover !important;\n  background-position: center !important;\n}\n\n[data-dlook-collection] :is(a[data-dd-action-name$=\".card\"], [class*=\"_info_hxvvl_\"]) > [class*=\"_thumbnail_\"] > svg {\n  width: 52px;\n  height: 52px;\n  border-radius: 9px;\n  fill: var(--dlook-play-accent);\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] > [class*=\"_text_\"]:has(> p) {\n  box-sizing: border-box;\n  display: grid;\n  align-content: start;\n  gap: 4px;\n  width: 100%;\n  padding: 11px 14px 13px;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p {\n  margin: 0;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p:first-child {\n  display: block;\n  min-width: 0;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  font: 700 15px/1.35 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-index\"] a[data-dd-action-name$=\".card\"] p:not(:first-child) {\n  color: var(--dlook-collection-muted);\n  font: 500 12px/1.35 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-index\"] [class*=\"_text_\"]:has(> .dlook-collection-count) > p:nth-child(2) {\n  display: none;\n}\n\n#App > .loContainer[data-dlook-play] > main:has([data-dlook-collection$=\"-detail\"] > div > [class*=\"_info_hxvvl_\"]) > [data-content-pane=\"true\"][data-dlook-collection$=\"-detail\"] {\n  top: env(safe-area-inset-top, 0px);\n}\n\n[data-dlook-collection$=\"-detail\"] > div:has(> [class*=\"_info_hxvvl_\"]) {\n  padding-block-start: 0;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] {\n  --surface-on-surface: var(--dlook-play-light);\n  --surface-on-surface-variant-high: var(--dlook-play-accent);\n  display: grid;\n  position: relative;\n  justify-items: center;\n  gap: 14px;\n  margin: 0 0 12px;\n  --dlook-collection-detail-padding: clamp(16px, 4vw, 28px);\n  padding: calc(var(--dlook-header-height) + var(--dlook-collection-detail-padding)) 16px var(--dlook-collection-detail-padding);\n  border-radius: 16px;\n  background: linear-gradient(160deg, var(--dlook-play-band), var(--dlook-play-deep) 80%);\n  color: var(--dlook-play-light);\n  text-align: center;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a, button)[data-dlook-round-action],\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"] {\n  position: relative;\n  display: block;\n  box-sizing: border-box;\n  width: 42px;\n  height: 42px;\n  padding: 0;\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 30%, transparent);\n  border-radius: 50%;\n  background: color-mix(in srgb, var(--dlook-play-deep) 50%, transparent);\n  box-shadow: 0 2px 8px color-mix(in srgb, var(--dlook-play-shadow) 25%, transparent);\n  color: var(--dlook-play-text);\n  font-size: 0;\n  cursor: pointer;\n}\n\n#App > .loContainer[data-dlook-play] > main header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] :is(a, button)[data-dlook-round-action]:hover {\n  background: color-mix(in srgb, var(--dlook-play-deep) 92%, transparent);\n}\n\n[data-dlook-round-action] > :not([data-dlook-action-icon]) {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip-path: inset(50%);\n}\n\n[data-dlook-action-icon] {\n  position: absolute;\n  inset: 0;\n  width: 21px;\n  height: 21px;\n  margin: auto;\n  pointer-events: none;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [class*=\"_btnDelete_\"]:has(> [data-dlook-round-action=\"delete\"]) {\n  position: absolute;\n  inset: calc((var(--dlook-header-height) - 42px) / 2) calc(var(--dlook-tool-end) + 52px) auto auto;\n  z-index: 1;\n  margin: 0;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"]:is(:hover, :focus-visible) {\n  background: #864358;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] [data-dlook-round-action=\"delete\"]::before {\n  content: none;\n}\n\n[data-dlook-create] { cursor: pointer; }\n\n.dlook-collection-dialog {\n  box-sizing: border-box;\n  width: min(calc(100% - 32px), 400px);\n  max-width: none;\n  padding: 20px;\n  border: 1px solid var(--surface-on-surface-border, #dce5f4);\n  border-radius: 18px;\n  background: var(--surface-surface, #f3f6fc);\n  color: var(--surface-on-surface, #182e53);\n  font: 500 15px/1.4 system-ui, sans-serif;\n  box-shadow: 0 14px 50px color-mix(in srgb, var(--dlook-play-shadow) 25%, transparent);\n}\n\n.dlook-collection-dialog::backdrop { background: color-mix(in srgb, var(--dlook-play-deep) 70%, transparent); }\n.dlook-collection-dialog form { display: grid; gap: 12px; }\n.dlook-collection-dialog h2 { margin: 0; font-size: 20px; }\n.dlook-collection-dialog input {\n  box-sizing: border-box;\n  width: 100%;\n  min-height: 44px;\n  padding: 8px 12px;\n  border: 1px solid var(--surface-on-surface-border, #c3d2eb);\n  border-radius: 10px;\n  background: var(--surface-surface-high, #fff);\n  color: inherit;\n  font: 500 16px/1.4 system-ui, sans-serif;\n}\n\n.dlook-collection-dialog p { margin: 0; color: var(--surface-on-surface-error, #a32d4e); }\n.dlook-collection-dialog p:empty { display: none; }\n.dlook-collection-dialog form > div { display: flex; justify-content: flex-end; gap: 8px; }\n.dlook-collection-dialog button {\n  min-height: 44px;\n  padding: 0 17px;\n  border: 1px solid var(--surface-on-surface-border, #c3d2eb);\n  border-radius: 999px;\n  background: transparent;\n  color: inherit;\n  font: inherit;\n  cursor: pointer;\n}\n.dlook-collection-dialog button[type=\"submit\"] { background: var(--dlook-play-band); color: #fff; }\n.dlook-collection-dialog button:disabled { opacity: .55; cursor: default; }\n.dlook-collection-dialog :is(input, button):focus-visible { outline: 2px solid var(--dlook-play-action); outline-offset: 2px; }\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_thumbnail_\"] {\n  /* 4:3 hero cover keeping the former square cover's height: min(65vw, 248px). */\n  width: min(86.67vw, 331px, 100%);\n  height: auto;\n  aspect-ratio: 4 / 3;\n  border-radius: 13px;\n  box-shadow: 0 12px 36px color-mix(in srgb, var(--dlook-play-shadow) 40%, transparent);\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] > [class*=\"_text_\"] {\n  width: min(100%, 460px);\n  padding: 0;\n  color: var(--dlook-play-light);\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] h1 {\n  margin: 0 0 4px;\n  color: var(--dlook-play-light);\n  font: 750 clamp(20px, 5vw, 27px)/1.25 system-ui, sans-serif;\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_detail_hxvvl_\"] > p {\n  margin: 0;\n  color: var(--dlook-play-accent);\n}\n\n[data-dlook-collection$=\"-detail\"] [class*=\"_info_hxvvl_\"] input {\n  box-sizing: border-box;\n  width: 100%;\n}\n\n[data-dlook-collection$=\"-detail\"] :is(li[data-dd-action-name=\"mylist.detail_item\"], li[data-dd-action-name=\"playlist.detail_item\"]) {\n  cursor: pointer;\n  background-color: var(--dlook-collection-card);\n}\n\n[data-dlook-collection$=\"-detail\"] > div > ol:has(> li[data-dd-action-name$=\".detail_item\"]) {\n  margin: 0 12px 16px;\n  overflow: clip;\n  border-radius: 12px;\n}\n\n[data-dlook-collection$=\"-detail\"] li[data-editing][data-dd-action-name$=\".detail_item\"] {\n  cursor: default;\n}\n\n[data-dlook-collection$=\"-detail\"] li[data-editing=\"true\"][data-dd-action-name$=\".detail_item\"] {\n  box-sizing: border-box;\n  padding-inline: 44px;\n}\n\n[data-dlook-collection=\"mylist-detail\"] li[data-editing=\"true\"] > a {\n  inset-inline: 44px;\n  width: auto;\n}\n\n[data-dlook-collection$=\"-detail\"] li[data-editing=\"true\"] > button[data-dd-action-name$=\".detail_item_delete\"] {\n  inset-inline: 0 auto;\n  top: 0;\n  bottom: 0;\n  z-index: 2;\n  width: 44px;\n  height: 100%;\n  transform: none;\n}\n\n[data-dlook-collection$=\"-detail\"] li[data-editing=\"true\"] > [class*=\"_handleSort_\"] {\n  inset-inline: auto 0;\n  width: 44px;\n}\n\n.dlook-collection-actions {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 8px;\n  width: min(100%, 380px);\n}\n\n.dlook-collection-actions button {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  box-sizing: border-box;\n  min-height: 44px;\n  padding: 4px 6px;\n  border: 1px solid #ffffff26;\n  border-radius: 9px;\n  background: #ffffff19;\n  color: var(--dlook-play-light);\n  font: 650 13px/1.25 system-ui, sans-serif;\n  cursor: pointer;\n}\n\n.dlook-collection-actions button:first-child {\n  background: var(--dlook-play-action);\n}\n\n.dlook-collection-actions button:hover {\n  background: var(--dlook-play-action);\n}\n\n.dlook-collection-actions svg {\n  width: 17px;\n  height: 17px;\n  flex-shrink: 0;\n}\n\n.dlook-collection-actions button:first-child svg {\n  fill: currentColor;\n}\n\n[data-dlook-collection] [class*=\"_btnFab_\"]:has(> a[data-dd-action-name^=\"mylist.\"], > a[data-dd-action-name^=\"playlist.\"]) {\n  bottom: calc(var(--dlook-play-dock) + 12px);\n}\n\n[data-dlook-collection] [class*=\"_btnFab_\"][data-mini-player-visible]:has(> a[data-dd-action-name^=\"mylist.\"], > a[data-dd-action-name^=\"playlist.\"]) {\n  bottom: calc(var(--dlook-play-dock) + 72px);\n}\nhtml[data-dlook-play] {\n  --dlook-collection-width: 484px;\n  --dlook-collection-gap: 12px;\n}\n\n#App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {\r\n  --dlook-page-frame: calc(var(--dlook-collection-width) + 24px);\r\n}\r\n\r\n@media (min-width: 900px) {\r\n  #App > .loContainer[data-dlook-play] > main[data-dlook-library]:not(:has([data-dlook-library-cards])) {\r\n    --dlook-page-frame: min(1480px, calc(100vw - 40px));\r\n  }\r\n\r\n  [data-dlook-library] :is([class*=\"_wrapper_1vmmi_\"], [class*=\"_searchConditionDisplay_1vmmi_\"], [class*=\"_searchConditionDisplayInner_1vmmi_\"], [class*=\"_container_7hqk3_\"]) {\r\n    max-width: var(--dlook-page-frame);\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_workGrid_\"] {\r\n    --tile-basis: clamp(154px, 13vw, 198px);\r\n  }\r\n\r\n  [data-dlook-library] [data-large] [class*=\"_workGrid_\"] {\r\n    --tile-basis: clamp(186px, 15vw, 240px);\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_carouselWrapper_7hqk3_\"] > [class*=\"_scrollArea_\"] {\r\n    flex: 1 1 auto;\r\n    min-width: 0;\r\n    max-width: none;\r\n  }\r\n\r\n  [data-dlook-library] [class*=\"_thumbnailWrapper_7hqk3_\"] {\r\n    width: clamp(175px, 15vw, 218px);\r\n    height: auto;\r\n    aspect-ratio: 4 / 3;\r\n  }\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools] {\r\n  display: flex;\r\n  gap: var(--dlook-tool-gap);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] [data-dlook-library-tools] > button {\r\n  display: grid;\r\n  place-items: center;\r\n  box-sizing: border-box;\r\n  width: var(--dlook-tool-size);\r\n  height: var(--dlook-tool-size);\r\n  padding: 0;\r\n  border-radius: 50%;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] [data-dlook-library-tools] > button:first-child:is([data-active=\"true\"], [aria-expanded=\"true\"]) {\r\n  position: relative;\r\n  z-index: 2;\r\n  border-color: transparent;\r\n  background: transparent;\r\n  box-shadow: none;\r\n}\r\n\r\n.dlook-library-search svg {\r\n  display: block;\r\n  width: 22px;\r\n  height: 22px;\r\n  margin: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] :is(header [data-dlook-library-tools] > [class*=\"_searchBox_\"], [data-content-pane=\"true\"] [class*=\"_searchBox_\"]) {\r\n  --dlook-search-end: calc(var(--dlook-page-gutter) + var(--dlook-tool-end) + var(--dlook-tools-after-search, 0) * (var(--dlook-tool-size) + var(--dlook-tool-gap)));\r\n  position: fixed;\r\n  z-index: 1;\r\n  inset: calc(4px + env(safe-area-inset-top, 0px)) var(--dlook-search-end) auto auto;\r\n  box-sizing: border-box;\r\n  width: min(335px, calc(100% - var(--dlook-search-end) - var(--dlook-page-gutter) - var(--dlook-tool-start)));\r\n  min-width: 0;\r\n  height: var(--dlook-tool-size);\r\n  margin: 0;\r\n  padding: 0;\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-band);\r\n  animation: var(--dlook-search-motion);\r\n  pointer-events: auto;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main header [data-dlook-library-tools]:not(:has(> .dlook-library-search[aria-expanded=\"true\"])) > [class*=\"_searchBox_\"] {\r\n  display: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] [class*=\"_searchInner_\"] {\r\n  position: relative;\r\n  display: flex;\r\n  align-items: center;\r\n  width: auto;\r\n  height: 100%;\r\n  margin: 0 var(--dlook-tool-size) 0 0;\r\n  padding: 0;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"]::before {\r\n  content: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input {\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: 100%;\r\n  margin: 0;\r\n  padding: 0 24px 0 14px;\r\n  border: 0;\r\n  border-radius: 999px 0 0 999px;\r\n  background: none;\r\n  color: white;\r\n  font: 500 16px/1.3 system-ui, sans-serif;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input::placeholder {\r\n  color: var(--dlook-play-text);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] input:focus {\r\n  outline: none;\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"]:focus-within {\r\n  box-shadow: inset 0 0 0 1px var(--dlook-play-accent);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [class*=\"_searchBox_\"] [data-dd-action-name=\"search.clear\"] {\r\n  top: 50%;\r\n  right: 5px;\r\n  bottom: auto;\r\n  transform: translateY(-50%);\r\n}\r\n\r\n#App > .loContainer[data-dlook-play] > main[data-dlook-library] [data-content-pane=\"true\"] > div:has(> [class*=\"_searchBox_\"]) {\r\n  height: 0;\r\n}\r\n\r\n@keyframes dlook-expand-library-search {\r\n  from { clip-path: inset(0 0 0 calc(100% - var(--dlook-tool-size)) round 999px); }\r\n  to { clip-path: inset(0 0 0 0 round 999px); }\r\n}\r\n\r\n/* The search field is in the toolbar, so Play's inline search spacer is unused. */\r\n[data-dlook-library] [data-content-pane] [class*=\"_inner_\"][data-search-input-visible] {\r\n  margin-top: 0;\r\n}\r\n\r\n#App [data-dlook-library] [data-dlook-library-filters] {\r\n  position: fixed;\r\n  inset: calc(var(--dlook-header-height) + env(safe-area-inset-top, 0px)) 0 auto;\r\n  display: flex;\r\n  box-sizing: border-box;\r\n  justify-content: end;\r\n  width: 100%;\r\n  max-width: var(--dlook-page-frame);\r\n  height: var(--dlook-header-height);\r\n  margin-inline: auto;\r\n  padding: 4px var(--dlook-tool-end) 4px var(--dlook-tool-start);\r\n  background: transparent;\r\n  box-shadow: none;\r\n  pointer-events: none;\r\n}\r\n\r\n[data-dlook-library-filters] [class*=\"_tab_\"] {\r\n  display: flex;\r\n  overflow: visible;\r\n  width: auto;\r\n  flex: none;\r\n  justify-content: flex-end;\r\n  align-items: center;\r\n  gap: var(--dlook-tool-gap);\r\n  padding: 0;\r\n  pointer-events: auto;\r\n}\r\n\r\n#App [data-dlook-library] button[data-dlook-library-filter] {\r\n  position: relative;\r\n  display: grid;\r\n  place-items: center;\r\n  box-sizing: border-box;\r\n  flex: none;\r\n  width: 40px;\r\n  height: 40px;\r\n  min-width: 0;\r\n  padding: 0;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 22%, transparent);\r\n  border-radius: 50%;\r\n  background: var(--dlook-play-band);\r\n  color: var(--dlook-play-text);\r\n  font-size: 0;\r\n  box-shadow: 0 2px 7px color-mix(in srgb, var(--dlook-play-shadow) 15%, transparent);\r\n}\r\n\r\n#App [data-dlook-library] button[data-dlook-library-filter]:is([data-active], [aria-expanded=\"true\"]) {\r\n  background: var(--dlook-play-accent);\r\n  color: var(--dlook-play-on-accent);\r\n}\r\n\r\n#App [data-dlook-library] [data-dlook-library-filter] > :not(.dlook-play-icon) {\r\n  position: absolute;\r\n  width: 1px;\r\n  height: 1px;\r\n  clip-path: inset(50%);\r\n  overflow: hidden;\r\n}\r\n\r\n[data-dlook-library-filter] > .dlook-play-icon {\r\n  position: absolute;\r\n  inset: 0;\r\n  width: 21px;\r\n  height: 21px;\r\n  margin: auto;\r\n  pointer-events: none;\r\n}\r\n[data-dlook-library-filter]:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: -2px; }\r\n\r\n[data-dlook-library-cards] :is([class*=\"_virtualScrollContainer_\"], [class*=\"_list_\"]) {\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] {\r\n  --dlook-library-columns: 2;\r\n  container-type: inline-size;\r\n  width: min(calc(100% - var(--dlook-library-grid-inset, 24px)), calc(var(--dlook-page-frame) - 24px));\r\n  margin: 12px auto 0;\r\n}\r\n\r\n[data-dlook-library-cards] :has(> [data-dlook-library-grid]) {\r\n  box-sizing: content-box;\r\n  padding-bottom: calc(var(--dlook-library-grid-tail, min(calc((100vw - 36px) * .1875 + 44px), 132px)) + var(--dlook-play-dock));\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {\r\n  --dlook-library-tile-width: calc((100cqi - (var(--dlook-library-columns) - 1) * var(--dlook-collection-gap)) / var(--dlook-library-columns));\r\n  --dlook-library-card-step: calc((var(--dlook-library-tile-width) * .75 + 88px) / var(--dlook-library-columns));\r\n  --dlook-library-column: 0;\r\n  position: relative;\r\n  height: var(--dlook-library-card-step);\r\n  pointer-events: none;\r\n}\r\n\r\n[data-dlook-library-cards] [data-dlook-library-grid] [data-dlook-library-card] {\r\n  position: absolute;\r\n  inset-block-start: calc(-1 * var(--dlook-library-column) * var(--dlook-library-card-step));\r\n  inset-inline-start: calc(var(--dlook-library-column) * (var(--dlook-library-tile-width) + var(--dlook-collection-gap)));\r\n  display: flex;\r\n  flex-direction: column;\r\n  box-sizing: border-box;\r\n  width: var(--dlook-library-tile-width);\r\n  height: calc(var(--dlook-library-columns) * var(--dlook-library-card-step) - var(--dlook-collection-gap));\r\n  overflow: hidden;\r\n  padding: 0;\r\n  border: 1px solid var(--surface-on-surface-border, #dce5f4);\r\n  border-radius: 15px;\r\n  background: var(--surface-surface, white);\r\n  color: var(--surface-on-surface, #182e53);\r\n  text-decoration: none;\r\n  box-shadow: 0 3px 12px color-mix(in srgb, var(--dlook-play-shadow) 8%, transparent);\r\n  pointer-events: auto;\r\n}\r\n\r\n/* Each native virtual item reserves one fraction of a card row. */\r\n@supports (top: calc(mod(3, 2) * 1px)) {\r\n  [data-dlook-library-cards] [data-dlook-library-grid] > [data-index] {\r\n    --dlook-library-column: mod(var(--dlook-library-item-index, 0), var(--dlook-library-columns));\r\n  }\r\n\r\n  @media (min-width: 900px) {\r\n    #App > .loContainer[data-dlook-play] > main[data-dlook-library]:has([data-dlook-library-cards]) {\r\n      --dlook-page-frame: min(1320px, calc(100vw - 40px));\r\n      --dlook-library-grid-inset: 0px;\r\n      --dlook-library-grid-tail: 236px;\r\n    }\r\n\r\n    [data-dlook-library-cards] [class*=\"_wrapper_\"]:has([data-dlook-library-grid]),\r\n    [data-dlook-library-cards]:not(:has([data-dlook-library-filters])) > [class*=\"_inner_\"]:has([data-dlook-library-grid]) {\r\n      max-width: var(--dlook-page-frame);\r\n    }\r\n\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 3; }\r\n  }\r\n\r\n  @media (min-width: 1150px) {\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 4; }\r\n  }\r\n\r\n  @media (min-width: 1460px) {\r\n    [data-dlook-library-cards] [data-dlook-library-grid] { --dlook-library-columns: 5; }\r\n  }\r\n}\r\n\r\n@supports not (top: calc(mod(3, 2) * 1px)) {\r\n  [data-dlook-library-cards] [data-dlook-library-grid] > :is([data-index$=\"1\"], [data-index$=\"3\"], [data-index$=\"5\"], [data-index$=\"7\"], [data-index$=\"9\"]) {\r\n    --dlook-library-column: 1;\r\n  }\r\n}\r\n\r\n[data-dlook-library-card] > [class*=\"_container_\"] { display: contents; }\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] {\r\n  flex: none;\r\n  width: 100%;\r\n  height: auto;\r\n  aspect-ratio: 4 / 3;\r\n  margin: 0;\r\n  overflow: hidden;\r\n  background: var(--dlook-play-raised);\r\n}\r\n\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] :is([class*=\"_thumbs_\"], [class*=\"_cover_\"], [class*=\"_imageContainer_\"]) {\r\n  width: 100%;\r\n  height: 100%;\r\n}\r\n\r\n[data-dlook-library-card] [class*=\"_thumbnail_\"] img {\r\n  width: 100%;\r\n  height: 100%;\r\n  object-fit: cover;\r\n}\r\n\r\n[data-dlook-library-card] :is([class*=\"_creatorName_\"], [class*=\"_title_\"]) {\r\n  display: -webkit-box;\r\n  overflow: hidden;\r\n  -webkit-box-orient: vertical;\r\n  -webkit-line-clamp: 2;\r\n  white-space: normal;\r\n  overflow-wrap: anywhere;\r\n  font: 700 14px/1.35 system-ui, sans-serif;\r\n}\r\n\r\n[data-dlook-library-card] :is([class*=\"_content_\"], [class*=\"_information_\"]) {\r\n  width: 100%;\r\n  box-sizing: border-box;\r\n  padding: 9px 12px;\r\n}\n\nhtml[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) {\r\n  --dlook-player-text: var(--dlook-play-light);\r\n  --dlook-player-muted: var(--dlook-play-muted);\r\n  --surface-surface-high: var(--dlook-play-raised);\r\n  --surface-on-surface: var(--dlook-player-text);\r\n  --surface-on-surface-primary: var(--dlook-play-primary);\r\n  --surface-on-surface-disabled: var(--dlook-play-disabled);\r\n  --surface-on-surface-border: #ffffff25;\r\n  --overlay-overlay-surface: #ffffff16;\r\n  --primary-primary: var(--dlook-play-primary);\r\n  box-sizing: border-box;\r\n  isolation: isolate;\r\n  background: var(--dlook-play-deep);\r\n  color: var(--dlook-player-text);\r\n  touch-action: pan-y;\r\n}\r\n\r\n/* Keep the cover behind a translucent surface without filtering the controls. */\r\nhtml[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player)::before {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: 0;\r\n  z-index: -2;\r\n  border-radius: inherit;\r\n  background: var(--dlook-player-cover, none) center / cover no-repeat;\r\n  pointer-events: none;\r\n}\r\n\r\nhtml[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player)::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: 0;\r\n  z-index: -1;\r\n  border-radius: inherit;\r\n  background: linear-gradient(color-mix(in srgb, var(--dlook-play-deep) 70%, transparent), color-mix(in srgb, var(--dlook-play-deep) 85%, transparent));\r\n  pointer-events: none;\r\n}\r\n\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"][data-pc],\r\nhtml[data-dlook-play] .dlook-offline-player {\r\n  right: 16px;\r\n  bottom: calc(var(--dlook-play-dock) + 12px);\r\n  width: min(440px, calc(100vw - 32px));\r\n  height: min(690px, calc(100dvh - var(--dlook-play-dock) - 24px));\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 16%, transparent);\r\n  border-radius: 23px;\r\n  box-shadow: 0 16px 45px color-mix(in srgb, var(--dlook-play-shadow) 50%, transparent);\r\n}\r\n\r\nhtml[data-dlook-play]:has(#App [class*=\"_audioPlayer_\"]:not([data-pc])) .dlook-play-nav {\r\n  visibility: hidden;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_albumartWrapper_\"], .dlook-audio-stage) {\r\n  --dlook-caption-room: 0px;\r\n  display: grid;\r\n  grid-template-columns: minmax(0, 1fr);\r\n  --dlook-speed-inset: clamp(20px, 6vw, 36px);\r\n  align-content: start;\r\n  justify-items: center;\r\n  flex: 1 1 0;\r\n  min-height: 0;\r\n  box-sizing: border-box;\r\n  width: 100%;\r\n  height: auto;\r\n  container-type: size;\r\n  padding: calc(56px + env(safe-area-inset-top, 0px)) clamp(20px, 6vw, 36px) 34px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_albumartWrapper_\"], .dlook-audio-stage):has(> [class*=\"_textTrack_\"], > .dlook-audio-captions:not([hidden])) {\r\n  --dlook-caption-room: min(46cqh, 228px);\r\n  --dlook-cover-offset: 0px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_albumartWrapper_\"]::before {\r\n  position: absolute;\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n  --dlook-cover-ratio: 1.333333;\r\n  --dlook-cover-width: min(100cqw, 410px, calc(max(0px, 100cqh - var(--dlook-caption-room)) * var(--dlook-cover-ratio)));\r\n  --dlook-cover-height: calc(var(--dlook-cover-width) / var(--dlook-cover-ratio));\r\n  grid-area: 1 / 1;\r\n  box-sizing: border-box;\r\n  flex: none;\r\n  width: var(--dlook-cover-width);\r\n  height: var(--dlook-cover-height);\r\n  margin-block-start: var(--dlook-cover-offset, max(0px, calc((100cqh - var(--dlook-cover-height)) / 2)));\r\n  background-color: var(--dlook-play-deep);\r\n  background-size: contain;\r\n  border-radius: 16px;\r\n  box-shadow: 0 0 0 1px color-mix(in srgb, var(--dlook-play-accent) 16%, transparent), 0 14px 40px color-mix(in srgb, var(--dlook-play-shadow) 50%, transparent);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n  transition: width 240ms ease, height 240ms ease, margin-block-start 240ms ease;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) {\r\n  position: static;\r\n  grid-area: 2 / 1;\r\n  justify-self: start;\r\n  box-sizing: border-box;\r\n  width: min(100%, 460px);\r\n  max-width: none;\r\n  height: var(--dlook-caption-room);\r\n  min-height: 0;\r\n  max-height: none;\r\n  margin: 0;\r\n  padding: 0;\r\n  overflow: auto;\r\n  overscroll-behavior: contain;\r\n  touch-action: pan-y;\r\n  scroll-behavior: auto;\r\n  overflow-anchor: none;\r\n  transform: none;\r\n  background: transparent;\r\n  color: var(--dlook-player-text);\r\n  text-align: left;\r\n  font: 740 clamp(17px, 5vw, 25px)/1.4 system-ui, sans-serif;\r\n  overflow-wrap: anywhere;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_subtitle_\"] {\r\n  position: static;\r\n  margin: 0;\r\n  padding: 0;\r\n  background: transparent;\r\n  text-align: inherit;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_textTrack_\"] {\r\n  display: block;\r\n}\r\n\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [data-dlook-caption-enhanced] [class*=\"_subtitle_\"] {\r\n  display: none;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) p {\r\n  margin: 0;\r\n  color: inherit;\r\n  font: inherit;\r\n  white-space: pre-line;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_textTrack_\"], .dlook-audio-captions) p + p {\r\n  margin-top: 3px;\r\n  color: var(--dlook-player-muted);\r\n}\r\n\r\n.dlook-caption-timeline { position: relative; }\r\n.dlook-caption-cue + .dlook-caption-cue { margin-top: .35em; }\r\n.dlook-caption-timeline:has(> .dlook-caption-cue)::before,\r\n.dlook-caption-timeline:has(> .dlook-caption-cue)::after {\r\n  content: \"\";\r\n  display: block;\r\n  height: calc(var(--dlook-caption-room) / 2);\r\n}\r\n.dlook-caption-cue {\r\n  visibility: hidden;\r\n  opacity: 0;\r\n  transform: scale(var(--dlook-cue-scale, .78));\r\n  transform-origin: left center;\r\n  transition: transform 140ms ease-out, opacity 140ms ease-out;\r\n}\r\n.dlook-caption-cue:is([data-offset=\"-1\"], [data-offset=\"0\"], [data-offset=\"1\"]) {\r\n  visibility: visible;\r\n  opacity: var(--dlook-cue-opacity, .4);\r\n}\r\n[data-dlook-browsing] .dlook-caption-cue { transition: none; }\r\n@media (prefers-reduced-motion: reduce) {\r\n  .dlook-caption-cue { transition: none; }\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_optionButtons_\"] {\r\n  inset-inline: 0;\r\n  top: env(safe-area-inset-top, 0px);\r\n  background: none;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_hiddenButton_\"] {\r\n  top: 10px;\r\n  left: 16px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playlistMenuButton_\"] {\r\n  right: 16px;\r\n}\r\n\r\n/* Top controls share fixed bounds so generic button minimums cannot stretch them. */\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is(\r\n  [class*=\"_hiddenButton_\"], [class*=\"_playlistMenuButton_\"] button,\r\n  .dlook-audio-minimize, .dlook-audio-queue\r\n) {\r\n  -webkit-appearance: none;\r\n  appearance: none;\r\n  box-sizing: border-box !important;\r\n  display: inline-flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  flex: 0 0 40px;\r\n  width: 40px !important;\r\n  height: 40px !important;\r\n  min-width: 40px !important;\r\n  min-height: 40px !important;\r\n  max-width: 40px !important;\r\n  max-height: 40px !important;\r\n  aspect-ratio: 1;\r\n  padding: 0 !important;\r\n  margin: 0;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 25%, transparent);\r\n  border-radius: 50% !important;\r\n  clip-path: circle(50%);\r\n  background: color-mix(in srgb, var(--dlook-play-raised) 60%, transparent);\r\n  color: var(--dlook-player-text);\r\n}\r\n\r\n/* Override the native mobile sheet's touch-action:none for caption scrolling. */\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"]:not([data-pc]) { touch-action: pan-y; }\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_albumart_\"] { touch-action: none; }\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is(button, select, input) {\r\n  touch-action: manipulation;\r\n  -webkit-tap-highlight-color: transparent;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButtonWrapper_\"] {\r\n  display: grid;\r\n  place-items: center;\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  height: 32px;\r\n  min-height: 32px;\r\n  padding: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :has(> .dlook-caption-toggle:not([hidden])) > :is([class*=\"_playbackButtonWrapper_\"], .dlook-audio-speed) {\r\n  right: calc(var(--dlook-speed-inset) + 88px);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :has(> .dlook-sleep-toggle):not(:has(> .dlook-caption-toggle:not([hidden]))) > :is([class*=\"_playbackButtonWrapper_\"], .dlook-audio-speed) {\r\n  right: calc(var(--dlook-speed-inset) + 44px);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is(.dlook-caption-toggle, .dlook-sleep-toggle) {\r\n  position: absolute;\r\n  z-index: 1;\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  width: 36px;\r\n  height: 32px;\r\n  display: grid;\r\n  place-items: center;\r\n  padding: 0;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 25%, transparent);\r\n  border-radius: 999px;\r\n  background: var(--dlook-play-raised);\r\n  color: var(--dlook-player-text);\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-caption-toggle svg, .dlook-sleep-toggle svg { width: 19px; height: 19px; }\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-sleep-toggle {\r\n  right: var(--dlook-speed-inset);\r\n}\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :has(> .dlook-caption-toggle:not([hidden])) > .dlook-sleep-toggle {\r\n  right: calc(var(--dlook-speed-inset) + 44px);\r\n}\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is(.dlook-caption-toggle, .dlook-sleep-toggle)[aria-pressed=\"true\"] {\r\n  background: var(--dlook-play-accent);\r\n  color: var(--dlook-play-on-accent);\r\n}\r\n\r\n.dlook-sleep-picker {\r\n  position: absolute;\r\n  z-index: 10000;\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 56px;\r\n  box-sizing: border-box;\r\n  width: min(260px, calc(100% - 32px));\r\n  padding: 12px;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 25%, transparent);\r\n  border-radius: 16px;\r\n  background: color-mix(in srgb, var(--dlook-play-raised) 96%, transparent);\r\n  color: var(--dlook-play-light);\r\n  box-shadow: 0 8px 28px #0006;\r\n  display: grid;\r\n  grid-template-columns: repeat(3, 1fr);\r\n  gap: 6px;\r\n  font: 500 13px/1.4 system-ui, sans-serif;\r\n}\r\n.dlook-sleep-picker[hidden] { display: none; }\r\n.dlook-sleep-picker p { grid-column: 1 / -1; margin: 0 0 6px; }\r\n.dlook-sleep-picker button {\r\n  appearance: none;\r\n  min-height: 44px;\r\n  padding: 6px;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 19%, transparent);\r\n  border-radius: 10px;\r\n  background: #ffffff0c;\r\n  color: inherit;\r\n  font: inherit;\r\n  cursor: pointer;\r\n}\r\n.dlook-sleep-picker button[aria-pressed=\"true\"] { background: var(--dlook-play-accent); color: var(--dlook-play-on-accent); }\r\n.dlook-sleep-picker button:disabled { opacity: .4; }\r\n.dlook-sleep-toggle:focus-visible, .dlook-sleep-picker button:focus-visible {\r\n  outline: 2px solid var(--dlook-play-accent);\r\n  outline-offset: 2px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) .dlook-caption-toggle[hidden],\r\n[data-dlook-play] #App [class*=\"_audioPlayer_\"] :is([data-dlook-subtitle-source], [class*=\"_row_\"]:has(> [data-dlook-subtitle-source]:only-child)) {\r\n  display: none;\r\n}\r\n\r\n@media (prefers-reduced-motion: reduce) {\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-dlook-cover-moving] :is([class*=\"_albumart_\"], .dlook-audio-art) {\r\n    transition: none;\r\n  }\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButton_\"] {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  min-width: 44px;\r\n  min-height: 32px;\r\n  text-align: center;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 25%, transparent);\r\n  border-radius: 100px;\r\n  background: var(--dlook-play-raised);\r\n  color: var(--dlook-player-text);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playbackButton_\"] span {\r\n  color: inherit;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) > :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) {\r\n  display: grid;\r\n  grid-template-areas: \"title\" \"album\" \"seek\" \"controls\" \"status\";\r\n  grid-template-columns: minmax(0, 1fr);\r\n  flex: 0 0 auto;\r\n  box-sizing: border-box;\r\n  width: min(100%, 475px);\r\n  margin-inline: auto;\r\n  padding: 10px clamp(20px, 6vw, 36px) calc(13px + env(safe-area-inset-bottom, 0px));\r\n  background: transparent;\r\n  text-align: start;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) > :is([class*=\"_title_\"], .dlook-audio-title) {\r\n  grid-area: title;\r\n  margin: 0;\r\n  padding: 0;\r\n  font: 760 clamp(19px, 5vw, 24px)/1.25 system-ui, sans-serif;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_titleInner_\"] {\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) > :is([class*=\"_album_\"], .dlook-audio-album) {\r\n  grid-area: album;\r\n  margin: 3px 0 7px;\r\n  color: var(--dlook-player-muted);\r\n  font-size: 13px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_sliderWrapper_\"] {\r\n  background: transparent;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([data-time], .dlook-audio-seek) {\r\n  grid-area: seek;\r\n  display: grid;\r\n  grid-template: \"position position\" 26px \"elapsed remaining\" auto / 1fr 1fr;\r\n  height: auto;\r\n  padding: 0;\r\n  color: var(--dlook-player-muted);\r\n  font-variant-numeric: tabular-nums;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-time] > [class*=\"_playerSlider_\"] {\r\n  grid-area: position;\r\n  width: 100%;\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playerSlider_\"] [class*=\"_track_\"] {\r\n  background: color-mix(in srgb, var(--dlook-play-accent) 27%, transparent);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_playerSlider_\"] [class*=\"_indicator_\"] {\r\n  background: var(--dlook-play-accent);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_elapsedTime_\"], .dlook-audio-elapsed) {\r\n  grid-area: elapsed;\r\n  justify-self: start;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_remainingTime_\"], .dlook-audio-remaining) {\r\n  grid-area: remaining;\r\n  justify-self: end;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_controlButtons_\"], .dlook-audio-transport) {\r\n  grid-area: controls;\r\n  margin-top: 8px;\r\n  padding: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([data-align=\"space-between\"]:has(> [data-control=\"play-pause\"]), .dlook-audio-transport) {\r\n  display: grid;\r\n  grid-template-columns: repeat(2, minmax(0, 1fr)) 64px repeat(2, minmax(0, 1fr));\r\n  align-items: center;\r\n  justify-items: center;\r\n  height: 68px;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) :is([class*=\"_shuffle_\"], [class*=\"_repeat_\"]) {\r\n  width: min(100%, 44px);\r\n  min-height: 44px;\r\n  margin: 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control] {\r\n  border-radius: 50%;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control=\"play-pause\"] {\r\n  width: 60px;\r\n  height: 60px;\r\n  background: var(--dlook-play-accent);\r\n  color: var(--dlook-play-on-accent);\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [data-control=\"play-pause\"] svg {\r\n  fill: currentColor;\r\n}\r\n\r\n/* The native triangle needs optical centering within its square SVG. */\r\nhtml[data-dlook-play] #App :is([data-control=\"play-pause\"], [data-dd-action-name=\"player.mini_play_pause\"]) > svg[viewBox=\"0 0 80 100\"] {\r\n  translate: 13.333% 0;\r\n}\r\n\r\n[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player) [class*=\"_volumeWrapper_\"] {\r\n  margin-inline: 0;\r\n}\r\n\r\nhtml[data-dlook-play] {\r\n  --dlook-mini-width: min(calc(100% - 20px), 556px);\r\n  --dlook-mini-bottom: calc(var(--dlook-play-dock) - 4px);\r\n  --dlook-mini-radius: 14px;\r\n}\r\n\r\nhtml[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini) {\r\n  position: fixed;\r\n  inset-inline: 0;\r\n  left: 0 !important;\r\n  bottom: var(--dlook-mini-bottom);\r\n  width: var(--dlook-mini-width);\r\n  height: 60px;\r\n  margin-inline: auto;\r\n  padding: 0;\r\n  overflow: hidden;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 21%, transparent);\r\n  border-radius: var(--dlook-mini-radius);\r\n  box-sizing: border-box;\r\n  color: var(--dlook-play-light);\r\n  --surface-on-surface: var(--dlook-play-light);\r\n  --surface-on-surface-primary: var(--dlook-play-accent);\r\n}\r\n\r\nhtml[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini):not([data-handing-off]),\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_miniBarGhost_\"] {\r\n  background: var(--dlook-play-raised);\r\n  box-shadow: 0 5px 16px color-mix(in srgb, var(--dlook-play-shadow) 29%, transparent);\r\n}\r\n\r\nhtml[data-dlook-play] #App [class*=\"_audioPlayer_\"] [class*=\"_miniBarGhost_\"] {\r\n  width: var(--dlook-mini-width);\r\n  height: 60px;\r\n  margin-inline: auto;\r\n  bottom: var(--dlook-mini-bottom);\r\n  border-radius: var(--dlook-mini-radius);\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_info_\"] {\r\n  grid-template-columns: 40px minmax(0, 1fr);\r\n  min-width: 0;\r\n  padding: 9px 8px 9px 11px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_thumbnail_\"] {\r\n  overflow: hidden;\r\n  border-radius: 8px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_thumbnail_\"]::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: 0;\r\n  background: var(--dlook-mini-cover, none) center / cover no-repeat;\r\n  pointer-events: none;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_buttons_\"] {\r\n  grid-template-columns: repeat(2, 44px);\r\n  padding-inline-end: 4px;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_titleInner_\"] {\r\n  margin-inline-start: 0;\r\n  font-weight: 650;\r\n}\r\n\r\nhtml[data-dlook-play] #App [data-dd-action-name=\"player.mini_open\"] [class*=\"_album_\"] {\r\n  color: var(--dlook-play-muted);\r\n}\r\n\r\n.dlook-offline-mini {\r\n  display: flex;\r\n  align-items: center;\r\n  z-index: 2;\r\n}\r\n\r\n.dlook-offline-mini > :last-child { margin-inline-end: 4px; }\r\n\r\n.dlook-offline-mini::after {\r\n  content: \"\";\r\n  position: absolute;\r\n  inset: auto 0 0;\r\n  width: var(--dlook-audio-progress, 0%);\r\n  height: 2px;\r\n  background: var(--dlook-play-accent);\r\n  pointer-events: none;\r\n}\r\n\r\n.dlook-audio-mini-thumb {\r\n  display: grid;\r\n  place-items: center;\r\n  width: 40px;\r\n  height: 40px;\r\n  flex: none;\r\n  overflow: hidden;\r\n  position: relative;\r\n  border-radius: 8px;\r\n  background: var(--dlook-play-deep);\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-audio-mini-thumb img,\r\n.dlook-audio-art img {\r\n  position: absolute;\r\n  inset: 0;\r\n  width: 100%;\r\n  height: 100%;\r\n  object-fit: cover;\r\n}\r\n\r\n.dlook-audio-mini-open {\r\n  gap: 10px;\r\n  flex: 1;\r\n  min-width: 0;\r\n  padding-inline: 11px 8px;\r\n  text-align: start;\r\n}\r\n\r\n.dlook-audio-mini-text {\r\n  flex: 1;\r\n  min-width: 0;\r\n}\r\n\r\n.dlook-audio-mini-text > *,\r\n.dlook-audio-title,\r\n.dlook-audio-album {\r\n  display: block;\r\n  white-space: nowrap;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n\r\n.dlook-audio-mini-text strong {\r\n  font: 650 13px/1.4 system-ui, sans-serif;\r\n}\r\n\r\n.dlook-offline-mini .dlook-audio-mini-text small {\r\n  color: var(--dlook-play-muted);\r\n  font-size: 11px;\r\n}\r\n\r\n.dlook-offline-player {\r\n  position: fixed;\r\n  z-index: 3;\r\n  display: flex;\r\n  flex-direction: column;\r\n  overflow: auto;\r\n  overscroll-behavior: contain;\r\n}\r\n\r\n.dlook-audio-stage {\r\n  display: grid;\r\n  place-items: center;\r\n  position: relative;\r\n}\r\n\r\n.dlook-audio-art {\r\n  display: grid;\r\n  place-items: center;\r\n  position: relative;\r\n  overflow: hidden;\r\n  color: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-audio-art > svg {\r\n  width: 42px;\r\n  height: 42px;\r\n}\r\n\r\n.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue, .dlook-audio-speed) {\r\n  position: absolute;\r\n  z-index: 1;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 25%, transparent);\r\n  background: var(--dlook-play-raised);\r\n  color: var(--dlook-play-light);\r\n}\r\n\r\n.dlook-audio-stage :is(.dlook-audio-minimize, .dlook-audio-queue) {\r\n  top: calc(10px + env(safe-area-inset-top, 0px));\r\n}\r\n\r\n.dlook-audio-minimize { left: 16px; }\r\n.dlook-audio-queue { right: 16px; }\r\n\r\n.dlook-audio-speed {\r\n  right: var(--dlook-speed-inset);\r\n  bottom: 12px;\r\n  appearance: none;\r\n  box-sizing: border-box;\r\n  min-width: 44px;\r\n  min-height: 32px;\r\n  border-radius: 999px;\r\n  padding: 0 8px;\r\n  font: 500 12px/1.2 system-ui, sans-serif;\r\n  text-align: center;\r\n  text-align-last: center;\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-button {\r\n  display: flex;\r\n  align-items: center;\r\n  justify-content: center;\r\n  min-height: 44px;\r\n  padding-block: 0;\r\n  border: 0;\r\n  background: transparent;\r\n  color: inherit;\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-button[aria-pressed=\"true\"] { color: var(--dlook-play-accent); }\r\n@media (hover: hover) and (pointer: fine) {\r\n  .dlook-audio-button:hover { color: var(--dlook-play-accent); }\r\n}\r\n.dlook-audio-button:focus-visible,\r\n.dlook-caption-toggle:focus-visible,\r\n.dlook-audio-speed:focus-visible,\r\n.dlook-audio-position:focus-visible { outline: 2px solid var(--dlook-play-focus); outline-offset: 2px; }\r\n.dlook-audio-button svg { width: 22px; height: 22px; flex: none; }\r\n.dlook-audio-transport .dlook-audio-button { position: relative; min-width: 44px; }\r\n.dlook-audio-transport [data-control=\"play-pause\"] svg { width: 28px; height: 28px; }\r\n.dlook-audio-transport [data-repeat=\"track\"]::after { content: \"1\"; position: absolute; top: 2px; right: 5px; font-size: 10px; }\r\n.dlook-offline-mini > .dlook-audio-button:not(.dlook-audio-mini-open) { flex: 0 0 44px; }\r\n.dlook-offline-mini > .dlook-audio-button:nth-child(2) svg { fill: currentColor; }\r\n\r\n.dlook-audio-position {\r\n  grid-area: position;\r\n  appearance: none;\r\n  width: 100%;\r\n  height: 26px;\r\n  margin: 0;\r\n  background: transparent;\r\n  accent-color: var(--dlook-play-accent);\r\n  cursor: pointer;\r\n}\r\n\r\n.dlook-audio-position::-webkit-slider-runnable-track {\r\n  height: 4px;\r\n  border-radius: 10px;\r\n  background: linear-gradient(to right, var(--dlook-play-accent) var(--dlook-audio-progress, 0%), color-mix(in srgb, var(--dlook-play-accent) 27%, transparent) 0);\r\n}\r\n\r\n.dlook-audio-position::-webkit-slider-thumb {\r\n  appearance: none;\r\n  width: 16px;\r\n  height: 16px;\r\n  margin-top: -6px;\r\n  border-radius: 50%;\r\n  background: var(--dlook-play-accent);\r\n}\r\n\r\n.dlook-audio-position::-moz-range-track { height: 4px; border-radius: 10px; background: color-mix(in srgb, var(--dlook-play-accent) 27%, transparent); }\r\n.dlook-audio-position::-moz-range-progress { height: 4px; border-radius: 10px; background: var(--dlook-play-accent); }\r\n.dlook-audio-position::-moz-range-thumb { border: 0; border-radius: 50%; background: var(--dlook-play-accent); }\r\n.dlook-audio-seek span { font: 500 11px/1.3 system-ui, sans-serif; }\r\n.dlook-audio-status { grid-area: status; margin: 6px 0 0; color: var(--dlook-play-focus); }\r\n.dlook-audio-status:empty, .dlook-offline-mini[hidden], .dlook-offline-player[hidden] { display: none; }\r\n\r\n@media (max-width: 760px) {\r\n  html[data-dlook-play] .dlook-offline-player {\r\n    inset: 0;\r\n    width: 100%;\r\n    height: 100%;\r\n    border: 0;\r\n    border-radius: 0;\r\n  }\r\n\r\n  html[data-dlook-play]:has(.dlook-offline-page:not([hidden]) > .dlook-offline-player:not([hidden])) .dlook-play-nav,\r\n  .dlook-offline-page:has(> .dlook-offline-player:not([hidden])) > main {\r\n    visibility: hidden;\r\n  }\r\n}\r\n\r\n@media (max-height: 550px) and (orientation: landscape) {\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"]:not([data-pc]), .dlook-offline-player) {\r\n    flex-direction: row;\r\n  }\r\n\r\n  [data-dlook-play] :is(#App [class*=\"_audioPlayer_\"]:not([data-pc]), .dlook-offline-player) > :is([class*=\"_controlWrapper_\"], .dlook-audio-controls) {\r\n    align-content: center;\r\n    width: 49%;\r\n  }\r\n}\r\n\n/* The DLook player's media element shows inside the cover frame only for video tracks. */\n.dlook-audio-art > .dlook-offline-media {\n  position: absolute;\n  inset: 0;\n  z-index: 1;\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  background: #000;\n}\n\n.dlook-audio-art > .dlook-offline-media[hidden] { display: none; }\n.dlook-audio-art[data-video] > :not(.dlook-offline-media) { visibility: hidden; }\n\nhtml[data-dlook-offline] #App {\n  visibility: hidden;\n  pointer-events: none;\n  z-index: 10001;\n}\n\nhtml[data-dlook-offline] #App :is([data-dd-action-name=\"player.mini_open\"], [class*=\"_audioPlayer_\"]) {\n  visibility: visible;\n  pointer-events: auto;\n}\n\n.dlook-offline-page {\n  --offline-surface: #f3f6fc;\n  --offline-card: #fff;\n  --offline-text: #182e53;\n  --offline-muted: #415570;\n  --offline-border: #dce5f4;\n  position: fixed;\n  inset: 0;\n  z-index: 10000;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;\n  background: var(--offline-surface);\n  color: var(--offline-text);\n  font: 500 14px/1.5 system-ui, sans-serif;\n}\n\n.dlook-offline-page[hidden],\n.dlook-offline-page[data-dlook-background] > main { display: none; }\n\n.dlook-offline-page[data-dlook-background] {\n  background: transparent;\n  pointer-events: none;\n}\n\n.dlook-offline-page[data-dlook-background] > :is(.dlook-offline-player, .dlook-offline-mini) { pointer-events: auto; }\n\nbody[data-theme=\"dark\"] .dlook-offline-page {\n  --offline-surface: #151e2e;\n  --offline-card: #202d43;\n  --offline-text: #e1ecfa;\n  --offline-muted: #b6c8df;\n  --offline-border: #384d6b;\n}\n\n@media (prefers-color-scheme: dark) {\n  body:not([data-theme=\"light\"]) .dlook-offline-page {\n    --offline-surface: #151e2e;\n    --offline-card: #202d43;\n    --offline-text: #e1ecfa;\n    --offline-muted: #b6c8df;\n    --offline-border: #384d6b;\n  }\n}\n\n.dlook-offline-heading {\n  display: flex;\n  align-items: center;\n  gap: 12px;\n  width: min(100%, 840px);\n  margin: 0 auto 16px;\n}\n\n.dlook-offline-page h1 {\n  position: absolute;\n  width: 1px;\n  height: 1px;\n  overflow: hidden;\n  clip-path: inset(50%);\n}\n\n.dlook-offline-heading:has(.dlook-offline-back[hidden]) { margin-bottom: 0; }\n\n.dlook-offline-page > main {\n  flex: 1;\n  overflow: auto;\n  box-sizing: border-box;\n  width: min(100%, 872px);\n  margin-inline: auto;\n  padding: max(16px, env(safe-area-inset-top, 0px)) 16px var(--dlook-play-dock);\n}\n\n.dlook-offline-page:has(> .dlook-offline-mini:not([hidden])) > main,\nhtml[data-dlook-offline]:has(#App [data-dd-action-name=\"player.mini_open\"]) .dlook-offline-page > main {\n  padding-bottom: calc(var(--dlook-play-dock) + 60px);\n}\n\n.dlook-offline-notice {\n  margin: 0 0 12px;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-notice:empty,\n.dlook-offline-page [hidden],\n.dlook-offline-work [hidden] {\n  display: none;\n}\n\n.dlook-offline-list {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: var(--dlook-collection-gap);\n  width: min(100%, var(--dlook-collection-width));\n  margin-inline: auto;\n}\n\n.dlook-offline-card {\n  display: flex;\n  flex-direction: column;\n  min-width: 0;\n  overflow: hidden;\n  padding: 0;\n  border: 1px solid var(--offline-border);\n  border-radius: 15px;\n  background: var(--offline-card);\n  color: var(--offline-text);\n  text-align: start;\n  cursor: pointer;\n}\n\n.dlook-offline-cover {\n  position: relative;\n  display: grid;\n  place-items: center;\n  width: 100%;\n  aspect-ratio: 4 / 3;\n  overflow: hidden;\n  background: var(--dlook-play-raised);\n  color: var(--dlook-play-accent);\n}\n\n.dlook-offline-cover svg {\n  width: 36px;\n  height: 36px;\n}\n\n.dlook-offline-cover img {\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.dlook-offline-card-text {\n  display: grid;\n  gap: 4px;\n  padding: 11px 12px 13px;\n  min-width: 0;\n}\n\n.dlook-offline-card-text strong {\n  display: -webkit-box;\n  overflow: hidden;\n  -webkit-box-orient: vertical;\n  -webkit-line-clamp: 2;\n  overflow-wrap: anywhere;\n  font: 700 15px/1.35 system-ui, sans-serif;\n}\n\n.dlook-offline-card .dlook-offline-creator {\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.dlook-offline-page small {\n  display: block;\n  font: 500 12px/1.35 system-ui, sans-serif;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-detail {\n  width: min(100%, 640px);\n  margin-inline: auto;\n  border: 1px solid var(--offline-border);\n  border-radius: 15px;\n  overflow: hidden;\n  background: var(--offline-card);\n}\n\n.dlook-offline-detail-hero {\n  display: grid;\n  justify-items: center;\n  gap: 8px;\n  padding: 14px;\n  text-align: center;\n  background: var(--offline-surface);\n}\n\n.dlook-offline-detail-hero .dlook-offline-cover {\n  width: min(100%, 236px);\n  border-radius: 12px;\n}\n\n.dlook-offline-detail ol {\n  list-style: none;\n  margin: 0;\n  padding: 0;\n}\n\n.dlook-offline-button {\n  min-height: 44px;\n  box-sizing: border-box;\n  padding: 6px 12px;\n  border: 0;\n  border-radius: 7px;\n  background: var(--dlook-play-action);\n  color: white;\n  font: 600 14px/1.3 system-ui, sans-serif;\n  cursor: pointer;\n  overflow-wrap: anywhere;\n}\n\n.dlook-offline-button:disabled {\n  opacity: .75;\n  cursor: default;\n}\n\n.dlook-offline-button:focus-visible,\n.dlook-offline-card:focus-visible {\n  outline: 2px solid var(--dlook-play-focus);\n  outline-offset: -3px;\n}\n\n.dlook-offline-detail ol .dlook-offline-button {\n  display: block;\n  width: 100%;\n  border-bottom: 1px solid var(--offline-border);\n  border-radius: 0;\n  background: transparent;\n  color: inherit;\n  text-align: start;\n}\n\n.dlook-offline-detail ol .dlook-offline-button:is(:hover, [aria-current]) {\n  background: var(--offline-surface);\n}\n\n.dlook-offline-detail ol .dlook-offline-button[aria-current] {\n  box-shadow: inset 3px 0 var(--dlook-play-action);\n}\n\n.dlook-offline-detail > button {\n  display: block;\n  margin: 6px 10px;\n  background: transparent;\n  color: var(--offline-muted);\n}\n\n.dlook-offline-heading .dlook-offline-back {\n  display: grid;\n  place-items: center;\n  width: 36px;\n  min-height: 36px;\n  border-radius: 50%;\n  padding: 0;\n  background: var(--dlook-play-band);\n  color: var(--dlook-play-text);\n}\n\n.dlook-offline-heading .dlook-offline-back[hidden] {\n  display: none;\n}\n\n.dlook-offline-heading .dlook-offline-back svg {\n  width: 19px;\n  height: 19px;\n}\n\n.dlook-offline-work {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px 12px;\n  box-sizing: border-box;\n  width: min(calc(100% - 24px), 840px);\n  margin: 12px auto;\n  padding: 7px;\n  border-radius: 7px;\n  background: var(--dlook-play-band);\n  color: var(--dlook-play-text);\n  font: 600 14px/1.3 system-ui, sans-serif;\n}\n\n.dlook-offline-work p {\n  flex: 1 1 180px;\n  margin: 0;\n}\n\n.dlook-offline-work p:empty {\n  display: none;\n}\n\n.dlook-offline-work button {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 7px;\n}\n\n.dlook-offline-work button svg {\n  width: 18px;\n  height: 18px;\n  flex: none;\n}\n\n#App [class*=\"_actions_\"]:has(> .dlook-offline-work[data-listen-group]) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 10px;\n}\n\n.dlook-offline-work[data-listen-group] {\n  position: relative;\n  display: grid;\n  grid-column: 1;\n  min-width: 0;\n  width: auto;\n  margin: 0;\n  padding: 0;\n  background: transparent;\n  color: var(--surface-on-surface, #182e53);\n}\n\n.dlook-offline-work[data-listen-group] button {\n  width: 100%;\n  min-width: 0;\n  background: var(--dlook-play-band);\n}\n\n.dlook-offline-work button:disabled {\n  opacity: .68;\n  cursor: default;\n}\n\n.dlook-offline-work[data-listen-group] p {\n  position: absolute;\n  z-index: 1;\n  inset: -9px 6px auto auto;\n  box-sizing: border-box;\n  max-width: calc(100% - 12px);\n  overflow: hidden;\n  padding: 2px 6px;\n  border-radius: 999px;\n  background: var(--dlook-play-band);\n  color: var(--dlook-play-text);\n  font: 600 10px/1.3 system-ui, sans-serif;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  pointer-events: none;\n}\n\n#App [class*=\"_actions_\"]:has(> .dlook-offline-work[data-listen-group]) > :is([data-dd-action-name=\"work_detail.resume\"], [data-dd-action-name=\"work_detail.start\"]) {\n  grid-column: 2;\n  min-width: 0;\n  width: 100%;\n  min-height: 44px;\n  height: 100%;\n}\n\n#App > .loContainer[data-dlook-play] > main[data-dlook-work] > [data-content-pane=\"true\"] {\n  top: env(safe-area-inset-top, 0px) !important;\n}\n\n[data-dlook-work] [class*=\"_contentMain_\"]:has([data-dd-action-name=\"work_detail.menu_open\"]) {\n  position: relative;\n  box-sizing: border-box;\n  min-height: 144px;\n  padding-inline-end: 52px;\n}\n\n/* App-link hints can wrap the menu trigger. Move that wrapper out of the\n   title's flex row too, so it does not consume a second action column. */\n[data-dlook-work] [class*=\"_titleRow_\"] > :is([data-dd-action-name=\"work_detail.menu_open\"], :has([data-dd-action-name=\"work_detail.menu_open\"])) {\n  position: absolute;\n  inset: 0 0 auto auto;\n  width: 44px;\n  height: 44px;\n  margin: 0;\n}\n\n[data-dlook-work] [class*=\"_titleRow_\"] [data-dd-action-name=\"work_detail.menu_open\"] {\n  width: 44px;\n  height: 44px;\n  margin: 0;\n}\n\n#App > .loContainer[data-dlook-play] > main[data-dlook-work] > header[class*=\"_loHeader_\"] {\n  top: var(--dlook-work-tools-top, 62px);\n  left: auto !important;\n  right: var(--dlook-work-tools-end, 12px);\n  width: 44px !important;\n  height: auto;\n}\n\n#App > .loContainer[data-dlook-play] > main[data-dlook-work] > header[class*=\"_loHeader_\"] > [class*=\"_headerInner_\"] {\n  max-width: none;\n  height: auto;\n  padding: 0;\n}\n\n[data-dlook-work] > header [class*=\"_colLeft_\"] { display: none; }\n\n[data-dlook-work] > header [class*=\"_colRight_\"] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n  width: 44px;\n}\n\n#App > .loContainer[data-dlook-play] > main[data-dlook-work] > header [class*=\"_headerInner_\"] button {\n  width: 44px;\n  height: 44px;\n  padding: 0;\n  border-radius: 50%;\n}\n\n/* Sharing lives in the \"more\" menu; the header keeps only the list (favorite) action. */\n[data-dlook-work] > header [data-dd-action-name=\"work_detail.share_open\"] { display: none; }\n\n[data-dlook-share] { cursor: pointer; }\n\n[data-dd-action-name=\"mylist.header_add\"] > [data-dlook-heart] {\n  display: none;\n  width: 24px;\n  height: 24px;\n  fill: #e5484d;\n}\n\n/* Saved works show a red filled heart on a light disc so it reads on any theme color. */\n#App > .loContainer[data-dlook-play] > main[data-dlook-work] > header[class*=\"_loHeader_\"] [class*=\"_headerInner_\"] button[data-dd-action-name=\"mylist.header_add\"][data-dlook-favorite]:is(*, :hover) {\n  border-color: rgb(229 72 77 / 0.35);\n  background: #fff;\n  box-shadow: 0 0 0 1px rgb(229 72 77 / 0.28), 0 4px 12px rgb(0 0 0 / 0.16);\n}\n\n[data-dd-action-name=\"mylist.header_add\"][data-dlook-favorite] > :not([data-dlook-heart]) { display: none; }\n[data-dd-action-name=\"mylist.header_add\"][data-dlook-favorite] > [data-dlook-heart] { display: block; }\n\n:root[data-dlook-route-phase] {\r\n  --dlook-route-fallback: #f4f4f4;\r\n}\r\n\r\n:root[data-dlook-route-phase] body[data-theme=\"dark\"] { --dlook-route-fallback: #151e2e; }\r\n\r\n@media (prefers-color-scheme: dark) {\r\n  :root[data-dlook-route-phase] body:not([data-theme=\"light\"]) { --dlook-route-fallback: #151e2e; }\r\n}\r\n\r\n:root[data-dlook-route-phase=\"wait\"] #App > .loContainer > div:has(nav [data-dd-action-name=\"menu.library\"]) {\r\n  visibility: hidden;\r\n}\r\n\r\n/* The route cover belongs to the page, below the dock and the player. */\r\n:root[data-dlook-route-phase] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main) {\r\n  isolation: isolate;\r\n}\r\n\r\n:root[data-dlook-route-phase] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {\r\n  content: \"\";\r\n  position: fixed;\r\n  inset: 0;\r\n  z-index: 10100;\r\n  background: var(--offline-surface, var(--background-background, var(--dlook-route-fallback)));\r\n}\r\n\r\n:root[data-dlook-route-phase] #App > .loContainer > main > :is(\r\n  [data-dd-action-name=\"player.mini_open\"], [class*=\"_audioPlayer_\"]\r\n) {\r\n  z-index: 10102;\r\n}\r\n\r\n@media (prefers-reduced-motion: no-preference) {\r\n  :root[data-dlook-route-phase=\"out\"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {\r\n    animation: dlook-route-cover-in 85ms ease-out both;\r\n  }\r\n\r\n  :root[data-dlook-route-phase=\"in\"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::after {\r\n    pointer-events: none;\r\n    animation: dlook-route-cover-out 200ms ease-out both;\r\n  }\r\n\r\n  :root[data-dlook-route-phase=\"wait\"] :is(#App > .loContainer > main, .dlook-offline-page:not([data-dlook-background]) > main)::before {\r\n    content: \"\";\r\n    position: fixed;\r\n    inset: 0;\r\n    margin: auto;\r\n    z-index: 10101;\r\n    width: 22px;\r\n    height: 22px;\r\n    border: 2px solid color-mix(in srgb, var(--dlook-play-accent) 31%, transparent);\r\n    border-top-color: var(--dlook-play-primary);\r\n    border-radius: 50%;\r\n    opacity: 0;\r\n    pointer-events: none;\r\n    animation: dlook-route-cover-in 110ms ease-out 160ms forwards, dlook-route-spin 680ms linear 160ms infinite;\r\n  }\r\n\r\n  :root[data-dlook-route-phase=\"in\"] #App main :is(\r\n    [data-dlook-library-card], [class*=\"_workTile_\"], [data-dd-action-name$=\".card\"],\r\n    .dlook-play-settings li, [data-dlook-library-filters] button, [data-dlook-library-tools] > button, [data-dlook-round-action]\r\n  ),\r\n  html[data-dlook-offline] :is(.dlook-offline-list:not([hidden]) > .dlook-offline-card, .dlook-offline-detail:not([hidden]), .dlook-offline-back:not([hidden])) {\r\n    animation: dlook-content-in 200ms ease-out both;\r\n  }\r\n\r\n  html[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player:not([hidden])) > :is(\r\n    [class*=\"_albumartWrapper_\"], [class*=\"_controlWrapper_\"], .dlook-audio-stage, .dlook-audio-controls\r\n  ),\r\n  html[data-dlook-play] :is(#App [data-dd-action-name=\"player.mini_open\"], .dlook-offline-mini:not([hidden])) > :is(\r\n    [class*=\"_info_\"], .dlook-audio-mini-open\r\n  ) {\r\n    animation: dlook-player-in 190ms ease-out both;\r\n  }\r\n\r\n  html[data-dlook-play] :is(\r\n    #App [data-control], .dlook-audio-button, .dlook-caption-toggle,\r\n    [data-dlook-library-tools] > button, [data-dlook-library-filter], [data-dlook-round-action], .dlook-collection-actions > button\r\n  ) {\r\n    transition: scale 125ms ease-out, background-color 150ms ease-out;\r\n  }\r\n\r\n  html[data-dlook-play] :is(\r\n    #App [data-control], .dlook-audio-button, .dlook-caption-toggle,\r\n    [data-dlook-library-tools] > button, [data-dlook-library-filter], [data-dlook-round-action], .dlook-collection-actions > button\r\n  ):active {\r\n    scale: .94;\r\n  }\r\n}\r\n\r\n@keyframes dlook-route-cover-in { from { opacity: 0; } to { opacity: 1; } }\r\n@keyframes dlook-route-cover-out { from { opacity: 1; } to { opacity: 0; } }\r\n@keyframes dlook-route-spin { to { rotate: 360deg; } }\r\n@keyframes dlook-content-in { from { opacity: .7; translate: 0 4px; } to { opacity: 1; translate: 0 0; } }\r\n@keyframes dlook-player-in { from { opacity: .45; } to { opacity: 1; } }\r\n\r\n/* The outgoing copy lives outside React's live player tree. */\r\nhtml[data-dlook-play] [data-dlook-player-covered] { visibility: hidden !important; }\r\nhtml[data-dlook-play] :is(#App [class*=\"_audioPlayer_\"], .dlook-offline-player)[data-dlook-player-morph] {\r\n  position: fixed;\r\n  z-index: 11000;\r\n  overflow: hidden;\r\n  pointer-events: none;\r\n  clip-path: none;\r\n  transform: none;\r\n  transition: none;\r\n  animation: none;\r\n}\r\nhtml[data-dlook-play] [data-dlook-player-morph] > *,\r\nhtml[data-dlook-play] #App [data-dlook-player-morph] [class*=\"_albumartWrapper_\"] > * {\r\n  animation: none;\r\n  transform: none;\r\n}\r\nhtml[data-dlook-play] [data-dlook-player-morph] :is([class*=\"_albumart_\"], .dlook-audio-art) { visibility: hidden; }\r\n/* The site's own mini-bar stand-in would sit at the old mini position. */\r\nhtml[data-dlook-play] [data-dlook-player-morph] [class*=\"_miniBarGhost_\"] { display: none !important; }\r\n.dlook-player-mini-skin {\r\n  position: fixed;\r\n  z-index: 11001;\r\n  overflow: hidden;\r\n  box-sizing: border-box;\r\n  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 21%, transparent);\r\n  background: var(--dlook-play-raised);\r\n  box-shadow: 0 5px 16px color-mix(in srgb, var(--dlook-play-shadow) 29%, transparent);\r\n  pointer-events: none;\r\n  contain: layout paint;\r\n}\r\n.dlook-player-mini-skin *, .dlook-player-mini-skin *::before, .dlook-player-mini-skin *::after {\r\n  animation: none !important;\r\n  transition: none !important;\r\n}\r\n.dlook-player-mini-skin[data-dlook-art] :is([class*=\"_thumbnail_\"], .dlook-audio-mini-thumb) { visibility: hidden; }\r\n.dlook-player-flying-art {\r\n  position: fixed;\r\n  z-index: 11002;\r\n  background-position: center;\r\n  background-size: cover;\r\n  background-repeat: no-repeat;\r\n  box-shadow: 0 8px 28px color-mix(in srgb, var(--dlook-play-shadow) 31%, transparent);\r\n  pointer-events: none;\r\n}");
+const DLookPlayTheme = (() => {
+  const key = 'dlook-play-theme';
+  const themes = ['blue', 'pink'];
+  const listeners = new Set();
+
+  function read() {
+    try {
+      const value = localStorage.getItem(key);
+      return themes.includes(value) ? value : 'blue';
+    } catch {
+      return 'blue';
+    }
+  }
+
+  function apply(theme) {
+    // Blue is the default token set, so it needs no attribute.
+    if (theme === 'blue') document.documentElement.removeAttribute('data-dlook-theme');
+    else document.documentElement.setAttribute('data-dlook-theme', theme);
+    for (const listener of listeners) listener(theme);
+  }
+
+  function current() {
+    return document.documentElement.getAttribute('data-dlook-theme') ?? 'blue';
+  }
+
+  function toggle() {
+    const next = themes[(themes.indexOf(current()) + 1) % themes.length];
+    try {
+      localStorage.setItem(key, next);
+    } catch {}
+    apply(next);
+    return next;
+  }
+
+  // Applied at document_start so the first paint already uses the saved colors.
+  apply(read());
+  window.addEventListener('storage', event => {
+    if (event.key === key) apply(read());
+  });
+
+  return { current, toggle, onChange: listener => listeners.add(listener) };
+})();
+
 const DLookPlaySite = (() => {
   const action = name => `[data-dd-action-name="${name}"]`;
   const targets = {
@@ -153,6 +196,8 @@ const DLookPlaySite = (() => {
   }
 
   function clearCache() { cached.clear(); }
+
+  function forget(key) { cached.delete(key); }
 
   function layout() {
     const container = document.querySelector('#App > .loContainer');
@@ -227,9 +272,24 @@ const DLookPlaySite = (() => {
     clearCache();
   }
 
-  return { layout, activate, hasUnreadNotifications, navigate, cache, clearCache, csrfHeaders, createCollection };
+  return { layout, activate, hasUnreadNotifications, navigate, cache, clearCache, forget, csrfHeaders, createCollection };
 })();
 
+/* Settings glyph: Lucide (ISC).
+ * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as
+ * part of Feather (MIT). All other copyright (c) for Lucide are held by
+ * Lucide Contributors 2022.
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 const DLookPlayIcons = (() => {
   const paths = {
     library: 'M3 4h4v16H3z M10 4h4v16h-4z M17 5l2.7-.6 3 14.6-2.7.6z',
@@ -240,6 +300,7 @@ const DLookPlayIcons = (() => {
     headphones: 'M4 14v-2a8 8 0 0 1 16 0v2M4 14h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H4Zm16 0h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2Z',
     video: 'M4 5h16v14H4z M10 9l5 3-5 3Z',
     captions: 'M3 5h18v14H3z M6 11h4m3 0h5M6 15h7m3 0h2',
+    timer: 'M9 2h6m-3 0v3m6 1 2-2M12 9v4l3 2M20 13a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
     mylist: 'M3 7V5a2 2 0 0 1 2-2h4l3 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z M7 12h10 M7 16h6',
     playlist: 'M3 6h12 M3 10h12 M3 14h8 M17 17V5l4-1 M17 17c0 1.7-1.4 3-3.2 3S11 19 11 17.6s1.4-2.6 3.2-2.6c1.1 0 2.2.4 2.8 1',
     offline: 'M12 3v12m-4-4 4 4 4-4M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4',
@@ -250,7 +311,8 @@ const DLookPlayIcons = (() => {
     search: 'M15.5 15.5 21 21M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z',
     minimize: 'm5 9 7 7 7-7',
     close: 'm6 6 12 12M18 6 6 18',
-    settings: 'm9.5 3-.6 2.2-2 .9-2.1-1-2 3.5 1.7 1.5v2.4l-1.7 1.6 2 3.5 2.1-1 2 .9.6 2.2h4l.6-2.2 2-.9 2.1 1 2-3.5-1.7-1.6v-2.4l1.7-1.5-2-3.5-2.1 1-2-.9-.6-2.2z M14.5 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
+    settings: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
+    theme: 'M12 3a9 9 0 1 0 0 18c.9 0 1.5-.7 1.5-1.5 0-.4-.1-.7-.4-1-.2-.3-.4-.6-.4-1 0-.8.7-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4.4-4-8-9-8Z M7.5 11.5h.01 M10 7.5h.01 M14.5 7.5h.01 M17 11h.01',
     play: 'm8 5 12 7-12 7z',
     pause: 'M8 5h2v14H8z M14 5h2v14h-2z',
     previous: 'M5 6v12m14-12L8 12l11 6z',
@@ -287,6 +349,199 @@ const DLookPlayIcons = (() => {
   }
 
   return { create };
+})();
+
+const DLookPlayCoverCache = (() => {
+  const cacheName = 'dlook-play-covers-v1';
+  const maxAge = 7 * 24 * 60 * 60 * 1000;
+  const maxEntries = 192;
+  const maxBytes = 24 * 1024 * 1024;
+  const maxImageBytes = 5 * 1024 * 1024;
+  const covers = '[class*="_thumbnail_"], [class*="_cover_"], [class*="_thumbs_"]';
+  const memory = new Map();
+  const pending = new Map();
+  const states = new WeakMap();
+  let pane, bytes = 0, disk, writes = Promise.resolve();
+  const observer = new MutationObserver(scan);
+
+  function storage() {
+    return disk ??= new Promise((resolve, reject) => {
+      const request = indexedDB.open(cacheName, 1);
+      request.onupgradeneeded = () => {
+        request.result.createObjectStore('covers', { keyPath: 'key' });
+        request.result.createObjectStore('entries', { keyPath: 'key' }).createIndex('stored', 'stored');
+      };
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const db = request.result;
+        db.onversionchange = () => { db.close(); disk = undefined; };
+        resolve(db);
+      };
+    }).catch(() => null);
+  }
+
+  function source(element) {
+    if (element.tagName === 'IMG') return element.getAttribute('src');
+    return /^url\(["']?(.*?)["']?\)$/.exec(element.style.backgroundImage)?.[1];
+  }
+
+  function remote(raw) {
+    try {
+      const url = new URL(raw, location.href);
+      if (url.protocol !== 'https:' || url.username || url.password ||
+          !/^(?:[^.]+\.)*dlsite\.(?:com|jp)$/.test(url.hostname)) return;
+      return url.href;
+    } catch {}
+  }
+
+  function trim() {
+    for (const [key, entry] of memory) {
+      for (const element of entry.users) {
+        if (!element.isConnected || source(element) !== entry.url) entry.users.delete(element);
+      }
+      if (memory.size <= maxEntries && bytes <= maxBytes) continue;
+      // Keep URLs alive while a mounted cover still uses them.
+      if (entry.users.size) continue;
+      memory.delete(key);
+      bytes -= entry.size;
+      URL.revokeObjectURL(entry.url);
+    }
+  }
+
+  function remember(key, blob) {
+    const entry = { url: URL.createObjectURL(blob), size: blob.size, users: new Set() };
+    memory.set(key, entry);
+    bytes += blob.size;
+    return entry;
+  }
+
+  async function read(key) {
+    const db = await storage();
+    if (!db) return;
+    try {
+      const record = await new Promise((resolve, reject) => {
+        const tx = db.transaction('covers', 'readonly');
+        const request = tx.objectStore('covers').get(key);
+        tx.oncomplete = () => resolve(request.result);
+        tx.onabort = () => reject(tx.error);
+      });
+      if (!record) return;
+      const age = Date.now() - record.stored;
+      if (!Number.isFinite(age) || age < 0 || age >= maxAge) return;
+      const blob = new Blob([record.bytes], { type: record.type });
+      if (blob.size && blob.size <= maxImageBytes && blob.type.startsWith('image/')) return blob;
+    } catch {}
+  }
+
+  function persist(key, blob) {
+    // Serialize writes and eviction so simultaneous covers cannot race the limit.
+    writes = writes.then(async () => {
+      const db = await storage();
+      if (!db) return;
+      // Byte buffers also work in WebKit modes that reject IndexedDB Blob writes.
+      const data = await blob.arrayBuffer();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(['covers', 'entries'], 'readwrite');
+        tx.oncomplete = resolve;
+        tx.onabort = () => reject(tx.error);
+        const stored = Date.now();
+        const covers = tx.objectStore('covers'), entries = tx.objectStore('entries');
+        covers.put({ key, bytes: data, type: blob.type, stored });
+        entries.put({ key, size: blob.size, stored });
+        const request = entries.index('stored').getAll();
+        request.onsuccess = () => {
+          let total = request.result.reduce((sum, entry) => sum + entry.size, 0);
+          let count = request.result.length;
+          for (const entry of request.result) {
+            if (count <= maxEntries && total <= maxBytes && stored - entry.stored < maxAge) break;
+            covers.delete(entry.key);
+            entries.delete(entry.key);
+            total -= entry.size;
+            count--;
+          }
+        };
+      });
+    }).catch(() => {});
+  }
+
+  function load(key) {
+    if (pending.has(key)) return pending.get(key);
+    const promise = (async () => {
+      let blob = await read(key);
+      if (!blob) {
+        const response = await fetch(key, {
+          credentials: new URL(key).origin === location.origin ? 'same-origin' : 'omit',
+          cache: 'force-cache', signal: AbortSignal.timeout(10000),
+        });
+        if (!response.ok || !response.headers.get('content-type')?.startsWith('image/') ||
+            Number(response.headers.get('content-length')) > maxImageBytes) throw new Error('Cover unavailable');
+        blob = await response.blob();
+        if (!blob.size || blob.size > maxImageBytes) throw new Error('Cover too large');
+        persist(key, blob);
+      }
+      return remember(key, blob);
+    })().finally(() => pending.delete(key));
+    pending.set(key, promise);
+    return promise;
+  }
+
+  function display(element, url) {
+    if (element.tagName === 'IMG') element.setAttribute('src', url);
+    else element.style.backgroundImage = `url("${url}")`;
+  }
+
+  function cacheCover(element) {
+    // Leave responsive source selection to the site's image component.
+    if (element.tagName === 'IMG' && (element.srcset || element.closest('picture'))) return;
+    const raw = source(element);
+    if (!raw) return;
+    const previous = states.get(element);
+    if (previous && raw === previous.displayed) return;
+    const key = remote(raw);
+    if (!key) return;
+    const state = { displayed: raw };
+    states.set(element, state);
+    const apply = entry => {
+      // Run after all consumers of a shared request have attached their covers.
+      queueMicrotask(trim);
+      if (!element.isConnected || !pane?.contains(element) || states.get(element) !== state ||
+          source(element) !== state.displayed) return;
+      state.displayed = entry.url;
+      entry.users.add(element);
+      display(element, entry.url);
+    };
+    const hit = memory.get(key);
+    if (hit) {
+      memory.delete(key);
+      memory.set(key, hit);
+      apply(hit);
+      return;
+    }
+    // A cold or unavailable cache leaves the site's original loader visible.
+    load(key).then(apply).catch(() => {});
+  }
+
+  function scan() {
+    if (!pane) return;
+    for (const container of pane.querySelectorAll(covers)) {
+      if (container.style.backgroundImage) cacheCover(container);
+      for (const element of container.querySelectorAll('img[src], [style*="background"]')) cacheCover(element);
+    }
+    trim();
+  }
+
+  function update(next) {
+    if (next !== pane) {
+      observer.disconnect();
+      pane = next;
+      if (pane) observer.observe(pane, {
+        childList: true, subtree: true, attributes: true, attributeFilter: ['src', 'srcset', 'style'],
+      });
+    }
+    scan();
+  }
+
+  return { update };
 })();
 
 const DLookPlayLibrary = (() => {
@@ -399,6 +654,7 @@ const DLookPlayLibrary = (() => {
       main?.setAttribute('data-dlook-library', '');
     }
     updateSearch(main, language);
+    DLookPlayCoverCache.update(main ? page.pane : undefined);
     if (!main) return;
     const dropdown = page.pane.querySelector('[data-dd-action-name="library.category_dropdown"]');
     if (dropdown) {
@@ -444,7 +700,76 @@ const DLookPlayCollections = (() => {
   };
   const trackSelector = '[data-dd-action-name="playlist.detail_item"]';
   const shuffleSelector = 'button[data-dd-action-name="player.shuffle"]';
-  let activePane, request, counts, actions, pendingOrder, createLabels;
+  const mylistItemSelector = '[data-dd-action-name="mylist.detail_item"]';
+  const guardedPanes = new WeakSet();
+  const takeoverPanes = new WeakSet();
+  let activePane, request, counts, actions, pendingOrder, createLabels, language, prepared, bypass;
+
+  function loadCollections(kind) {
+    return DLookPlaySite.cache(kind === 'mylist' ? 'mylists' : 'playlists', async () => {
+      const response = await fetch(kind === 'mylist' ? '/api/mylists' : '/api/playlists', { credentials: 'same-origin' });
+      if (!response.ok) throw new Error('Could not load collections');
+      return response.json();
+    }, 20000);
+  }
+
+  // Resolves the open list into queue entries and counts its locally saved tracks.
+  function prepare(pane, mode) {
+    const kind = mode.split('-')[0];
+    const id = location.pathname.split('/').at(-1);
+    const lookup = loadCollections(kind);
+    if (prepared?.pane === pane && prepared.lookup === lookup && prepared.id === id) return;
+    const current = { pane, lookup, id, kind, entries: null, cached: 0 };
+    prepared = current;
+    lookup.then(async data => {
+      const list = (kind === 'mylist' ? data?.mylists : data?.playlists)?.find(entry => String(entry?.id) === id);
+      if (!Array.isArray(list?.data)) return;
+      const entries = kind === 'mylist' ?
+        list.data.filter(workno => typeof workno === 'string').map(workno => ({ workno })) :
+        list.data.filter(track => typeof track?.workno === 'string' && typeof track.src === 'string')
+          .map(track => ({ workno: track.workno, path: track.src }));
+      const cached = kind === 'playlist' ? await DLookOffline.cachedTracks(entries) : 0;
+      if (prepared !== current) return;
+      current.entries = entries;
+      current.cached = cached;
+    }).catch(() => {});
+  }
+
+  function startQueue(options) {
+    const entries = prepared?.entries;
+    if (!entries?.length) return Promise.resolve(false);
+    return DLookOffline.playQueue(language, entries, { returnHref: location.pathname, ...options }).catch(() => false);
+  }
+
+  // Playlist rows play through the DLook player once any of their tracks is saved locally.
+  function takeOverTracks(pane) {
+    if (takeoverPanes.has(pane)) return;
+    takeoverPanes.add(pane);
+    pane.addEventListener('click', event => {
+      const row = event.target.closest(trackSelector);
+      if (!row || bypass === row || row.hasAttribute('data-editing') || event.target.closest('button, [class*="_handleSort_"]')) return;
+      const rows = [...pane.querySelectorAll(trackSelector)];
+      if (prepared?.pane !== pane || !prepared.cached || rows.length !== prepared.entries.length) return;
+      event.preventDefault();
+      event.stopPropagation();
+      startQueue({ index: rows.indexOf(row), requireCache: true }).then(started => {
+        if (started || !row.isConnected) return;
+        bypass = row;
+        try { row.click(); } finally { bypass = undefined; }
+      });
+    }, true);
+  }
+
+  function guardEditingItems(pane) {
+    if (guardedPanes.has(pane)) return;
+    guardedPanes.add(pane);
+    pane.addEventListener('click', event => {
+      const row = event.target.closest('li[data-editing="true"][data-dd-action-name$=".detail_item"]');
+      if (!row || event.target.closest('button, [class*="_handleSort_"]')) return;
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
+  }
 
   function collectionMode(path) {
     const match = /^\/(mylist|playlist)(?:\/\d+)?$/.exec(path);
@@ -454,11 +779,7 @@ const DLookPlayCollections = (() => {
   function countPlaylistWorks(pane, labels) {
     const cards = pane.querySelectorAll('a[data-dd-action-name="playlist.card"]');
     if (cards.length && !request) {
-      const lookup = DLookPlaySite.cache('playlists', async () => {
-        const response = await fetch('/api/playlists', { credentials: 'same-origin' });
-        if (!response.ok) throw new Error('Could not load playlists');
-        return response.json();
-      }, 20000);
+      const lookup = loadCollections('playlist');
       request = lookup;
       lookup.then(data => {
         if (activePane !== pane || request !== lookup || !Array.isArray(data?.playlists)) return;
@@ -498,9 +819,9 @@ const DLookPlayCollections = (() => {
     }
   }
 
-  function playlistActions(pane, labels) {
+  function playlistActions(pane, labels, kind) {
     const hero = pane.querySelector('[class*="_info_hxvvl_"]');
-    const track = pane.querySelector(trackSelector);
+    const track = pane.querySelector(kind === 'mylist' ? mylistItemSelector : trackSelector);
     if (!hero || !track || track.hasAttribute('data-editing')) {
       actions?.remove();
       return;
@@ -512,10 +833,20 @@ const DLookPlayCollections = (() => {
         const control = document.createElement('button');
         control.type = 'button';
         control.append(DLookPlayIcons.create(name), document.createElement('span'));
-        control.addEventListener('click', () => {
+        control.addEventListener('click', async () => {
+          const shuffle = name === 'shuffle';
+          // My lists have no native queue, so the DLook player always plays them.
+          if (kind === 'mylist' || prepared?.cached) {
+            control.disabled = true;
+            try {
+              if (await startQueue({ shuffle, requireCache: kind !== 'mylist' })) return;
+            } finally {
+              control.disabled = false;
+            }
+            if (kind === 'mylist') return;
+          }
           const tracks = pane.querySelectorAll(trackSelector);
           if (!tracks.length) return;
-          const shuffle = name === 'shuffle';
           const index = shuffle ? Math.floor(Math.random() * tracks.length) : 0;
           pendingOrder = { shuffle, until: performance.now() + 2000 };
           tracks[index].click();
@@ -626,13 +957,14 @@ const DLookPlayCollections = (() => {
     roundAction(remove, 'delete');
   }
 
-  function update(page, path, language) {
+  function update(page, path, pageLanguage) {
+    language = pageLanguage;
     const mode = page && collectionMode(path);
     const pane = mode ? page.pane : null;
     if (pane !== activePane || (pane && pane.dataset.dlookCollection !== mode)) {
       if (activePane) delete activePane.dataset.dlookCollection;
       activePane = pane;
-      request = counts = undefined;
+      request = counts = prepared = undefined;
       pendingOrder = null;
       actions?.remove();
       actions = undefined;
@@ -642,9 +974,16 @@ const DLookPlayCollections = (() => {
     const labels = copy[language] ?? copy[language.split('-')[0]] ?? copy.en;
     createLabels = createCopy[language] ?? createCopy[language.split('-')[0]] ?? createCopy.en;
     if (mode?.endsWith('-index')) prepareCreate(pane, mode.split('-')[0]);
-    if (mode?.endsWith('-detail')) detailActions(page, mode.split('-')[0]);
+    if (mode?.endsWith('-detail')) {
+      guardEditingItems(pane);
+      detailActions(page, mode.split('-')[0]);
+    }
     if (mode === 'playlist-index') countPlaylistWorks(pane, labels);
-    if (mode === 'playlist-detail') playlistActions(pane, labels);
+    if (mode?.endsWith('-detail')) {
+      prepare(pane, mode);
+      playlistActions(pane, labels, mode.split('-')[0]);
+    }
+    if (mode === 'playlist-detail') takeOverTracks(pane);
   }
 
   return { update };
@@ -672,50 +1011,196 @@ const DLookPlayCaptions = (() => {
     }).sort((left, right) => left.start - right.start);
   }
 
-  function timeline(output) {
-    let shown = [], currentCount = 0;
-    return (cues, time) => {
-      const current = cues.filter(cue => time >= cue.start && time < cue.end);
-      const upcoming = cues.filter(cue => time < cue.start).slice(0, 2);
-      const next = [...current, ...upcoming];
-      if (current.length === currentCount && next.length === shown.length && next.every((cue, i) => cue === shown[i])) return;
-      shown = next;
-      currentCount = current.length;
-      const groups = next.map((cue, index) => {
-        const group = document.createElement('div');
-        group.className = 'dlook-caption-cue';
-        group.dataset.offset = Math.max(0, index - currentCount + 1);
-        for (const line of cue.lines) {
-          const text = document.createElement('p');
-          text.textContent = line;
-          group.append(text);
-        }
-        return group;
-      });
-      output.replaceChildren(...groups);
-      output.scrollTop = 0;
+  function timeline(output, { scrollContainer = output, onSeek } = {}) {
+    let shown = [], groups = [], active = -1, selected = -1, visible = [];
+    let browsing = false, touching = false, initialScroll = 0, timer;
+    const listeners = new AbortController();
+    const options = { signal: listeners.signal, passive: true };
+    scrollContainer.setAttribute('data-swipe-ignore', '');
+    scrollContainer.tabIndex = 0;
+    output.classList.add('dlook-caption-timeline');
+
+    // Measure unscaled layout positions so enlarging a cue never moves the
+    // scroll target or changes the range underneath a finger.
+    function layoutTop(element) {
+      let top = 0;
+      for (let node = element; node; node = node.offsetParent) top += node.offsetTop;
+      return top;
+    }
+
+    function topFor(index) {
+      const group = groups[index];
+      const origin = output === scrollContainer ? 0 : output.getBoundingClientRect().top -
+        scrollContainer.getBoundingClientRect().top + scrollContainer.scrollTop - scrollContainer.clientTop;
+      return origin + layoutTop(group) - layoutTop(output) + group.offsetHeight / 2 - scrollContainer.clientHeight / 2;
+    }
+
+    function nearest() {
+      let low = 0, high = groups.length - 1;
+      while (low < high) {
+        const middle = (low + high) >> 1;
+        if (topFor(middle) < scrollContainer.scrollTop) low = middle + 1;
+        else high = middle;
+      }
+      return low > 0 && Math.abs(topFor(low - 1) - scrollContainer.scrollTop) <
+        Math.abs(topFor(low) - scrollContainer.scrollTop) ? low - 1 : low;
+    }
+
+    function paint(index) {
+      selected = index;
+      const next = [index - 1, index, index + 1].filter(i => groups[i]);
+      for (const i of visible) {
+        if (next.includes(i)) continue;
+        groups[i].dataset.offset = 'hidden';
+        groups[i].setAttribute('aria-hidden', 'true');
+        groups[i].removeAttribute('aria-current');
+      }
+      visible = next;
+      for (const i of next) {
+        const group = groups[i];
+        const offset = String(i - index);
+        if (group.dataset.offset !== offset) group.dataset.offset = offset;
+        group.removeAttribute('aria-hidden');
+        if (i === index) group.setAttribute('aria-current', 'true');
+        else group.removeAttribute('aria-current');
+        const proximity = browsing ? Math.max(0, 1 - Math.abs(topFor(i) - scrollContainer.scrollTop) /
+          Math.max(group.offsetHeight + 12, 1)) : Number(i === index);
+        group.style.setProperty('--dlook-cue-scale', String(.78 + .22 * proximity));
+        group.style.setProperty('--dlook-cue-opacity', String(.4 + .6 * proximity));
+      }
+    }
+
+    function follow(index) {
+      if (!groups[index]) return;
+      if (scrollContainer.clientHeight) scrollContainer.scrollTop = Math.max(0, topFor(index));
+      paint(index);
+    }
+
+    function begin() {
+      if (!onSeek || !groups.length) return;
+      if (!browsing) initialScroll = scrollContainer.scrollTop;
+      browsing = true;
+      scrollContainer.setAttribute('data-dlook-browsing', '');
+      clearTimeout(timer);
+      timer = setTimeout(finish, 200);
+    }
+
+    function finish() {
+      if (touching || !browsing) return;
+      const moved = Math.abs(initialScroll - scrollContainer.scrollTop) >= 2;
+      const index = moved ? nearest() : active;
+      browsing = false;
+      scrollContainer.removeAttribute('data-dlook-browsing');
+      if (moved) onSeek(shown[index].start);
+      follow(index);
+    }
+
+    scrollContainer.addEventListener('touchstart', () => { begin(); touching = true; }, options);
+    scrollContainer.addEventListener('touchend', () => {
+      touching = false;
+      clearTimeout(timer);
+      timer = setTimeout(finish, 200);
+    }, options);
+    scrollContainer.addEventListener('touchcancel', () => {
+      touching = browsing = false;
+      clearTimeout(timer);
+      scrollContainer.removeAttribute('data-dlook-browsing');
+      follow(active);
+    }, options);
+    scrollContainer.addEventListener('wheel', begin, options);
+    scrollContainer.addEventListener('keydown', event => {
+      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(event.key)) begin();
+    }, options);
+    scrollContainer.addEventListener('scroll', () => {
+      if (!browsing || !groups.length) return;
+      paint(nearest());
+      if (touching) return;
+      clearTimeout(timer);
+      timer = setTimeout(finish, 200);
+    }, options);
+
+    // Native sheet gestures must leave vertical scrolling to the caption pane.
+    for (const name of ['pointerdown', 'pointermove', 'pointerup', 'touchstart', 'touchmove', 'touchend']) {
+      scrollContainer.addEventListener(name, event => event.stopPropagation(), options);
+    }
+
+    const render = (cues, time) => {
+      if (cues.length !== shown.length || cues.some((cue, i) => cue !== shown[i])) {
+        clearTimeout(timer);
+        touching = browsing = false;
+        scrollContainer.removeAttribute('data-dlook-browsing');
+        shown = cues;
+        active = selected = -1;
+        visible = [];
+        groups = cues.map(cue => {
+          const group = document.createElement('div');
+          group.className = 'dlook-caption-cue';
+          group.dataset.start = cue.start;
+          group.dataset.offset = 'hidden';
+          group.setAttribute('aria-hidden', 'true');
+          for (const line of cue.lines) {
+            const text = document.createElement('p');
+            text.textContent = line;
+            group.append(text);
+          }
+          return group;
+        });
+        output.replaceChildren(...groups);
+        scrollContainer.scrollTop = 0;
+      }
+      let index = cues.findIndex(cue => time >= cue.start && time < cue.end);
+      if (index < 0) index = cues.findIndex(cue => time < cue.start);
+      if (index < 0) index = cues.length - 1;
+      if (index !== active) {
+        active = index;
+        if (!browsing) follow(index);
+      } else if (selected < 0 && groups.length) follow(index);
     };
+    const resize = new ResizeObserver(() => { if (!browsing) follow(active); });
+    resize.observe(scrollContainer);
+    render.destroy = () => { clearTimeout(timer); listeners.abort(); resize.disconnect(); };
+    return render;
+  }
+
+  function seekNative(slider, time) {
+    if (!slider.isConnected || slider.disabled) return;
+    const value = Math.max(Number(slider.min) || 0, Math.min(Number(slider.max), time));
+    if (!Number.isFinite(value)) return;
+    // Bypass React's instance value tracker so the public input event reaches
+    // the slider's onChange/onValueCommitted handlers and seeks the audio too.
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(slider, String(value));
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   function cueResourceNames() {
     // The native player loads its caption JSON via fetch. Its audio is kept outside the DOM.
     return [...new Set(performance.getEntriesByType('resource').reverse().filter(entry =>
       ['fetch', 'xmlhttprequest'].includes(entry.initiatorType) && entry.name.startsWith(cdn + '/content/work/') &&
-      /\/(?:RJ|VJ|BJ)\d+\/optimized\/[^/]+\?/.test(entry.name)).map(entry => entry.name))].slice(0, 4);
+      /\/(?:RJ|VJ|BJ)\d+\/optimized\//.test(entry.name) &&
+      !/\.(?:mp3|wav|m4a|aac|ogg|opus|flac|mp4)(?:[?#]|$)/i.test(entry.name)).map(entry => entry.name))].slice(0, 8);
   }
 
   function loadCues(url) {
     if (!requests.has(url)) {
       if (requests.size >= 24) requests.delete(requests.keys().next().value);
-      requests.set(url, fetch(url, { cache: 'force-cache', credentials: 'omit', redirect: 'error' })
-        .then(response => response.ok ? response.json() : null)
-        .then(data => parse(data?.webvtt)).catch(() => []));
+      const read = async credentials => {
+        const response = await fetch(url, { cache: 'force-cache', credentials, redirect: 'error' });
+        if (!response.ok) throw new Error('Caption request failed');
+        const type = response.headers.get('content-type') ?? '';
+        if (!/json|text\/plain/i.test(type)) { await response.body?.cancel(); return []; }
+        return parse((await response.json())?.webvtt);
+      };
+      requests.set(url, read('omit').catch(() => read('include')).catch(() => {
+        requests.delete(url);
+        return [];
+      }));
     }
     return requests.get(url);
   }
 
   async function matchNativeCues(state, lines, time, key) {
-    for (const url of cueResourceNames()) {
+    for (const url of lines.length ? cueResourceNames() : []) {
       const cues = await loadCues(url);
       if (native !== state || state.lastLookup !== key) return;
       if (cues.some(cue => time >= cue.start - .4 && time <= cue.end + .4 &&
@@ -725,6 +1210,31 @@ const DLookPlayCaptions = (() => {
         renderNative();
         return;
       }
+    }
+    // Safari may omit the page world's resource timings from the userscript
+    // world. Resolve the active track's caption through the same signed catalog
+    // boundary used for offline playback instead of leaving a static subtitle.
+    if (!state.workno || typeof DLookOfflineSource === 'undefined') return;
+    try {
+      const catalog = await DLookPlaySite.cache(`caption-catalog:${state.workno}`, () =>
+        DLookOfflineSource.catalog(state.workno, AbortSignal.timeout(10000)));
+      if (native !== state || state.lastLookup !== key) return;
+      const normalize = value => value?.normalize('NFKC').trim().toLowerCase().replace(/\s+/g, ' ').replace(/\.[a-z0-9]{2,5}$/i, '');
+      const titles = [state.title, navigator.mediaSession?.metadata?.title].map(normalize).filter(Boolean);
+      const matches = catalog.tracks.filter(track => track.captionAsset && titles.some(title =>
+        title === normalize(track.name) || title === normalize(track.asset)));
+      const track = matches.length === 1 ? matches[0] : catalog.tracks.length === 1 ? catalog.tracks[0] : null;
+      if (!track?.captionAsset) return;
+      const downloader = DLookOfflineSource.createDownloader(state.workno, catalog, state.controller.signal);
+      const cues = await downloader.captions(track.captionAsset);
+      if (native !== state || state.lastLookup !== key || !cues.length) return;
+      if (lines.length && !cues.some(cue => time >= cue.start - .4 && time <= cue.end + .4 &&
+          lines.length === cue.lines.length && lines.every((line, index) => line === cue.lines[index].trim()))) return;
+      state.cues = cues;
+      state.host.setAttribute('data-dlook-caption-enhanced', '');
+      renderNative();
+    } catch {
+      // The native subtitle remains usable while authorization is unavailable.
     }
   }
 
@@ -737,7 +1247,6 @@ const DLookPlayCaptions = (() => {
       return;
     }
     const lines = [...native.host.querySelectorAll('[class*="_subtitle_"] > p')].map(line => line.textContent.trim());
-    if (!lines.length) return;
     const key = JSON.stringify(lines);
     if (key === native.lastLookup) return;
     native.lastLookup = key;
@@ -747,32 +1256,433 @@ const DLookPlayCaptions = (() => {
   function updateNative(player) {
     const host = player?.querySelector('[class*="_textTrack_"]');
     const slider = player?.querySelector('[data-time] input[type="range"]');
-    const key = player && [...player.querySelectorAll('[class*="_controlWrapper_"] > :is([class*="_title_"], [class*="_album_"])')]
+    const image = player?.querySelector('[class*="_albumart_"]')?.style.backgroundImage ?? '';
+    const identity = [image, ...(navigator.mediaSession?.metadata?.artwork ?? []).map(image => image.src)].join('\n');
+    const workno = image.match(/(?:RJ|VJ|BJ)\d{6,10}/g)?.at(-1) ?? identity.match(/(?:RJ|VJ|BJ)\d{6,10}/g)?.at(-1) ??
+      /\/work\/((?:RJ|VJ|BJ)\d{6,10})(?:\/|$)/.exec(location.pathname)?.[1];
+    const title = player?.querySelector('[class*="_titleInner_"]')?.textContent.trim() ??
+      player?.querySelector('[class*="_controlWrapper_"] > [class*="_title_"]')?.textContent.trim();
+    const key = player && workno + [...player.querySelectorAll('[class*="_controlWrapper_"] > :is([class*="_title_"], [class*="_album_"])')]
       .map(element => element.textContent).join('\n');
     if (host !== native?.host || slider !== native?.slider || key !== native?.key) {
       progress.disconnect();
+      native?.controller.abort();
       native?.host.removeAttribute('data-dlook-caption-enhanced');
+      native?.render.destroy();
       native?.output.remove();
       native = undefined;
       if (host && slider) {
         const output = document.createElement('div');
         output.className = 'dlook-caption-timeline';
         host.append(output);
-        native = { host, slider, key, output, render: timeline(output) };
-        progress.observe(slider, { attributes: true, attributeFilter: ['value'] });
+        native = { host, slider, key, output, workno, title, controller: new AbortController(), render: timeline(output, {
+          scrollContainer: host, onSeek: time => seekNative(slider, time),
+        }) };
+        progress.observe(slider, { attributes: true, attributeFilter: ['value', 'aria-valuenow'] });
       }
     }
     renderNative();
   }
 
+  if (typeof PerformanceObserver !== 'undefined') {
+    new PerformanceObserver(entries => {
+      if (!native || native.cues || !entries.getEntries().some(entry =>
+        entry.name.startsWith(cdn + '/content/work/') && /\/optimized\//.test(entry.name))) return;
+      native.lastLookup = undefined;
+      renderNative();
+    }).observe({ type: 'resource', buffered: true });
+  }
+
   return { parse, timeline, updateNative };
+})();
+
+const DLookPlaySleep = (() => {
+  const durations = [5, 15, 30, 45, 60];
+  const labels = {
+    zh: ['定时关闭', '分钟', '取消定时', '未设置', '剩余'],
+    ja: ['スリープタイマー', '分', 'タイマーを解除', 'オフ', '残り'],
+    ko: ['취침 타이머', '분', '타이머 취소', '꺼짐', '남은 시간'],
+    en: ['Sleep timer', 'min', 'Cancel timer', 'Off', 'Remaining'],
+  };
+
+  function create(onExpire, language = document.documentElement.lang) {
+    const copy = labels[language.toLowerCase().split(/[-_]/)[0]] ?? labels.en;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'dlook-sleep-toggle';
+    button.append(DLookPlayIcons.create('timer'));
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.setAttribute('aria-expanded', 'false');
+    const picker = document.createElement('div');
+    picker.className = 'dlook-sleep-picker';
+    picker.setAttribute('role', 'dialog');
+    picker.setAttribute('aria-label', copy[0]);
+    picker.setAttribute('data-swipe-ignore', '');
+    picker.hidden = true;
+    const status = document.createElement('p');
+    status.setAttribute('role', 'status');
+    picker.append(status);
+    let deadline = 0, selected = 0, timer;
+    const options = durations.map(minutes => {
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.textContent = `${minutes} ${copy[1]}`;
+      option.onclick = () => {
+        selected = minutes;
+        deadline = Date.now() + minutes * 60000;
+        tick();
+        close(true);
+      };
+      picker.append(option);
+      return { minutes, option };
+    });
+    const cancel = document.createElement('button');
+    cancel.type = 'button';
+    cancel.textContent = copy[2];
+    cancel.onclick = () => { clear(); close(true); };
+    picker.append(cancel);
+
+    function close(focus = false) {
+      picker.hidden = true;
+      button.setAttribute('aria-expanded', 'false');
+      if (focus) button.focus({ preventScroll: true });
+    }
+
+    function tick() {
+      clearTimeout(timer);
+      const remaining = Math.max(0, deadline - Date.now());
+      const expired = deadline && !remaining;
+      if (expired) deadline = selected = 0;
+      const text = remaining ? `${copy[4]} ${Math.ceil(remaining / 60000)} ${copy[1]}` : copy[3];
+      const label = `${copy[0]} · ${text}`;
+      if (button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
+      button.title = label;
+      button.setAttribute('aria-pressed', String(Boolean(remaining)));
+      if (status.textContent !== text) status.textContent = text;
+      for (const { minutes, option } of options) {
+        option.setAttribute('aria-pressed', String(Boolean(remaining) && selected === minutes));
+      }
+      cancel.disabled = !remaining;
+      if (remaining) timer = setTimeout(tick, Math.min(remaining, 1000));
+      if (expired) { close(); onExpire(); }
+    }
+
+    function clear() { deadline = selected = 0; tick(); close(); }
+    button.onclick = () => {
+      const opening = picker.hidden;
+      tick();
+      picker.hidden = !opening;
+      button.setAttribute('aria-expanded', String(opening));
+      if (opening) options[0].option.focus({ preventScroll: true });
+    };
+    document.addEventListener('pointerdown', event => {
+      if (!picker.hidden && !picker.contains(event.target) && !button.contains(event.target)) close();
+    });
+    picker.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.stopPropagation(); close(true); }
+    });
+    document.addEventListener('visibilitychange', () => { if (deadline) tick(); });
+    window.addEventListener('pageshow', () => { if (deadline) tick(); });
+    tick();
+    return { button, picker, clear };
+  }
+
+  return { create };
+})();
+
+const DLookPlayerMotion = (() => {
+  const fullSelector = '[class*="_audioPlayer_"]';
+  const miniSelector = '[data-dd-action-name="player.mini_open"]';
+  const artSelector = '[class*="_albumart_"], .dlook-audio-art';
+  const thumbSelector = '[class*="_thumbnail_"], .dlook-audio-mini-thumb';
+  const miniLike = `${miniSelector}, .dlook-offline-mini`;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const openDuration = 420;
+  const closeDuration = 340;
+  const easing = 'cubic-bezier(.2,.75,.2,1)';
+  let current;
+
+  function rect(element) {
+    const box = element?.getBoundingClientRect();
+    return box?.width && box.height ? { left: box.left, top: box.top, width: box.width, height: box.height } : null;
+  }
+
+  function animate(ticket, element, frames, delay = 0, length = ticket.length, curve = easing) {
+    const animation = element.animate(frames, { duration: length, delay, easing: curve, fill: 'both' });
+    ticket.animations.push(animation);
+    return animation;
+  }
+
+  function cleanup(ticket) {
+    if (!ticket) return;
+    clearTimeout(ticket.timeout);
+    for (const animation of ticket.animations) animation.cancel();
+    for (const element of [ticket.source, ticket.target, ticket.ghost]) {
+      element?.removeAttribute('data-dlook-player-morph');
+      element?.removeAttribute('data-dlook-player-covered');
+    }
+    ticket.ghost?.remove();
+    ticket.art?.remove();
+    ticket.skin?.remove();
+    if (current === ticket) current = undefined;
+  }
+
+  // A mini-styled layer that rides on top of the morphing shell. Expanding, it
+  // starts as an exact copy of the mini card and dissolves into the player;
+  // collapsing, it settles into the mini's look before the real mini takes
+  // over, so neither end of the morph swaps one surface for another.
+  function addSkin(ticket, frames) {
+    const layer = document.createElement('div');
+    layer.className = 'dlook-player-mini-skin';
+    layer.setAttribute('aria-hidden', 'true');
+    ticket.root.append(layer);
+    ticket.skin = layer;
+    animate(ticket, layer, frames);
+    animate(ticket, layer, ticket.open ?
+      [{ opacity: 1 }, { opacity: 1, offset: .1 }, { opacity: 0, offset: .5 }, { opacity: 0 }] :
+      [{ opacity: 0 }, { opacity: 0, offset: .35 }, { opacity: 1, offset: .8 }, { opacity: 1 }],
+    0, ticket.length, 'linear');
+  }
+
+  function addFace(ticket, mini, box) {
+    if (!ticket.skin || ticket.face || !mini || !box) return;
+    const face = mini.cloneNode(true);
+    face.hidden = false;
+    face.inert = true;
+    face.removeAttribute('data-dlook-player-covered');
+    // The mini sits on the bottom edge and the card grows upward from it. The
+    // -1px offsets cancel the skin's border so the copy lands pixel-exact.
+    const style = { position: 'absolute', left: '-1px', top: 'auto', right: 'auto', bottom: '-1px', margin: '0px',
+      width: `${box.width}px`, height: `${box.height}px`, background: 'transparent', 'border-color': 'transparent',
+      'box-shadow': 'none', transform: 'none', 'z-index': 'auto' };
+    for (const [name, value] of Object.entries(style)) face.style.setProperty(name, value, 'important');
+    ticket.skin.append(face);
+    ticket.face = face;
+    if (ticket.open) animate(ticket, face, [{ opacity: 1 }, { opacity: 0 }], 0, 110, 'ease-out');
+    else {
+      const elapsed = performance.now() - ticket.startedAt;
+      const delay = Math.max(0, ticket.length * .55 - elapsed);
+      animate(ticket, face, [{ opacity: 0 }, { opacity: 1 }], delay,
+        Math.max(60, ticket.length - elapsed - delay), 'ease-out');
+    }
+  }
+
+  function fallbackMini() {
+    const probe = document.createElement('div');
+    probe.className = 'dlook-offline-mini';
+    probe.style.visibility = 'hidden';
+    probe.setAttribute('aria-hidden', 'true');
+    document.body.append(probe);
+    const box = rect(probe);
+    probe.remove();
+    return box;
+  }
+
+  function thumbBox(mini, box) {
+    return rect(mini?.querySelector(thumbSelector)) ??
+      { left: box.left + 12, top: box.top + 10, width: 40, height: 40 };
+  }
+
+  function movingArtwork(ticket, from, to, frame) {
+    let source = frame?.querySelector('img:not([hidden])')?.src;
+    let background = source ? `url(${JSON.stringify(source)})` : frame && getComputedStyle(frame).backgroundImage;
+    if ((!background || background === 'none') && ticket.artFrame) {
+      source = ticket.artFrame.querySelector('img')?.src;
+      background = source ? `url(${JSON.stringify(source)})` : getComputedStyle(ticket.artFrame).backgroundImage;
+    }
+    if (!background || background === 'none') return;
+    const artwork = document.createElement('div');
+    artwork.className = 'dlook-player-flying-art';
+    artwork.style.backgroundImage = background;
+    artwork.setAttribute('aria-hidden', 'true');
+    document.body.append(artwork);
+    ticket.art = artwork;
+    ticket.skin?.setAttribute('data-dlook-art', '');
+    const position = (box, radius) => ({ left: `${box.left}px`, top: `${box.top}px`,
+      width: `${box.width}px`, height: `${box.height}px`, borderRadius: `${radius}px` });
+    animate(ticket, artwork, [position(from, ticket.open ? 8 : 16), position(to, ticket.open ? 16 : 8)]);
+  }
+
+  function completeWhenReady(ticket) {
+    if (current === ticket && ticket.done && ticket.target?.isConnected) cleanup(ticket);
+  }
+
+  function start(ticket, target, targetMini) {
+    if (current !== ticket || ticket.started) return;
+    ticket.started = true;
+    ticket.target = ticket.open ? target : undefined;
+    const shell = ticket.open ? target : ticket.ghost;
+    shell.setAttribute('data-dlook-player-morph', '');
+    const full = ticket.open ? rect(target) : ticket.box;
+    const small = ticket.open ? ticket.box : rect(targetMini) ?? fallbackMini();
+    const frame = shell.querySelector(artSelector);
+    const largeArt = rect(frame);
+    if (!full || !small) { cleanup(ticket); return; }
+    const children = [...shell.children].map(child => ({ child, box: rect(child) }));
+
+    const position = (box, radius) => ({ left: `${box.left}px`, top: `${box.top}px`,
+      right: 'auto', bottom: 'auto', margin: '0px', width: `${box.width}px`, height: `${box.height}px`, borderRadius: radius });
+    const large = position(full, getComputedStyle(shell).borderRadius);
+    const little = position(small, '14px');
+    const frames = ticket.open ? [little, large] : [large, little];
+    ticket.startedAt = performance.now();
+    const animation = animate(ticket, shell, frames);
+    // Hold the inner layout still while the outer card changes size. Long
+    // caption transcripts should not reflow on every animation frame.
+    for (const { child, box } of children) {
+      if (!box) continue;
+      const layout = { position: 'absolute', left: `${box.left - full.left}px`, top: `${box.top - full.top}px`,
+        width: `${box.width}px`, height: `${box.height}px`, margin: '0px' };
+      animate(ticket, child, ticket.open ? [{ ...layout, opacity: 0 }, { ...layout, opacity: 1 }] :
+        [{ ...layout, opacity: 1 }, { ...layout, opacity: 0 }],
+        ticket.open ? 110 : 0, ticket.open ? 240 : 100, 'ease-out');
+    }
+    if (!ticket.open || ticket.source.matches(miniLike)) {
+      addSkin(ticket, frames);
+      if (ticket.open) {
+        // The native mini can stay mounted for a frame or two under the shell.
+        ticket.source.setAttribute('data-dlook-player-covered', '');
+        addFace(ticket, ticket.source, ticket.box);
+      }
+    }
+    if (largeArt) movingArtwork(ticket, ticket.open ? ticket.thumb : largeArt,
+      ticket.open ? largeArt : thumbBox(targetMini, small), frame);
+    if (targetMini) revealMini(ticket, targetMini);
+    animation.finished.then(() => {
+      ticket.done = true;
+      completeWhenReady(ticket);
+    }, () => {});
+  }
+
+  function revealMini(ticket, mini) {
+    if (ticket.target === mini) return;
+    ticket.target = mini;
+    if (!ticket.done) {
+      // The real mini stays hidden until the skin above the shell already
+      // looks like it; cleanup then swaps them on the same frame.
+      mini.setAttribute('data-dlook-player-covered', '');
+      addFace(ticket, mini, rect(mini));
+    }
+    completeWhenReady(ticket);
+  }
+
+  function prepare(source, open, artwork) {
+    cleanup(current);
+    if (reduced.matches || !source?.isConnected || source.hidden) return;
+    const box = rect(source);
+    if (!box) return;
+    const ticket = { source, box, open, animations: [], length: open ? openDuration : closeDuration,
+      root: source.closest('#App') ?? document.body };
+    current = ticket;
+    ticket.timeout = setTimeout(() => cleanup(ticket), 1500);
+    if (open) {
+      ticket.artFrame = artwork ?? source.querySelector(thumbSelector);
+      ticket.thumb = rect(ticket.artFrame) ?? thumbBox(source, box);
+    }
+    else {
+      // A cloned <video> would load its source again, so clone with placeholders in its place.
+      const media = [...source.querySelectorAll('video')];
+      const holders = media.map(node => {
+        const holder = document.createElement('div');
+        holder.className = node.className;
+        holder.hidden = node.hidden;
+        node.replaceWith(holder);
+        return holder;
+      });
+      const ghost = source.cloneNode(true);
+      holders.forEach((holder, index) => holder.replaceWith(media[index]));
+      ghost.setAttribute('data-dlook-transition-ghost', '');
+      ghost.setAttribute('aria-hidden', 'true');
+      ghost.inert = true;
+      ghost.style.cssText += `;position:fixed;left:${box.left}px;top:${box.top}px;width:${box.width}px;height:${box.height}px;` +
+        'right:auto;bottom:auto;margin:0;z-index:11000;pointer-events:none;';
+      // Keep native selectors working, outside the live .loContainer queried by
+      // the player adapter. React can unmount its player while this copy exits.
+      ticket.root.append(ghost);
+      const originals = source.querySelectorAll('[class*="_textTrack_"], .dlook-audio-captions');
+      ghost.querySelectorAll('[class*="_textTrack_"], .dlook-audio-captions').forEach((pane, i) => {
+        pane.scrollTop = originals[i]?.scrollTop ?? 0;
+      });
+      ticket.ghost = ghost;
+      source.setAttribute('data-dlook-player-covered', '');
+    }
+    return ticket;
+  }
+
+  function change(source, target, open, commit, artwork) {
+    const ticket = prepare(source, open, artwork);
+    commit();
+    if (ticket) start(ticket, target, open ? null : target);
+  }
+
+  function updateNative(container) {
+    const ticket = current;
+    if (!ticket?.native) return;
+    const target = container?.querySelector(ticket.open ? fullSelector : miniSelector);
+    if (!target) return;
+    if (ticket.open) start(ticket, target);
+    else revealMini(ticket, target);
+  }
+
+  document.addEventListener('click', event => {
+    if (event.defaultPrevented || event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const target = event.target.closest?.(miniSelector);
+    const minimize = event.target.closest?.('[data-dd-action-name="player.minimize"], [class*="_hiddenButton_"]');
+    const source = minimize?.closest(fullSelector) ?? target;
+    if (!source || target && event.target.closest('[data-dd-action-name="player.mini_play_pause"], [class*="_close_"]')) return;
+    const ticket = prepare(source, Boolean(target));
+    if (!ticket) return;
+    ticket.native = true;
+    if (!ticket.open) start(ticket);
+  }, true);
+  window.addEventListener('resize', () => cleanup(current));
+  window.addEventListener('pagehide', () => cleanup(current));
+  reduced.addEventListener('change', () => { if (reduced.matches) cleanup(current); });
+  return { change, updateNative };
 })();
 
 const DLookPlayPlayer = (() => {
   const artwork = '[class*="_audioPlayer_"] [class*="_albumart_"]';
-  let container, observed, source, remembered, subtitleButton;
-  const observer = new MutationObserver(updateArtwork);
+  let container, observed, source, remembered, subtitleButton, sleep;
+  const observer = new MutationObserver(() => {
+    updateArtwork();
+    DLookPlayCaptions.updateNative(container?.querySelector('[class*="_audioPlayer_"]'));
+  });
   const coverTimers = new WeakMap();
+  const modeButton = '#App [class*="_audioPlayer_"] :is([class*="_shuffle_"], [class*="_repeat_"])';
+  let touch;
+
+  // Safari can defer a compatibility click while resolving hover/tooltips. Send
+  // one native click on a completed tap and cancel the delayed compatibility one.
+  document.addEventListener('touchstart', event => {
+    const button = event.target.closest?.(modeButton);
+    const point = event.touches[0];
+    touch = button && !button.disabled && event.touches.length === 1 ?
+      { button, id: point.identifier, x: point.clientX, y: point.clientY } : undefined;
+  }, { capture: true, passive: true });
+  document.addEventListener('touchmove', event => {
+    const point = [...event.touches].find(point => point.identifier === touch?.id);
+    if (!point || Math.hypot(point.clientX - touch.x, point.clientY - touch.y) > 10) touch = undefined;
+  }, { capture: true, passive: true });
+  document.addEventListener('touchcancel', () => { touch = undefined; }, { capture: true, passive: true });
+  document.addEventListener('touchend', event => {
+    const tap = touch;
+    touch = undefined;
+    const point = [...event.changedTouches].find(point => point.identifier === tap?.id);
+    if (!tap || !point || event.touches.length || !event.cancelable ||
+        !tap.button.isConnected || tap.button.disabled ||
+        event.target.closest?.(modeButton) !== tap.button ||
+        Math.hypot(point.clientX - tap.x, point.clientY - tap.y) > 10) return;
+    event.preventDefault();
+    event.stopPropagation();
+    tap.button.click();
+  }, { capture: true, passive: false });
+
+  function setBackground(player, background) {
+    if (!player) return;
+    if (background) player.style.setProperty('--dlook-player-cover', background);
+    else player.style.removeProperty('--dlook-player-cover');
+  }
 
   function fitCover(frame, image) {
     if (image.naturalWidth && image.naturalHeight) {
@@ -809,11 +1719,25 @@ const DLookPlayPlayer = (() => {
     source.setAttribute('data-dlook-subtitle-source', '');
     const label = source.getAttribute('aria-label');
     if (label && subtitleButton.getAttribute('aria-label') !== label) subtitleButton.setAttribute('aria-label', label);
-    subtitleButton.setAttribute('aria-pressed', String(source.getAttribute('data-active') === 'true'));
+    subtitleButton.setAttribute('aria-pressed', String(source.hasAttribute('data-active') && source.getAttribute('data-active') !== 'false'));
+  }
+
+  function updateSleep(player) {
+    const stage = player?.querySelector('[class*="_albumartWrapper_"]');
+    if (stage) {
+      sleep ??= DLookPlaySleep.create(() => {
+        const control = container?.querySelector('[data-control="play-pause"], [data-dd-action-name="player.mini_play_pause"]');
+        // The native pause glyph has this viewBox; checking it avoids resuming
+        // an already paused player when the deadline expires.
+        if (control?.querySelector('svg[viewBox="0 0 77 100"]')) control.click();
+      });
+      if (sleep.button.parentElement !== stage) stage.append(sleep.button, sleep.picker);
+    } else if (!container?.querySelector('[data-dd-action-name="player.mini_open"]')) sleep?.clear();
   }
 
   function updateArtwork() {
     const background = observed?.style.backgroundImage;
+    setBackground(container?.querySelector('[class*="_audioPlayer_"]'), background);
     const url = /^url\(["']?(.*?)["']?\)$/.exec(background ?? '')?.[1];
     if (observed && url !== source) {
       source = url;
@@ -854,10 +1778,142 @@ const DLookPlayPlayer = (() => {
     updateArtwork();
     const player = container?.querySelector('[class*="_audioPlayer_"]');
     updateSubtitleButton(player);
+    updateSleep(player);
     DLookPlayCaptions.updateNative(player);
+    DLookPlayerMotion.updateNative(container);
   }
 
-  return { fitCover, animateCover, update };
+  return { fitCover, animateCover, setBackground, update };
+})();
+
+// Mirrors DLsite Play's own listening progress and history requests for the DLook player.
+const DLookPlayProgress = (() => {
+  const pendingKey = 'dlook:progress-pending';
+  const api = workno => `/api/reading_activities/${encodeURIComponent(workno)}`;
+  let flushing;
+
+  function readPending() {
+    try {
+      const value = JSON.parse(localStorage.getItem(pendingKey) ?? '{}');
+      return value && typeof value === 'object' ? value : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function writePending(pending) {
+    try {
+      if (Object.keys(pending).length) localStorage.setItem(pendingKey, JSON.stringify(pending));
+      else localStorage.removeItem(pendingKey);
+    } catch {}
+  }
+
+  async function send(method, url, body, keepalive = false) {
+    const headers = DLookPlaySite.csrfHeaders();
+    if (body !== undefined) headers.set('Content-Type', 'application/json');
+    const response = await fetch(url, {
+      method, credentials: 'same-origin', redirect: 'error', headers, keepalive,
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+    if (!response.ok) throw Object.assign(new Error('DLsite Play progress request failed'), { status: response.status });
+    return response;
+  }
+
+  // Keeps only the newest unsent report per work; older positions are superseded.
+  function remember(workno, body) {
+    const pending = readPending();
+    const previous = pending[workno];
+    if (!previous || previous.last_accessed_at <= body.last_accessed_at) pending[workno] = body;
+    writePending(pending);
+  }
+
+  function flush() {
+    if (flushing || !navigator.onLine) return flushing;
+    const pending = readPending();
+    const worknos = Object.keys(pending);
+    if (!worknos.length) return;
+    flushing = (async () => {
+      for (const workno of worknos) {
+        const body = pending[workno];
+        try {
+          await send('PUT', api(workno), body);
+        } catch (error) {
+          // Keep reports the server may accept later; drop ones it rejected outright.
+          if (!error.status || error.status >= 500 || error.status === 429) continue;
+        }
+        const latest = readPending();
+        if (latest[workno]?.last_accessed_at === body.last_accessed_at) delete latest[workno];
+        writePending(latest);
+      }
+    })().finally(() => { flushing = undefined; });
+    return flushing;
+  }
+
+  // meta: { key, hash, unitCount } from the work's ziptree.
+  function save(workno, meta, position, total, completed, keepalive = false) {
+    if (!meta?.key || !Number.isFinite(position) || !Number.isFinite(total) || total <= 0) return;
+    const now = new Date().toISOString();
+    const body = {
+      progress_status: 1,
+      last_unit_key: meta.key,
+      last_accessed_at: now,
+      ziptree_hash: meta.hash,
+      unit_count: meta.unitCount,
+      unit_progress: [{
+        key: meta.key, position: completed ? total : Math.min(position, total), unit: 'sec', total,
+        completed: Boolean(completed), accessed_at: now,
+      }],
+    };
+    remember(workno, body);
+    if (!keepalive) return flush();
+    // During page unload only a keepalive request can still leave the page.
+    send('PUT', api(workno), body, true).then(() => {
+      const latest = readPending();
+      if (latest[workno]?.last_accessed_at === now) delete latest[workno];
+      writePending(latest);
+    }).catch(() => {});
+  }
+
+  // Records the same open and history entries the native player creates for a work.
+  function open(workno) {
+    if (!navigator.onLine) return;
+    send('POST', `${api(workno)}/opens`).catch(() => {});
+    send('POST', '/api/view_histories', { workno }).catch(() => {});
+  }
+
+  // The work's reading activity: last_unit_key, unit_progress and status, or null when unavailable.
+  async function activity(workno) {
+    if (!navigator.onLine) return null;
+    try {
+      const response = await fetch(api(workno), {
+        credentials: 'same-origin', headers: DLookPlaySite.csrfHeaders(), signal: AbortSignal.timeout(1500),
+      });
+      return response.ok ? await response.json() : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // Returns the saved position for an unfinished track, or 0.
+  async function position(workno, key) {
+    if (!key) return 0;
+    try {
+      const data = await activity(workno);
+      const units = data?.unit_progress;
+      const unit = Array.isArray(units) ? units.find(entry => entry?.key === key) : units?.[key];
+      const value = Number(unit?.position);
+      if (!unit || unit.completed || !Number.isFinite(value)) return 0;
+      const total = Number(unit.total);
+      return Number.isFinite(total) && value > total - 5 ? 0 : Math.max(0, value);
+    } catch {
+      return 0;
+    }
+  }
+
+  window.addEventListener('online', () => { flush(); });
+  queueMicrotask(flush);
+
+  return { save, open, position, activity, flush };
 })();
 
 const DLookOfflineStore = (() => {
@@ -912,8 +1968,13 @@ const DLookOfflineStore = (() => {
   const workTrackRange = workno => IDBKeyRange.bound([workno], [workno, []]);
   const coverKey = workno => ['cover', workno];
   const captionKey = (work, asset) => [work.workno, work.revision, asset, 'captions'];
+  // A track's own entry plus its captions and video segments all share this key prefix.
+  const assetRange = (workno, revision, asset) => IDBKeyRange.bound([workno, revision, asset], [workno, revision, asset, []]);
+  const segmentKey = (work, asset, index) => [work.workno, work.revision, asset, 'segment', index];
+  const segmentRange = (work, asset) =>
+    IDBKeyRange.bound([work.workno, work.revision, asset, 'segment'], [work.workno, work.revision, asset, 'segment', []]);
 
-  function start({ workno, title, creator }, revision, tracks) {
+  function start({ workno, title, creator }, revision, tracks, { hash, unitCount } = {}) {
     const attempt = crypto.randomUUID();
     return transact(['works', 'tracks'], 'readwrite', (tx, finish) => {
       const works = tx.objectStore('works');
@@ -927,17 +1988,14 @@ const DLookOfflineStore = (() => {
           for (const track of previous.tracks) {
             const updated = keep.get(track.asset);
             if (updated) saved.push({ ...updated, size: track.size });
-            else {
-              audio.delete([workno, revision, track.asset]);
-              audio.delete(captionKey(previous, track.asset));
-            }
+            else audio.delete(assetRange(workno, revision, track.asset));
           }
         } else if (previous) {
           audio.delete(workTrackRange(workno));
         }
         const record = {
           workno, title, creator: creator || previous?.creator,
-          hasCover: Boolean(previous?.hasCover), revision, attempt, total: tracks.length, tracks: saved,
+          hasCover: Boolean(previous?.hasCover), revision, attempt, total: tracks.length, tracks: saved, hash, unitCount,
           updated: previous?.updated ?? Date.now(),
         };
         works.put(record);
@@ -981,6 +2039,34 @@ const DLookOfflineStore = (() => {
     });
   }
 
+  // Segments are written one by one so a long video never has to sit in memory as a whole.
+  async function saveSegment(record, asset, index, blob) {
+    try {
+      return await writeSegment(record, asset, index, blob);
+    } catch (error) {
+      // Some WebKit storage modes reject Blob writes but accept byte buffers.
+      if (error.name !== 'UnknownError') throw error;
+      return writeSegment(record, asset, index, { bytes: await blob.arrayBuffer(), type: blob.type });
+    }
+  }
+
+  function writeSegment(record, asset, index, blob) {
+    return transact(['works', 'tracks'], 'readwrite', tx => {
+      const request = tx.objectStore('works').get(record.workno);
+      request.onsuccess = () => {
+        if (request.result?.attempt !== record.attempt) {
+          tx.abort();
+          return;
+        }
+        tx.objectStore('tracks').put(blob, segmentKey(record, asset, index));
+      };
+    });
+  }
+
+  function saveVideo(record, track, video, captions) {
+    return writeTrack(record, track, { hls: video.playlist, count: video.count }, video.size, captions);
+  }
+
   async function save(record, track, blob, captions) {
     try {
       return await writeTrack(record, track, blob, blob.size, captions);
@@ -1002,7 +2088,22 @@ const DLookOfflineStore = (() => {
   }
 
   return {
-    start, save, saveCover, remove,
+    start, save, saveSegment, saveVideo, saveCover, remove,
+    // Returns the saved HLS playlist text with "#DLOOK-SEGMENT:<n>" markers and its segment blobs.
+    async video(work, asset) {
+      const [entry, segments] = await Promise.all([
+        read('tracks', [work.workno, work.revision, asset]),
+        transact('tracks', 'readonly', (tx, finish) => {
+          const request = tx.objectStore('tracks').getAll(segmentRange(work, asset));
+          request.onsuccess = () => finish(request.result);
+        }),
+      ]);
+      if (typeof entry?.hls !== 'string' || segments?.length !== entry.count) return null;
+      return {
+        playlist: entry.hls,
+        segments: segments.map(data => data?.bytes instanceof ArrayBuffer ? new Blob([data.bytes], { type: data.type }) : data),
+      };
+    },
     list: () => read('works'),
     work: workno => read('works', workno),
     cover: workno => read('tracks', coverKey(workno)),
@@ -1018,7 +2119,8 @@ const DLookOfflineSource = (() => {
   const play = 'https://play.dlsite.com';
   const cdn = 'https://play.dl.dlsite.com';
   const workPattern = /^(RJ|VJ|BJ)\d{6,10}$/;
-  const audioTypes = new Set(['SOU', 'MUS']);
+  // Audio and video works; both play through the DLook player.
+  const audioTypes = new Set(['SOU', 'MUS', 'MOV']);
   const defaultRevision = '00000000-0000-7000-8000-000000000000';
   const maxCoverBytes = 5 * 1024 * 1024;
 
@@ -1127,28 +2229,56 @@ const DLookOfflineSource = (() => {
     const revision = String(manifest.revision ?? manifest.hash ?? defaultRevision);
     const tracks = [];
     const found = new Set();
+    // DLsite Play counts every playable audio and video file as a progress unit.
+    const unitCount = Object.values(manifest.playfile).filter(file => ['audio', 'video'].includes(file?.type)).length;
     function visit(nodes, folder) {
       for (const node of nodes) {
         if (node?.type === 'folder' && Array.isArray(node.children)) {
           visit(node.children, folder ? `${folder}/${node.name}` : node.name);
         }
         const file = node?.type === 'file' && manifest.playfile[node.hashname];
-        const asset = file?.type === 'audio' && file.audio?.optimized?.name;
-        if (!validAsset(asset) || found.has(asset)) continue;
+        const kind = file?.type === 'audio' || file?.type === 'video' ? file.type : null;
+        const asset = kind && file[kind]?.optimized?.name;
+        // Videos are served as HLS playlists; only those can be played and saved.
+        if (!validAsset(asset) || found.has(asset) || (kind === 'video' && !asset.endsWith('.m3u8'))) continue;
         found.add(asset);
-        const vtt = typeof file.audio.vtt === 'string' ? manifest.playfile[file.audio.vtt] : null;
-        const captionAsset = vtt?.[vtt.type]?.optimized?.name;
         const track = { asset, name: node.name || asset, folder, order: tracks.length };
+        if (kind === 'video') track.kind = 'video';
+        if (typeof node.hashname === 'string') track.hashname = node.hashname;
+        const vtt = typeof file[kind].vtt === 'string' ? manifest.playfile[file[kind].vtt] : null;
+        const captionAsset = vtt?.[vtt.type]?.optimized?.name;
         if (validAsset(captionAsset)) track.captionAsset = captionAsset;
         tracks.push(track);
       }
     }
     visit(manifest.tree, '');
-    return { directory, revision, mediaRevision, tracks };
+    const hash = typeof manifest.hash === 'string' ? manifest.hash : undefined;
+    return { directory, revision, mediaRevision, tracks, hash, unitCount };
+  }
+
+  // Grants the CDN cookie that lets native HLS playback fetch every segment of a work.
+  async function authorizeStream(workno, signal) {
+    await request(`${cdn}/api/v3/download/sign/cookie?workno=${workno}`, 'authorization', signal, 'include');
+  }
+
+  // Picks the sharpest HLS variant up to 720p from a master playlist.
+  function chooseVariant(master) {
+    const lines = master.split(/\r?\n/);
+    const variants = [];
+    for (let index = 0; index < lines.length; index++) {
+      if (!lines[index].startsWith('#EXT-X-STREAM-INF')) continue;
+      const uri = lines.slice(index + 1).find(line => line.trim() && !line.startsWith('#'))?.trim();
+      const height = Number(/RESOLUTION=\d+x(\d+)/.exec(lines[index])?.[1]) || 0;
+      if (uri) variants.push({ uri, height });
+    }
+    if (!variants.length) return null;
+    const fitting = variants.filter(variant => variant.height <= 720).sort((a, b) => b.height - a.height);
+    return (fitting[0] ?? variants.sort((a, b) => a.height - b.height)[0]).uri;
   }
 
   function createDownloader(workno, { directory, mediaRevision }, signal) {
     let grant;
+    const base = `${directory}/optimized/`;
     async function authorize() {
       const response = await request(`${play}/api/v4/download/sign/url?workno=${workno}`, 'authorization', signal);
       const next = await json(response, 'authorization');
@@ -1158,18 +2288,26 @@ const DLookOfflineSource = (() => {
       grant = { params: next.params, expires: new Date(next.expires).getTime() };
     }
 
-    async function read(asset, credentials, caption) {
+    // path is relative to the work's optimized folder and may contain HLS subfolders.
+    async function signedUrl(path) {
       if (!grant || grant.expires <= Date.now() + 30000) await authorize();
-      const url = new URL(`${directory}/optimized/${encodeURIComponent(asset)}`);
+      const url = new URL(path.split('/').map(encodeURIComponent).join('/'), base);
+      if (!url.href.startsWith(base)) throw failure('media');
       url.search = new URLSearchParams({ v: mediaRevision, ...grant.params }).toString();
+      return url;
+    }
+
+    async function read(path, credentials, kind) {
+      const url = await signedUrl(path);
       const response = await request(url, 'media', signal, credentials);
-      if (caption) {
+      if (kind === 'captions') {
         const data = await json(response, 'media');
         return DLookPlayCaptions.parse(data?.webvtt);
       }
+      if (kind === 'text') return response.text();
       const mime = response.headers.get('content-type')?.split(';', 1)[0].trim().toLowerCase();
-      const media = mime?.startsWith('audio/') ||
-        ['application/octet-stream', 'binary/octet-stream', 'application/ogg', 'video/mp4'].includes(mime);
+      const media = mime?.startsWith('audio/') || mime?.startsWith('video/') ||
+        ['application/octet-stream', 'binary/octet-stream', 'application/ogg'].includes(mime);
       const range = /^bytes 0-(\d+)\/(\d+)$/.exec(response.headers.get('content-range') ?? '');
       const fullRange = response.status === 206 && range && Number(range[1]) + 1 === Number(range[2]);
       if (!media || (response.status !== 200 && !fullRange)) throw failure('media', response.status);
@@ -1178,26 +2316,66 @@ const DLookOfflineSource = (() => {
       return blob;
     }
 
-    async function download(asset, caption = false) {
+    async function download(path, kind) {
       try {
-        return await read(asset, 'omit', caption);
+        return await read(path, 'omit', kind);
       } catch (error) {
         if (signal.aborted || error.phase !== 'media') throw error;
-        if (error.cause instanceof TypeError) return read(asset, 'include', caption);
+        if (error.cause instanceof TypeError) return read(path, 'include', kind);
         if (![401, 403].includes(error.status)) throw error;
         grant = undefined;
         try {
-          return await read(asset, 'omit', caption);
+          return await read(path, 'omit', kind);
         } catch (retry) {
           if (signal.aborted || retry.phase !== 'media' || ![401, 403].includes(retry.status)) throw retry;
-          return read(asset, 'include', caption);
+          return read(path, 'include', kind);
         }
       }
     }
-    return { audio: download, captions: asset => download(asset, true) };
+
+    // Saves one HLS variant; the stored playlist keeps "#DLOOK-SEGMENT:<n>" in place of each segment URI.
+    async function video(asset, saveSegment) {
+      const master = await download(asset, 'text');
+      const variant = chooseVariant(master);
+      if (!variant || /^[a-z]+:|^\//i.test(variant)) throw failure('media');
+      const folder = asset.includes('/') ? asset.slice(0, asset.lastIndexOf('/') + 1) : '';
+      const variantPath = folder + variant;
+      const variantFolder = variantPath.includes('/') ? variantPath.slice(0, variantPath.lastIndexOf('/') + 1) : '';
+      const lines = (await download(variantPath, 'text')).split(/\r?\n/);
+      if (lines.some(line => line.startsWith('#EXT-X-KEY') && !/METHOD=NONE/.test(line))) throw failure('media');
+      let count = 0, size = 0;
+      const playlist = [];
+      for (const line of lines) {
+        if (!line.trim() || line.startsWith('#')) {
+          playlist.push(line);
+          continue;
+        }
+        if (/^[a-z]+:|^\//i.test(line.trim())) throw failure('media');
+        if (signal.aborted) throw signal.reason;
+        const blob = await download(variantFolder + line.trim(), 'media');
+        await saveSegment(count, blob);
+        size += blob.size;
+        playlist.push(`#DLOOK-SEGMENT:${count++}`);
+      }
+      if (!count) throw failure('media');
+      return { playlist: playlist.join('\n'), count, size };
+    }
+
+    return {
+      audio: path => download(path, 'media'),
+      captions: path => download(path, 'captions'),
+      video,
+      // Streams the same signed media a download would fetch, for tracks without a local copy.
+      url: async path => String(await signedUrl(path)),
+    };
   }
 
-  return { identify, cover, catalog, createDownloader };
+  // Native HLS playback relies on the CDN cookie instead of signed query parameters.
+  function streamUrl({ directory, mediaRevision }, asset) {
+    return `${directory}/optimized/${encodeURIComponent(asset)}?v=${encodeURIComponent(mediaRevision)}`;
+  }
+
+  return { identify, cover, catalog, createDownloader, authorizeStream, streamUrl };
 })();
 
 const DLookOfflinePlayer = (() => {
@@ -1243,20 +2421,36 @@ const DLookOfflinePlayer = (() => {
     artwork.append(DLookPlayIcons.create('playlist'), image);
     const captions = element('div', 'dlook-audio-captions');
     captions.hidden = true;
-    const renderCaptions = DLookPlayCaptions.timeline(captions);
 
     const mini = element('div', 'dlook-offline-mini');
-    const audio = element('audio');
+    // One <video> element plays both audio and video tracks; it shows in the cover frame for videos.
+    const audio = element('video', 'dlook-offline-media');
     audio.hidden = true;
     audio.preload = 'metadata';
+    audio.playsInline = true;
+    artwork.append(audio);
+    const renderCaptions = DLookPlayCaptions.timeline(captions, { onSeek: time => {
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = Math.min(audio.duration, time);
+        updateControls();
+      }
+    } });
+    const sleep = DLookPlaySleep.create(() => audio.pause(), language);
     let artworkKey, artworkUrl, artworkRequest = 0, artworkPending = false, playing;
     let hasTrack = false;
     let cues = [];
     let showCaptions = true;
 
-    function setExpanded(open, focus = false) {
-      expanded.hidden = !hasTrack || !open;
-      mini.hidden = !hasTrack || open;
+    function setExpanded(open, focus = false, origin) {
+      const commit = () => {
+        expanded.hidden = !hasTrack || !open;
+        mini.hidden = !hasTrack || open;
+      };
+      if (hasTrack && open !== !expanded.hidden) {
+        const from = open ? (mini.hidden ? origin?.element : mini) : expanded;
+        DLookPlayerMotion.change(from, open ? expanded : mini, open, commit, mini.hidden ? origin?.artwork : undefined);
+      }
+      else commit();
       if (focus && hasTrack) (open ? minimize : openMini).focus({ preventScroll: true });
     }
 
@@ -1287,7 +2481,7 @@ const DLookOfflinePlayer = (() => {
     subtitle.className = 'dlook-caption-toggle';
     subtitle.setAttribute('aria-pressed', 'true');
     subtitle.hidden = true;
-    stage.append(artwork, captions, minimize, queue, speed, subtitle);
+    stage.append(artwork, captions, minimize, queue, speed, sleep.button, sleep.picker, subtitle);
 
     const controls = element('div', 'dlook-audio-controls');
     const title = element('div', 'dlook-audio-title');
@@ -1382,33 +2576,50 @@ const DLookOfflinePlayer = (() => {
         node.removeAttribute('src');
       }
       artwork.style.removeProperty('--dlook-cover-ratio');
+      artwork.style.removeProperty('background-image');
+      DLookPlayPlayer.setBackground(expanded);
     }
 
-    function show(work, track, open, trackCaptions = []) {
+    function show(work, track, open, trackCaptions = [], origin) {
       hasTrack = true;
       cues = trackCaptions;
       subtitle.hidden = !cues.length;
       captions.hidden = !cues.length || !showCaptions;
       renderCaptions(cues, 0);
+      const video = track.kind === 'video';
+      artwork.toggleAttribute('data-video', video);
+      audio.hidden = !video;
+      if (!video && image.naturalWidth && !image.hidden) DLookPlayPlayer.fitCover(artwork, image);
       title.textContent = miniTitle.textContent = track.name;
       album.textContent = miniAlbum.textContent = work.title;
       status.textContent = '';
       openMini.setAttribute('aria-label', `${expandLabel} · ${track.name}`);
-      setExpanded(open || !expanded.hidden, open);
-      if (work.workno === artworkKey && (artworkUrl || artworkPending)) return;
+      if (work.workno === artworkKey && (artworkUrl || artworkPending)) {
+        setExpanded(open || !expanded.hidden, open, origin);
+        return;
+      }
       clearCover();
       artworkKey = work.workno;
+      const preview = origin?.artwork?.querySelector('img');
+      if (preview?.complete && preview.naturalWidth) {
+        const background = `url(${JSON.stringify(preview.src)})`;
+        artwork.style.backgroundImage = background;
+        if (!artwork.hasAttribute('data-video')) DLookPlayPlayer.fitCover(artwork, preview);
+        DLookPlayPlayer.setBackground(expanded, background);
+      }
+      setExpanded(open || !expanded.hidden, open, origin);
       if (!work.hasCover) return;
       const request = artworkRequest;
       artworkPending = true;
       cover(work.workno).then(data => {
         if (request !== artworkRequest || !data?.bytes) return;
         artworkUrl = URL.createObjectURL(new Blob([data.bytes], { type: data.type }));
+        DLookPlayPlayer.setBackground(expanded, `url(${JSON.stringify(artworkUrl)})`);
         for (const node of [image, thumb]) {
           node.onload = () => {
             if (request !== artworkRequest) return;
             node.hidden = false;
-            if (node === image) DLookPlayPlayer.fitCover(artwork, node);
+            if (node === image && !artwork.hasAttribute('data-video')) DLookPlayPlayer.fitCover(artwork, node);
           };
           node.src = artworkUrl;
         }
@@ -1419,6 +2630,19 @@ const DLookOfflinePlayer = (() => {
       audio.addEventListener(event, updateControls);
     }
     audio.addEventListener('ended', onEnded);
+    // Videos size the cover frame to their own aspect ratio.
+    audio.addEventListener('loadedmetadata', () => {
+      if (artwork.hasAttribute('data-video') && audio.videoWidth && audio.videoHeight) {
+        artwork.style.setProperty('--dlook-cover-ratio', audio.videoWidth / audio.videoHeight);
+      }
+    });
+    audio.addEventListener('click', togglePlayback);
+    audio.addEventListener('dblclick', () => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      // iPhone Safari only offers fullscreen through the video element's WebKit method.
+      else if (audio.requestFullscreen) audio.requestFullscreen().catch(() => {});
+      else audio.webkitEnterFullscreen?.();
+    });
     audio.addEventListener('error', onError);
     expanded.addEventListener('keydown', event => {
       if (event.key === 'Escape') setExpanded(false, true);
@@ -1426,9 +2650,11 @@ const DLookOfflinePlayer = (() => {
     setExpanded(false);
     updateControls();
     return {
-      audio, elements: [expanded, mini, audio], show, resume, collapse: () => setExpanded(false),
+      audio, elements: [expanded, mini], show, resume, collapse: () => setExpanded(false),
+      setShuffle(value) { shuffle.setAttribute('aria-pressed', String(value)); },
       error(message) { status.textContent = message; },
       hide() {
+        sleep.clear();
         hasTrack = false;
         cues = [];
         captions.hidden = true;
@@ -1449,57 +2675,57 @@ const DLookOffline = (() => {
   const href = offlinePath + offlineHash;
   const copy = {
     'zh-cn': {
-      title: '离线暂存', save: '暂存音频', saved: '已暂存', saving: '正在暂存音频…', cancel: '取消暂存',
-      count: (saved, total) => `已暂存 ${saved}/${total} 轨`, retry: '重试暂存', stopped: '暂存已取消。',
-      authorization: '音频授权失败，请确认已登录且能在线播放。', catalog: '无法读取音轨列表，请重试。',
-      media: '音轨下载失败，请重试。', storage: '浏览器无法写入暂存，请检查本地存储。',
+      title: '离线暂存', save: '暂存音视频', saved: '已暂存', saving: '正在暂存音视频…', cancel: '暂停暂存',
+      count: (saved, total) => `已暂存 ${saved}/${total} 项`, retry: '继续暂存', stopped: '暂存已暂停。',
+      authorization: '授权失败，请确认已登录且能在线播放。', catalog: '无法读取文件列表，请重试。',
+      media: '部分音视频下载失败，请重试。', storage: '浏览器无法写入暂存，请检查本地存储。',
       quota: '空间不足，请删除部分暂存作品后重试。', back: '返回离线暂存',
-      noAudio: '这个作品没有可暂存的音轨。', empty: '还没有暂存作品。联网时，在已购音频作品页点击「暂存音频」。',
+      noAudio: '这个作品没有可暂存的音频或视频。', empty: '还没有暂存作品。联网时，在已购作品页点击「暂存音视频」。',
       remove: '删除暂存', confirm: title => `删除「${title}」的本地暂存？`, openFailed: '无法读取离线暂存，请重试。',
-      playFailed: '无法播放这条音轨，请尝试重新暂存。', removeFailed: '无法删除暂存，请重试。',
+      playFailed: '无法播放这一项，请尝试重新暂存。', removeFailed: '无法删除暂存，请重试。',
     },
     'zh-tw': {
-      title: '離線暫存', save: '暫存音訊', saved: '已暫存', saving: '正在暫存音訊…', cancel: '取消暫存',
-      count: (saved, total) => `已暫存 ${saved}/${total} 軌`, retry: '重試暫存', stopped: '已取消暫存。',
-      authorization: '音訊授權失敗，請確認已登入且可線上播放。', catalog: '無法讀取音軌清單，請再試一次。',
-      media: '音軌下載失敗，請再試一次。', storage: '瀏覽器無法寫入暫存，請檢查本機儲存空間。',
+      title: '離線暫存', save: '暫存影音', saved: '已暫存', saving: '正在暫存影音…', cancel: '暫停暫存',
+      count: (saved, total) => `已暫存 ${saved}/${total} 項`, retry: '繼續暫存', stopped: '已暫停暫存。',
+      authorization: '授權失敗，請確認已登入且可線上播放。', catalog: '無法讀取檔案清單，請再試一次。',
+      media: '部分影音下載失敗，請再試一次。', storage: '瀏覽器無法寫入暫存，請檢查本機儲存空間。',
       quota: '空間不足，請刪除部分暫存作品後再試。', back: '返回離線暫存',
-      noAudio: '這個作品沒有可暫存的音軌。', empty: '還沒有暫存作品。連線時，在已購音訊作品頁點選「暫存音訊」。',
+      noAudio: '這個作品沒有可暫存的音訊或影片。', empty: '還沒有暫存作品。連線時，在已購作品頁點選「暫存影音」。',
       remove: '刪除暫存', confirm: title => `刪除「${title}」的本機暫存？`, openFailed: '無法讀取離線暫存，請再試一次。',
-      playFailed: '無法播放此音軌，請嘗試重新暫存。', removeFailed: '無法刪除暫存，請再試一次。',
+      playFailed: '無法播放此項目，請嘗試重新暫存。', removeFailed: '無法刪除暫存，請再試一次。',
     },
     ja: {
-      title: 'オフライン', save: '音声を保存', saved: '保存済み', saving: '音声を保存中…', cancel: '保存をキャンセル',
-      count: (saved, total) => `${total} 曲中 ${saved} 曲を保存済み`, retry: '保存を再試行', stopped: '保存をキャンセルしました。',
-      authorization: '音声を認証できません。ログイン状態と再生権限を確認してください。', catalog: '曲一覧を取得できません。もう一度お試しください。',
-      media: '音声のダウンロードに失敗しました。', storage: '音声を保存できません。ブラウザのストレージを確認してください。',
+      title: 'オフライン', save: '音声・動画を保存', saved: '保存済み', saving: '音声・動画を保存中…', cancel: '保存を一時停止',
+      count: (saved, total) => `${total} 件中 ${saved} 件を保存済み`, retry: '保存を再開', stopped: '保存を一時停止しました。',
+      authorization: '認証できません。ログイン状態と再生権限を確認してください。', catalog: 'ファイル一覧を取得できません。もう一度お試しください。',
+      media: '一部の音声・動画をダウンロードできませんでした。', storage: '保存できません。ブラウザのストレージを確認してください。',
       quota: '空き容量が不足しています。保存済みの作品を削除してください。', back: 'オフラインに戻る',
-      noAudio: '保存できる音声がありません。', empty: 'オンライン時に購入済みの音声作品ページから音声を保存できます。',
-      remove: '保存を削除', confirm: title => `「${title}」の保存済み音声を削除しますか？`, openFailed: '保存済みの音声を読み込めませんでした。',
-      playFailed: 'この音声を再生できません。もう一度保存してください。', removeFailed: '保存済みの音声を削除できませんでした。',
+      noAudio: '保存できる音声・動画がありません。', empty: 'オンライン時に購入済みの作品ページから音声・動画を保存できます。',
+      remove: '保存を削除', confirm: title => `「${title}」の保存データを削除しますか？`, openFailed: '保存データを読み込めませんでした。',
+      playFailed: 'この項目を再生できません。もう一度保存してください。', removeFailed: '保存データを削除できませんでした。',
     },
     en: {
-      title: 'Offline', save: 'Save audio offline', saved: 'Saved offline', saving: 'Saving audio…', cancel: 'Cancel saving',
-      count: (saved, total) => `${saved} of ${total} tracks saved`, retry: 'Retry saving', stopped: 'Saving canceled.',
-      authorization: 'Audio authorization failed. Check that you can play this work online.',
-      catalog: 'Could not load the track list. Try again.', media: 'Could not download the audio. Try again.',
+      title: 'Offline', save: 'Save offline', saved: 'Saved offline', saving: 'Saving audio and video…', cancel: 'Pause saving',
+      count: (saved, total) => `${saved} of ${total} items saved`, retry: 'Resume saving', stopped: 'Saving paused.',
+      authorization: 'Authorization failed. Check that you can play this work online.',
+      catalog: 'Could not load the file list. Try again.', media: 'Some audio or video could not be downloaded. Try again.',
       storage: 'Could not write the offline copy. Check browser storage.', back: 'Back to offline',
       quota: 'Storage is full. Remove some saved works and try again.',
-      noAudio: 'This work has no audio tracks available to save.',
-      empty: 'No saved works yet. While online, open a purchased audio work and select “Save audio offline.”',
-      remove: 'Remove saved audio', confirm: title => `Remove the saved audio for “${title}”?`,
-      openFailed: 'Could not read saved audio. Try again.', playFailed: 'Could not play this track. Try saving it again.',
-      removeFailed: 'Could not remove saved audio. Try again.',
+      noAudio: 'This work has no audio or video available to save.',
+      empty: 'No saved works yet. While online, open a purchased work and select “Save offline.”',
+      remove: 'Remove offline copy', confirm: title => `Remove the offline copy of “${title}”?`,
+      openFailed: 'Could not read offline copies. Try again.', playFailed: 'Could not play this item. Try saving it again.',
+      removeFailed: 'Could not remove the offline copy. Try again.',
     },
     ko: {
-      title: '오프라인', save: '오디오 저장', saved: '저장됨', saving: '오디오 저장 중…', cancel: '저장 취소',
-      count: (saved, total) => `${total}개 중 ${saved}개 저장됨`, retry: '저장 다시 시도', stopped: '저장을 취소했습니다.',
-      authorization: '오디오 인증에 실패했습니다. 온라인으로 재생할 수 있는지 확인하세요.', catalog: '트랙 목록을 읽을 수 없습니다.',
-      media: '오디오를 다운로드하지 못했습니다.', storage: '오디오를 저장할 수 없습니다. 브라우저 저장 공간을 확인하세요.',
+      title: '오프라인', save: '오디오·동영상 저장', saved: '저장됨', saving: '오디오·동영상 저장 중…', cancel: '저장 일시 중지',
+      count: (saved, total) => `${total}개 중 ${saved}개 저장됨`, retry: '저장 계속하기', stopped: '저장을 일시 중지했습니다.',
+      authorization: '인증에 실패했습니다. 온라인으로 재생할 수 있는지 확인하세요.', catalog: '파일 목록을 읽을 수 없습니다.',
+      media: '일부 오디오·동영상을 다운로드하지 못했습니다.', storage: '저장할 수 없습니다. 브라우저 저장 공간을 확인하세요.',
       quota: '저장 공간이 부족합니다. 저장된 작품을 삭제하세요.', back: '오프라인으로 돌아가기',
-      noAudio: '저장할 수 있는 오디오가 없습니다.', empty: '온라인 상태에서 구매한 오디오 작품 페이지의 저장 버튼을 누르세요.',
-      remove: '저장 삭제', confirm: title => `“${title}”의 저장된 오디오를 삭제할까요?`, openFailed: '저장된 오디오를 읽을 수 없습니다.',
-      playFailed: '이 트랙을 재생할 수 없습니다. 다시 저장해 보세요.', removeFailed: '저장된 오디오를 삭제할 수 없습니다.',
+      noAudio: '저장할 수 있는 오디오나 동영상이 없습니다.', empty: '온라인 상태에서 구매한 작품 페이지의 저장 버튼을 누르세요.',
+      remove: '저장 삭제', confirm: title => `“${title}”의 저장 데이터를 삭제할까요?`, openFailed: '저장 데이터를 읽을 수 없습니다.',
+      playFailed: '이 항목을 재생할 수 없습니다. 다시 저장해 보세요.', removeFailed: '저장 데이터를 삭제할 수 없습니다.',
     },
   };
   const text = language => copy[language] ?? copy[language.split('-')[0]] ?? copy.en;
@@ -1559,6 +2785,160 @@ const DLookOffline = (() => {
   }
 
   const isSaved = state => state?.total > 0 && state.saved === state.total;
+  const trackPath = track => track.folder ? `${track.folder}/${track.name}` : track.name;
+  const localeFor = language => ({ ja: 'ja_JP', en: 'en_US', ko: 'ko_KR', zh: 'zh_CN' }[language] ??
+    language.replace(/-([a-z]{2})$/, (_, suffix) => '_' + suffix.toUpperCase()));
+
+  // Signed online access for tracks that have no local copy; shared by every queue for ten minutes.
+  function streamSource(workno) {
+    return DLookPlaySite.cache(`stream:${workno}`, async () => {
+      const signal = new AbortController().signal;
+      const catalog = await DLookOfflineSource.catalog(workno, signal);
+      return { catalog, download: DLookOfflineSource.createDownloader(workno, catalog, signal) };
+    }, 600000);
+  }
+
+  // DLsite Play keys progress by the ziptree file hash; older saves need the online catalog for it.
+  async function progressMeta({ work, track }) {
+    if (track.hashname && work.hash && work.unitCount) {
+      return { key: track.hashname, hash: work.hash, unitCount: work.unitCount };
+    }
+    const { catalog } = await streamSource(work.workno);
+    const path = track.path ?? trackPath(track);
+    const found = catalog.tracks.find(entry => entry.asset === track.asset) ??
+      catalog.tracks.find(entry => trackPath(entry) === path);
+    return found?.hashname && catalog.hash ? { key: found.hashname, hash: catalog.hash, unitCount: catalog.unitCount } : null;
+  }
+
+  // A saved video becomes a local HLS playlist whose segments point at blob URLs.
+  function localVideo({ playlist, segments }) {
+    const urls = segments.map(blob => URL.createObjectURL(new Blob([blob], { type: 'video/mp2t' })));
+    const text = playlist.replace(/^#DLOOK-SEGMENT:(\d+)$/gm, (_, index) => urls[Number(index)]);
+    const src = URL.createObjectURL(new Blob([text], { type: 'application/vnd.apple.mpegurl' }));
+    return { src, revoke: [src, ...urls] };
+  }
+
+  // Returns { src, revoke, captions, video }; revoke lists the blob URLs the caller must release.
+  async function resolveTrack(item) {
+    const video = item.track.kind === 'video';
+    if (!item.stream) {
+      const [media, captions] = await Promise.all([
+        video ? DLookOfflineStore.video(item.work, item.track.asset) : DLookOfflineStore.track(item.work, item.track.asset),
+        DLookOfflineStore.captions(item.work, item.track.asset).catch(() => []),
+      ]);
+      if (media && video) return { ...localVideo(media), captions: captions ?? [], video };
+      if (media) {
+        const src = URL.createObjectURL(media);
+        return { src, revoke: [src], captions: captions ?? [], video };
+      }
+    }
+    const { catalog, download } = await streamSource(item.work.workno);
+    const path = item.track.path ?? trackPath(item.track);
+    const track = catalog.tracks.find(entry => entry.asset === item.track.asset) ??
+      catalog.tracks.find(entry => trackPath(entry) === path);
+    if (!track) throw new Error('Missing online track');
+    const isVideo = track.kind === 'video';
+    const [src, captions] = await Promise.all([
+      // HLS segments are fetched by the browser itself, so they authenticate with the CDN cookie.
+      isVideo ? DLookOfflineSource.authorizeStream(item.work.workno, AbortSignal.timeout(10000))
+        .then(() => DLookOfflineSource.streamUrl(catalog, track.asset)) : download.url(track.asset),
+      track.captionAsset ? download.captions(track.captionAsset).catch(() => []) : [],
+    ]);
+    return { src, revoke: [], captions: captions ?? [], video: isVideo };
+  }
+
+  // Entries are { workno, path } for single tracks or { workno } for every track of a work.
+  async function buildQueue(entries, language) {
+    const worknos = [...new Set(entries.map(entry => entry.workno))];
+    const locale = localeFor(language);
+    const works = new Map(await Promise.all(worknos.map(async workno => {
+      const cached = await DLookOfflineStore.work(workno).catch(() => null);
+      return [workno, cached?.tracks.length ? cached : null];
+    })));
+    const metadata = new Map(await Promise.all(worknos.map(async workno => {
+      const cached = works.get(workno);
+      if (cached) return [workno, cached];
+      const work = await DLookOfflineSource.identify(workno, locale, new AbortController().signal).catch(() => null);
+      return [workno, { workno, title: work?.title || workno, creator: work?.creator, hasCover: false }];
+    })));
+    // Whole works follow the online catalog when reachable, so tracks added since saving (e.g. videos) still play.
+    const whole = worknos.filter(workno => entries.some(entry => entry.workno === workno && entry.path === undefined));
+    const sources = new Map(await Promise.all(whole.map(async workno =>
+      [workno, navigator.onLine ? await streamSource(workno).catch(() => null) : null])));
+    const queue = [];
+    let cachedCount = 0;
+    for (const entry of entries) {
+      const cached = works.get(entry.workno);
+      const work = metadata.get(entry.workno);
+      if (entry.path !== undefined) {
+        const track = cached?.tracks.find(item => trackPath(item) === entry.path);
+        if (track) cachedCount += 1;
+        const slash = entry.path.lastIndexOf('/');
+        queue.push(track ? { work: cached, track } : {
+          work, stream: true,
+          track: { path: entry.path, name: entry.path.slice(slash + 1), folder: slash > 0 ? entry.path.slice(0, slash) : '' },
+        });
+        continue;
+      }
+      const source = sources.get(entry.workno);
+      if (!source) {
+        cachedCount += cached?.tracks.length ?? 0;
+        queue.push(...(cached?.tracks ?? []).slice().sort((a, b) => a.order - b.order).map(track => ({ work: cached, track })));
+        continue;
+      }
+      const saved = new Map(cached?.tracks.map(track => [track.asset, track]));
+      for (const track of source.catalog.tracks) {
+        const local = saved.get(track.asset);
+        if (local && cached.revision === source.catalog.revision) {
+          cachedCount += 1;
+          queue.push({ work: cached, track: local });
+        } else {
+          queue.push({ work, track, stream: true });
+        }
+      }
+    }
+    return { queue, cachedCount };
+  }
+
+  // Plays a mixed queue in the DLook player: local copies first, signed online media otherwise.
+  // select: { path } or { key } (a ziptree hashname) picks the starting item; resume continues its saved position.
+  async function playQueue(language, entries, {
+    index = 0, shuffle = false, returnHref, requireCache = false, select, resume = true,
+  } = {}) {
+    const { queue, cachedCount } = await buildQueue(entries, language);
+    if (!queue.length || (requireCache && !cachedCount)) return false;
+    if (select) {
+      const stem = name => String(name ?? '').replace(/\.[^.]*$/, '');
+      let matches;
+      if (select.path !== undefined) matches = queue.filter(({ track }) => (track.path ?? trackPath(track)) === select.path);
+      else if (select.key !== undefined) matches = queue.filter(({ track }) => stem(track.hashname ?? track.asset) === stem(select.key));
+      else {
+        // Tree rows show names without extensions; the open folder separates same-named files.
+        matches = queue.filter(({ track }) => track.name === select.title || stem(track.name) === select.title);
+        const inFolder = matches.filter(({ track }) => track.folder === select.folder);
+        if (inFolder.length) matches = inFolder;
+        else if (matches.length > 1) return false;
+      }
+      index = matches.length ? queue.indexOf(matches[0]) : -1;
+      if (index < 0) return false;
+    }
+    if (library?.language !== language) show(language);
+    if (!library.shell.hasAttribute('data-dlook-background')) library.shell.setAttribute('data-dlook-background', '');
+    library.shell.hidden = false;
+    const start = shuffle ? Math.floor(Math.random() * queue.length) : Math.min(Math.max(index, 0), queue.length - 1);
+    library.playQueue(queue, start, shuffle, returnHref, resume);
+    return true;
+  }
+
+  async function cachedTracks(entries) {
+    const worknos = [...new Set(entries.map(entry => entry.workno))];
+    const works = await Promise.all(worknos.map(workno => DLookOfflineStore.work(workno).catch(() => null)));
+    const paths = new Set();
+    for (const work of works) {
+      for (const track of work?.tracks ?? []) paths.add(`${work.workno}\n${trackPath(track)}`);
+    }
+    return entries.filter(entry => paths.has(`${entry.workno}\n${entry.path}`)).length;
+  }
 
   function paintWork(view) {
     const job = jobs.get(view.workno);
@@ -1567,8 +2947,9 @@ const DLookOffline = (() => {
     const retry = state?.message || (state && state.saved < state.total);
     const complete = isSaved(state);
     setText(view.saveLabel, job ? labels.saving : complete ? labels.saved : retry ? labels.retry : labels.save);
-    setText(view.cancel, labels.cancel);
+    setText(view.cancelLabel, labels.cancel);
     view.save.disabled = Boolean(job || complete);
+    view.save.hidden = Boolean(job);
     view.cancel.hidden = !job;
     const progress = state?.total ? labels.count(state.saved, state.total) : '';
     const message = state?.message ? labels[state.message] : '';
@@ -1596,7 +2977,7 @@ const DLookOffline = (() => {
         return;
       }
       phase = 'storage';
-      const record = await DLookOfflineStore.start(view.work, catalog.revision, catalog.tracks);
+      const record = await DLookOfflineStore.start(view.work, catalog.revision, catalog.tracks, catalog);
       if (!record.hasCover) {
         artwork = DLookOfflineSource.cover(view.work.coverUrl, signal)
           .then(cover => cover && !signal.aborted && DLookOfflineStore.saveCover(record, cover))
@@ -1610,18 +2991,23 @@ const DLookOffline = (() => {
       for (const track of catalog.tracks) {
         if (signal.aborted) throw signal.reason;
         if (saved.has(track.asset)) continue;
-        let blob;
+        let media;
         try {
-          blob = await download.audio(track.asset);
+          media = track.kind === 'video' ?
+            await download.video(track.asset, (index, blob) => DLookOfflineStore.saveSegment(record, track.asset, index, blob)) :
+            await download.audio(track.asset);
         } catch (error) {
-          if (signal.aborted || error.phase === 'authorization') throw error;
+          // Storage failures (quota, an interrupted save) stop the whole job; download failures skip the track.
+          if (signal.aborted || error.phase === 'authorization' || !error.phase) throw error;
           job.message = 'media';
           job.httpStatus = error.status;
           continue;
         }
         const captions = track.captionAsset && await download.captions(track.captionAsset).catch(() => undefined);
         if (signal.aborted) throw signal.reason;
-        job.saved = await DLookOfflineStore.save(record, track, blob, captions);
+        job.saved = track.kind === 'video' ?
+          await DLookOfflineStore.saveVideo(record, track, media, captions) :
+          await DLookOfflineStore.save(record, track, media, captions);
         update();
       }
     } catch (error) {
@@ -1637,6 +3023,70 @@ const DLookOffline = (() => {
     }
   }
 
+  const playButtons = '[data-dd-action-name="work_detail.resume"], [data-dd-action-name="work_detail.start"]';
+  const playableFile = /\.(?:mp3|wav|flac|m4a|aac|ogg|oga|opus|wma|mp4|m4v|mov|webm|mkv|avi|wmv|mpe?g|ts)$/i;
+  const treeRow = '[class*="_tree_"] > li > [class*="_rowBody_"]:not(a)';
+  const interceptedPanes = new WeakSet();
+  let bypass;
+
+  // Starts a work in the DLook player: a file row plays that file, "start" plays from the top,
+  // and "resume" continues the server's last unit unless the whole work was finished.
+  async function startWork(language, workno, { path, row, action }) {
+    const options = { returnHref: location.pathname };
+    if (path !== undefined) {
+      Object.assign(options, { select: { path }, resume: true });
+    } else if (row) {
+      Object.assign(options, { select: row, resume: true });
+    } else if (action === 'work_detail.resume') {
+      const activity = await DLookPlayProgress.activity(workno);
+      const units = Object.values(activity?.unit_progress ?? {});
+      const finished = units.length && units.every(unit => unit?.completed);
+      if (activity?.last_unit_key && !finished) Object.assign(options, { select: { key: activity.last_unit_key }, resume: true });
+      else options.resume = false;
+    } else {
+      options.resume = false;
+    }
+    return playQueue(language, [{ workno }], options).catch(() => false);
+  }
+
+  function interceptWork(pane) {
+    if (interceptedPanes.has(pane)) return;
+    interceptedPanes.add(pane);
+    pane.addEventListener('click', event => {
+      if (event.defaultPrevented || event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const view = workView;
+      const control = event.target.closest(`${playButtons}, a[href*="/view/"], ${treeRow}`);
+      // view.work is only known for audio and video works (or ones already saved offline).
+      if (!view?.work || !control || control === bypass || !pane.contains(control)) return;
+      let path, row;
+      if (control.matches(treeRow)) {
+        // Audio rows play in place instead of linking to a viewer; their title omits the extension.
+        const title = control.querySelector('p')?.textContent.trim();
+        if (!title || event.target.closest('button, input')) return;
+        let folder = '';
+        try {
+          folder = decodeURIComponent(location.pathname.match(/^\/work\/[A-Z]{2}\d{6,10}\/tree\/(.+)$/)?.[1] ?? '');
+        } catch {}
+        row = { title, folder };
+      } else if (control.tagName === 'A') {
+        const match = new URL(control.href).pathname.match(/^\/work\/([A-Z]{2}\d{6,10})\/view\/(.+)$/);
+        if (match?.[1] !== view.workno) return;
+        try { path = decodeURIComponent(match[2]); } catch { return; }
+        // Images, text and other viewers stay native.
+        if (!playableFile.test(path)) return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      const action = control.dataset.ddActionName;
+      startWork(view.language, view.workno, { path, row, action }).then(started => {
+        if (started || !control.isConnected) return;
+        // Fall back to the native player when the item is not in the DLook queue.
+        bypass = control;
+        try { control.click(); } finally { bypass = undefined; }
+      });
+    }, true);
+  }
+
   function updateWork(page, path, language) {
     const workno = page ? path.match(/^\/work\/((?:RJ|VJ|BJ)\d{6,10})(?:\/tree\/[^/]+)?$/)?.[1] : undefined;
     if (workno !== workView?.workno) {
@@ -1650,27 +3100,42 @@ const DLookOffline = (() => {
         const save = button();
         const saveLabel = element('span');
         save.append(DLookPlayIcons.create('offline'), saveLabel);
-        const view = { workno, node, status, save, saveLabel, cancel: button(), probe: new AbortController() };
+        const cancel = button();
+        const cancelLabel = element('span');
+        cancel.append(DLookPlayIcons.create('pause'), cancelLabel);
+        const view = { workno, node, status, save, saveLabel, cancel, cancelLabel, probe: new AbortController() };
         view.save.onclick = () => saveWork(view);
         view.cancel.onclick = () => jobs.get(workno)?.controller.abort();
         node.append(view.save, view.cancel, status);
         workView = view;
-        const locale = { ja: 'ja_JP', en: 'en_US', ko: 'ko_KR', zh: 'zh_CN' }[language] ??
-          language.replace(/-([a-z]{2})$/, (_, suffix) => '_' + suffix.toUpperCase());
+        const locale = localeFor(language);
         Promise.all([
           DLookOfflineSource.identify(workno, locale, view.probe.signal).catch(() => null),
           DLookOfflineStore.work(workno).catch(() => null),
-        ]).then(([work, cached]) => {
+        ]).then(async ([work, cached]) => {
           if ((!work && !cached) || workView !== view) return;
           view.work = work ?? cached;
           view.result ??= cached && { saved: cached.tracks.length, total: cached.total };
+          // A save made before videos were supported may lack tracks the catalog now lists.
+          if (cached && navigator.onLine && isSaved(view.result)) {
+            const source = await streamSource(workno).catch(() => null);
+            const saved = new Set(cached.tracks.map(track => track.asset));
+            const missing = source && cached.revision === source.catalog.revision ?
+              source.catalog.tracks.filter(track => !saved.has(track.asset)).length : 0;
+            if (missing && workView === view && !jobs.has(workno)) {
+              view.result = { saved: cached.tracks.length, total: cached.tracks.length + missing };
+            }
+          }
+          if (workView !== view) return;
           mountWork(view);
         }).catch(() => {});
       }
     }
     if (!workView) return;
     workView.labels = text(language);
+    workView.language = language;
     workView.pane = page.pane;
+    interceptWork(page.pane);
     if (workView.work) mountWork(workView);
   }
 
@@ -1722,12 +3187,18 @@ const DLookOffline = (() => {
       onEnded: () => stepTrack(1, true),
       onQueue: () => {
         if (!selection) return;
-        showWork(selection.work);
+        const { returnHref } = selection;
+        const item = selection.queue[selection.index];
+        if (returnHref) {
+          if (!DLookPlaySite.navigate(returnHref)) location.assign(returnHref);
+          return;
+        }
+        if (!item.stream) showWork(item.work);
         if (!isOpen() && !DLookPlaySite.navigate(href)) location.assign(href);
       },
       onShuffle() {
         shuffle = !shuffle;
-        if (selection) setOrder(selection.tracks.length, selection.index);
+        if (selection) setOrder(selection.queue.length, selection.index);
         return shuffle;
       },
       onRepeat() {
@@ -1736,6 +3207,14 @@ const DLookOffline = (() => {
         return repeat;
       },
       onError() {
+        const item = selection?.queue[selection.index];
+        // A browser that cannot play a locally assembled HLS playlist can still stream the same video.
+        if (item && playingLocalVideo && navigator.onLine) {
+          playingLocalVideo = false;
+          item.stream = true;
+          play(selection.queue, selection.index, false, undefined, selection.returnHref, true);
+          return;
+        }
         if (selection) {
           notice.textContent = labels.playFailed;
           player.error(labels.playFailed);
@@ -1743,8 +3222,36 @@ const DLookOffline = (() => {
       },
     });
     const { audio } = player;
-    const current = { shell, language, stop, refresh, releaseCovers, collapse: player.collapse };
-    let selection, playingUrl, opened, selectionRequest = 0, refreshRequest = 0;
+    const current = {
+      shell, language, stop, refresh, releaseCovers, collapse: player.collapse, claimed: 0,
+      cleanup() {
+        clearInterval(progressTimer);
+        window.removeEventListener('pagehide', onPageHide);
+      },
+      playQueue(queue, index, shuffleOn, returnHref, resume = true) {
+        shuffle = shuffleOn;
+        player.setShuffle(shuffle);
+        current.claimed = performance.now();
+        play(queue, index, true, undefined, returnHref, resume);
+      },
+    };
+    let playingLocalVideo = false, selection, playingUrls = [], opened, selectionRequest = 0, refreshRequest = 0, progress;
+
+    // Sends the current position in DLsite Play's own format; failures stay queued for later.
+    function reportProgress(completed = audio.ended, keepalive = false) {
+      const current = progress;
+      const total = audio.duration;
+      const position = audio.currentTime;
+      if (!current || !(position > 0) || !Number.isFinite(total)) return;
+      current.meta.then(meta => DLookPlayProgress.save(current.workno, meta, position, total, completed, keepalive))
+        .catch(() => {});
+    }
+
+    audio.addEventListener('pause', () => { if (!audio.ended) reportProgress(false); });
+    audio.addEventListener('ended', () => reportProgress(true));
+    const progressTimer = setInterval(() => { if (!audio.paused) reportProgress(false); }, 60000);
+    const onPageHide = () => { if (!audio.paused) reportProgress(false, true); };
+    window.addEventListener('pagehide', onPageHide);
     let displayedWorks;
     const trackButtons = new Map();
     const coverUrls = new Map();
@@ -1768,14 +3275,20 @@ const DLookOffline = (() => {
 
     function stop() {
       selectionRequest += 1;
+      if (!audio.paused) reportProgress();
+      progress = undefined;
       audio.pause();
       audio.removeAttribute('src');
       audio.load();
-      if (playingUrl) URL.revokeObjectURL(playingUrl);
-      playingUrl = undefined;
+      releasePlaying();
       selection = undefined;
       player.hide();
       markTrack(null);
+    }
+
+    function releasePlaying() {
+      playingUrls.forEach(url => URL.revokeObjectURL(url));
+      playingUrls = [];
     }
 
     function setOrder(length, current) {
@@ -1791,7 +3304,7 @@ const DLookOffline = (() => {
 
     function stepTrack(direction, ended = false) {
       if (!selection) return;
-      const { work, tracks, index } = selection;
+      const { queue, index, returnHref } = selection;
       const offset = order.indexOf(index) + direction;
       const next = repeat === 'all' ? (offset + order.length) % order.length : offset;
       if (direction < 0 && (audio.currentTime > 5 || next < 0)) {
@@ -1800,33 +3313,44 @@ const DLookOffline = (() => {
         audio.currentTime = 0;
         player.resume();
       } else if (next >= 0 && next < order.length) {
-        play(work, tracks, order[next], false);
+        play(queue, order[next], false, undefined, returnHref);
       }
     }
 
-    async function play(work, tracks, index, open = true) {
+    async function play(queue, index, open = true, origin, returnHref, resume = open) {
       const id = ++selectionRequest;
       try {
-        const track = tracks[index];
-        const [blob, captions] = await Promise.all([
-          DLookOfflineStore.track(work, track.asset),
-          DLookOfflineStore.captions(work, track.asset).catch(() => []),
+        const item = queue[index];
+        const { work, track } = item;
+        const meta = progressMeta(item).catch(() => null);
+        const [source, resumeAt] = await Promise.all([
+          resolveTrack(item),
+          // Only a user-started track continues from its saved position, like "continue listening".
+          resume ? meta.then(value => DLookPlayProgress.position(work.workno, value?.key)) : 0,
         ]);
-        if (id !== selectionRequest) return;
-        if (!blob) throw new Error('Missing offline track');
+        if (id !== selectionRequest) {
+          source.revoke.forEach(url => URL.revokeObjectURL(url));
+          return;
+        }
+        if (progress && !audio.paused) reportProgress();
+        const previousWork = progress?.workno;
+        progress = { workno: work.workno, meta };
+        if (previousWork !== work.workno) DLookPlayProgress.open(work.workno);
         if (open) {
           document.querySelector('#App [data-dd-action-name="player.minimize"]')?.click();
           if (!closeNativeMini()) requestAnimationFrame(closeNativeMini);
         }
-        if (playingUrl) URL.revokeObjectURL(playingUrl);
-        playingUrl = URL.createObjectURL(blob);
-        if (open || selection?.work.workno !== work.workno) setOrder(tracks.length, index);
-        selection = { work, tracks, index };
-        audio.src = playingUrl;
+        releasePlaying();
+        playingUrls = source.revoke;
+        playingLocalVideo = source.video && source.revoke.length > 0;
+        if (open || selection?.queue !== queue) setOrder(queue.length, index);
+        selection = { queue, index, returnHref };
+        audio.src = source.src;
+        if (resumeAt > 0) audio.currentTime = resumeAt;
         audio.setAttribute('aria-label', track.name);
-        player.show(work, track, open, captions);
+        player.show(work, track, open, source.captions, origin);
         notice.textContent = '';
-        markTrack(trackButtons.get(work.workno)?.[index]);
+        markTrack(trackButtons.get(work.workno)?.find(control => control.dataset.asset === track.asset));
         player.resume();
       } catch (error) {
         if (id === selectionRequest && error.name !== 'NotAllowedError') {
@@ -1911,8 +3435,12 @@ const DLookOffline = (() => {
           folder.textContent = track.folder;
           control.append(folder);
         }
-        control.onclick = () => play(work, tracks, index);
-        if (selection?.work.workno === work.workno && selection.tracks[selection.index].asset === track.asset) {
+        control.dataset.asset = track.asset;
+        control.onclick = () => play(tracks.map(entry => ({ work, track: entry })), index, true, {
+          element: control, artwork: hero.querySelector('.dlook-offline-cover'),
+        });
+        const playing = selection?.queue[selection.index];
+        if (playing && !playing.stream && playing.work.workno === work.workno && playing.track.asset === track.asset) {
           control.setAttribute('aria-current', 'true');
         }
         row.append(control);
@@ -1925,7 +3453,7 @@ const DLookOffline = (() => {
         if (!confirm(labels.confirm(work.title))) return;
         remove.disabled = true;
         try {
-          if (selection?.work.workno === work.workno) stop();
+          if (selection?.queue.some(item => !item.stream && item.work.workno === work.workno)) stop();
           await DLookOfflineStore.remove(work.workno);
           closeWork();
           await refresh();
@@ -1997,19 +3525,144 @@ const DLookOffline = (() => {
     }
     library.shell.hidden = !showPlayer;
     const nativePlaying = nativeContainer?.querySelector('[class*="_audioPlayer_"], [data-dd-action-name="player.mini_open"]');
-    if ((!showPlayer || nativePlaying) && library.shell.querySelector('audio[src]')) library.stop();
+    // The native player may still be unmounting right after the DLook player takes over a queue.
+    const handover = performance.now() - library.claimed < 2000;
+    if ((!showPlayer || (nativePlaying && !handover)) && library.shell.querySelector('.dlook-offline-media[src]')) library.stop();
   }
 
   function dispose() {
     if (!library) return;
     window.removeEventListener('focus', library.refresh);
     library.stop();
+    library.cleanup();
     library.releaseCovers();
     library.shell.remove();
     library = undefined;
   }
 
-  return { href, isOpen, label: language => text(language).title, updateWork, show, hide };
+  return { href, isOpen, label: language => text(language).title, updateWork, show, hide, playQueue, cachedTracks };
+})();
+
+const DLookPlayWork = (() => {
+  let active, menu, pane, scheduled, favoriteWork, favoriteLookup, refreshFavorite;
+  const observer = new ResizeObserver(schedule);
+  const shareSelector = '[data-dd-action-name="work_detail.share_open"]';
+  const favoriteSelector = '[data-dd-action-name="mylist.header_add"]';
+  // Native items that only appear in the work page's "more" menu.
+  const workMenuSelector = '[role="menu"]:has([data-dd-action-name="work_detail.ignore_hide"])';
+  const heartPath = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09' +
+    'C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
+
+  // Sharing moves from the header into the "more" menu; the hidden header button still opens the dialog.
+  function shareItem(page) {
+    const share = page.main.querySelector(shareSelector);
+    const list = document.querySelector(workMenuSelector);
+    if (!share || !list || list.querySelector('[data-dlook-share]')) return;
+    const native = list.querySelector('[role="menuitem"]');
+    const item = document.createElement('div');
+    item.setAttribute('role', 'menuitem');
+    item.tabIndex = -1;
+    item.className = native?.className ?? '';
+    item.dataset.dlookShare = '';
+    const icon = native?.querySelector(':scope > span')?.cloneNode(false) ?? document.createElement('span');
+    const graphic = share.querySelector('svg')?.cloneNode(true);
+    if (graphic) icon.append(graphic);
+    item.append(icon, share.getAttribute('aria-label') || 'Share');
+    const activate = () => {
+      // The menu trigger toggles the native menu closed before the share dialog opens.
+      if (list.isConnected) page.pane.querySelector('[data-dd-action-name="work_detail.menu_open"]')?.click();
+      requestAnimationFrame(() => share.click());
+    };
+    item.addEventListener('click', activate);
+    item.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      activate();
+    });
+    list.prepend(item);
+  }
+
+  // A work counts as a favorite once it belongs to any of the user's lists.
+  function favorite(page) {
+    const control = page.main.querySelector(favoriteSelector);
+    const workno = location.pathname.match(/^\/work\/((?:RJ|VJ|BJ)\d{6,10})/)?.[1];
+    if (!control || !workno) return;
+    if (!control.querySelector(':scope > [data-dlook-heart]')) {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.dataset.dlookHeart = '';
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', heartPath);
+      svg.append(path);
+      control.append(svg);
+      // The list picker changes membership, so read the lists again once it closes.
+      control.addEventListener('click', () => { refreshFavorite = true; });
+    }
+    if (refreshFavorite && !document.querySelector('[role="dialog"]')) {
+      refreshFavorite = false;
+      DLookPlaySite.forget('mylists');
+    }
+    const lookup = DLookPlaySite.cache('mylists', async () => {
+      const response = await fetch('/api/mylists', { credentials: 'same-origin' });
+      if (!response.ok) throw new Error('Could not load lists');
+      return response.json();
+    }, 20000);
+    if (lookup === favoriteLookup && workno === favoriteWork) return;
+    favoriteLookup = lookup;
+    favoriteWork = workno;
+    lookup.then(data => {
+      if (favoriteLookup !== lookup || !control.isConnected) return;
+      const saved = Array.isArray(data?.mylists) &&
+        data.mylists.some(list => Array.isArray(list?.data) && list.data.includes(workno));
+      control.toggleAttribute('data-dlook-favorite', saved);
+    }).catch(() => {});
+  }
+
+  function positionTools() {
+    if (!active || !menu?.isConnected) return;
+    const frame = active.getBoundingClientRect();
+    const anchor = menu.getBoundingClientRect();
+    active.style.setProperty('--dlook-work-tools-top', `${anchor.bottom - frame.top + 6}px`);
+    active.style.setProperty('--dlook-work-tools-end', `${frame.right - anchor.right}px`);
+  }
+
+  function schedule() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      positionTools();
+    });
+  }
+
+  function update(page) {
+    const next = page?.pane.querySelector('[data-dd-action-name="work_detail.menu_open"]');
+    if (next !== menu) {
+      observer.disconnect();
+      pane?.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      active?.removeAttribute('data-dlook-work');
+      active?.style.removeProperty('--dlook-work-tools-top');
+      active?.style.removeProperty('--dlook-work-tools-end');
+      menu = next;
+      active = next ? page.main : undefined;
+      pane = next ? page.pane : undefined;
+      if (active) {
+        active.setAttribute('data-dlook-work', '');
+        observer.observe(menu.closest('[class*="_contentMain_"]') ?? menu.parentElement);
+        pane.addEventListener('scroll', schedule, { passive: true });
+        window.addEventListener('resize', schedule);
+      }
+    }
+    positionTools();
+    if (active) {
+      shareItem(page);
+      favorite(page);
+    }
+  }
+
+  return { update };
 })();
 
 const DLookPlayMotion = (() => {
@@ -2128,31 +3781,37 @@ const DLookPlayMotion = (() => {
     dlsite: 'https://www.dlsite.com/home-touch/mypage',
     help: '/help',
     notifications: '/notifications',
+    theme: null,
     logout: null,
   };
   const labels = {
     'zh-cn': {
+      theme: '主题色', themeBlue: '已切换为蓝色主题。', themePink: '已切换为粉色主题。',
       navigation: 'DLsite Play 导航', library: '媒体库', mylist: '我的列表', playlist: '播放列表', settings: '设置',
       sync: '同步', dlsite: '返回DL', help: '帮助', notifications: '通知', logout: '登出',
       unread: '有未读通知', syncRequested: '已请求同步媒体库。', failed: '操作未能启动，请重试。',
     },
     'zh-tw': {
+      theme: '主題色', themeBlue: '已切換為藍色主題。', themePink: '已切換為粉色主題。',
       navigation: 'DLsite Play 導覽', library: '媒體庫', mylist: '我的清單', playlist: '播放清單', settings: '設定',
       sync: '同步', dlsite: '返回DL', help: '說明', notifications: '通知', logout: '登出',
       unread: '有未讀通知', syncRequested: '已要求同步媒體庫。', failed: '無法啟動操作，請再試一次。',
     },
     ja: {
+      theme: 'テーマ色', themeBlue: 'ブルーのテーマに切り替えました。', themePink: 'ピンクのテーマに切り替えました。',
       navigation: 'DLsite Play ナビゲーション', library: 'ライブラリ', mylist: 'マイリスト', playlist: 'プレイリスト', settings: '設定',
       sync: '同期', dlsite: 'DLsiteへ', help: 'ヘルプ', notifications: 'お知らせ', logout: 'ログアウト',
       unread: '未読のお知らせがあります', syncRequested: '同期をリクエストしました。',
       failed: '操作を開始できませんでした。もう一度お試しください。',
     },
     en: {
+      theme: 'Theme', themeBlue: 'Switched to the blue theme.', themePink: 'Switched to the pink theme.',
       navigation: 'DLsite Play navigation', library: 'Library', mylist: 'My lists', playlist: 'Playlists', settings: 'Settings',
       sync: 'Sync', dlsite: 'DLsite', help: 'Help', notifications: 'Notices', logout: 'Log out',
       unread: 'Unread notifications', syncRequested: 'Library sync requested.', failed: 'Could not start this action. Try again.',
     },
     ko: {
+      theme: '테마 색', themeBlue: '파란색 테마로 바꿨습니다.', themePink: '분홍색 테마로 바꿨습니다.',
       navigation: 'DLsite Play 탐색', library: '라이브러리', mylist: '내 목록', playlist: '재생 목록', settings: '설정',
       sync: '동기화', dlsite: 'DLsite로', help: '도움말', notifications: '알림', logout: '로그아웃',
       unread: '읽지 않은 알림', syncRequested: '라이브러리 동기화를 요청했습니다.',
@@ -2220,6 +3879,11 @@ const DLookPlayMotion = (() => {
       list.append(item);
 
       async function activate() {
+        if (name === 'theme') {
+          const theme = DLookPlayTheme.toggle();
+          status.textContent = theme === 'pink' ? copy.themePink : copy.themeBlue;
+          return;
+        }
         if (handling) {
           if (isTab) queuedTab = activate;
           return;
@@ -2274,6 +3938,10 @@ const DLookPlayMotion = (() => {
 
   const tabItems = addItems(tabList, tabs, true);
   const actionItems = addItems(actionList, actions);
+  const themeControl = actionItems.find(item => item.name === 'theme').control;
+  const syncTheme = theme => themeControl.setAttribute('aria-pressed', String(theme === 'pink'));
+  syncTheme(DLookPlayTheme.current());
+  DLookPlayTheme.onChange(syncTheme);
 
   function render() {
     scheduled = false;
@@ -2292,6 +3960,7 @@ const DLookPlayMotion = (() => {
     if (!offline) DLookOffline.hide(showNav, page?.container);
     const language = document.documentElement.lang.toLowerCase().replaceAll('_', '-');
     DLookPlayLibrary.update(page, path, language);
+    DLookPlayWork.update(page);
     DLookPlayPlayer.update(layout?.container);
     DLookOffline.updateWork(page, path, language);
     DLookPlayCollections.update(page, path, language);
@@ -2359,7 +4028,7 @@ const DLookPlayMotion = (() => {
 
   motion.begin(routeFor());
   new MutationObserver(schedule).observe(document, {
-    childList: true, subtree: true, attributes: true,
+    childList: true, characterData: true, subtree: true, attributes: true,
     attributeFilter: ['lang', 'data-dd-action-name', 'aria-label', 'data-active', 'aria-busy'],
   });
   document.addEventListener('DOMContentLoaded', schedule, { once: true });
@@ -2386,7 +4055,7 @@ const DLookPlayMotion = (() => {
 }
 
 const dlookCardCss = ".dlook-price-low {\n  --dlook-band: #2147a1;\n  --dlook-muted: #415570;\n  --dlook-number: #b6dfff;\n  container: dlook-card / inline-size;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: stretch;\n  width: 100%;\n  min-width: 0;\n  box-sizing: border-box;\n  margin: 4px 0;\n  padding: 0;\n  border: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  background: var(--dlook-band);\n  color: white;\n  font: 500 13px/1.25 system-ui, sans-serif;\n  text-align: start;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-price-low *, .dlook-price-low *::after { box-sizing: border-box; }\n.dlook-price-low:is([data-state=\"low\"], [data-state=\"new-low\"]) {\n  --dlook-band: #775009;\n  --dlook-number: #ffe197;\n  --dlook-tag: #ffce61;\n}\n.dlook-price-low[data-state=\"new-low\"] { --dlook-band: #241c27; }\n.dlook-details {\n  display: flex;\n  flex: 1 1 100%;\n  flex-flow: row wrap;\n  align-items: center;\n  gap: 3px 12px;\n  min-width: 0;\n  padding: 4px 6px;\n}\n.dlook-low-labels, .dlook-low-amount {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 2px 4px;\n  min-width: 0;\n  overflow-wrap: anywhere;\n}\n.dlook-low-values {\n  display: grid;\n  grid-template-columns: minmax(0, 1fr);\n  gap: 2px;\n  min-width: 0;\n  background: var(--dlook-band);\n}\n.dlook-recorded { color: #e1ecfa; }\n.dlook-low-amount { align-items: baseline; }\n.dlook-price-low .dlook-low-amount > strong {\n  color: var(--dlook-number);\n  font: 750 21px/1.12 system-ui, sans-serif;\n  font-variant-numeric: tabular-nums;\n}\n.dlook-low-values .dlook-unit, .dlook-price-low .dlook-off-value { font: 600 10px/1 system-ui, sans-serif; }\n.dlook-low-amount :is(.dlook-unit, .dlook-off-value) { color: var(--dlook-number); }\n.dlook-price-low .dlook-low-tag {\n  padding: 2px 4px;\n  border-radius: 4px;\n  font: 700 12px/1.2 system-ui, sans-serif;\n  white-space: nowrap;\n}\n.dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }\n.dlook-price-low[data-state=\"new-low\"] .dlook-low-tag { color: #000; }\n.dlook-off-value { white-space: nowrap; }\n.dlook-price-low :is(img, .dlook-logo) {\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  background: transparent;\n  object-fit: contain;\n}\n.dlook-price-low a.dlook-history {\n  flex: 1 1 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 5px;\n  min-width: 0;\n  min-height: 27px;\n  padding: 3px 7px;\n  background: #295bc8;\n  color: white;\n  font: 600 12px/1.25 system-ui, sans-serif;\n  text-align: center;\n  text-decoration: none;\n}\n@container dlook-card (min-width: 240px) {\n  .dlook-details { flex: 1 1 0; }\n  .dlook-price-low a.dlook-history {\n    flex: 0 0 auto;\n    flex-direction: column;\n    gap: 2px;\n    padding-inline: 10px;\n  }\n}\n.dlook-price-low a.dlook-history:hover { background: #2147a1; text-decoration: underline; }\n.dlook-price-low :is(a, button):focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }\n.dlook-price-low:is([data-state=\"empty\"], [data-state=\"loading\"], [data-state=\"error\"]) {\n  align-items: center;\n  gap: 3px 7px;\n  padding: 4px 8px;\n  background: var(--dlook-muted);\n}\n.dlook-price-low[data-state=\"error\"] { background: #773747; }\n.dlook-price-low .dlook-note { flex: 1 1 6ch; font-size: 13px; overflow-wrap: anywhere; }\n.dlook-price-low > button {\n  min-height: 24px;\n  padding: 2px 6px;\n  border: 1px solid #ffffff80;\n  border-radius: 4px;\n  background: #994659;\n  color: white;\n  font: 600 13px/1.2 system-ui, sans-serif;\n  cursor: pointer;\n}\n.dlook-price-low:is([data-layout=\"touch\"], [data-layout=\"wishlist-touch\"]) > button { min-height: 44px; }\n.dlook-price-low[data-layout=\"touch\"] .dlook-low-amount > strong { font-size: 22px; }\n.dlook-price-low[data-layout=\"wishlist-touch\"] .dlook-low-amount > strong { font-size: 19px; }";
-const dlookLayoutCss = "/* The native touch price wrapper precedes the official campaign and genre tags. */\n:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }\n:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {\n  flex: 0 0 100%;\n  grid-column: 1 / -1;\n  margin: 4px 0 0;\n}\n.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }\n\n.dlook-wishlist-card {\n  /* In the wishlist the native details use a column flexbox. */\n  flex: none;\n  grid-column: 1 / -1;\n  box-sizing: border-box;\n  width: 100%;\n  min-width: 0;\n  margin: 3px 0;\n  list-style: none;\n  white-space: normal;\n}\n.n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }\n\na.dlook-offer-link,\n.btn_01 > a.dlook-bottom-offer {\n  box-sizing: border-box;\n  display: flex;\n  min-height: 42px;\n  width: 100%;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  padding: 4px 8px;\n  border-radius: 6px;\n  background: #2147a1;\n  color: #fff !important;\n  font: 600 14px/1.2 system-ui, sans-serif;\n  text-decoration: none;\n}\na.dlook-offer-link:hover { background: #295bc8; text-decoration: none; }\na.dlook-offer-link:focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }\n.dlook-offer-link > span { color: #fff !important; }\n.dlook-offer-link :is(img, svg) { display: block; flex: 0 0 45px; width: 45px; height: 15px; }\na.dlook-cart-offer {\n  min-height: 64px;\n  gap: 12px;\n  margin-block-end: 8px;\n  font-size: 20px;\n  font-weight: 700;\n}\n.dlook-cart-offer :is(img, svg) { flex-basis: 56px; width: 56px; height: 19px; }\n\n:is(.c-purchaseBottomBar__nav > .single, .work_cart_column_container .btn_01):has(> .dlook-bottom-offer) {\n  display: grid;\n  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);\n  align-items: stretch;\n  gap: 8px;\n  min-width: 0;\n  reading-flow: grid-rows;\n}\n.c-purchaseBottomBar > .c-purchaseBottomBar__nav:has(.dlook-bottom-offer) { min-width: 0; }\na.dlook-offer-link.dlook-bottom-offer {\n  grid-area: 1 / 1;\n  height: auto;\n  box-shadow: none;\n  min-height: 34px;\n  min-width: 0;\n  margin: 0;\n  gap: 5px;\n  padding: 4px 6px;\n  font-size: 13px;\n}\n.dlook-bottom-offer :is(img, svg) { flex-basis: 44px; width: 44px; height: 15px; }\n.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in,\n.work_cart_column_container .btn_01:has(> .dlook-bottom-offer) >\n  :is(button, input[type=\"button\"], input[type=\"submit\"], a[href]):not(.dlook-offer-link) {\n  grid-area: 1 / 2;\n  width: 100%;\n  min-width: 0;\n  margin: 0;\n}\n\n/* Keep the native purchase controls inside their Vue-managed DOM. */\n.p-purchaseButtonsPc > .dlook-product-offer { order: -1; }\n.p-purchaseButtonsPc:has(> .button_point):has(> .dlook-product-offer) {\n  reading-flow: flex-visual;\n  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(> .btn_buy) { display: contents; }\n  & > .btn_buy,\n  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase) > .btn_buy { order: 1; }\n  & > .button_point ~ :not(.dlook-product-offer) { order: 2; }\n}\n[data-dlook-wishlist-filtered] { display: none !important; }\n.dlook-wishlist-filter {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 12px;\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 6px 0;\n  padding: 3px 9px 5px;\n  border: 1px solid #b3c4e3;\n  border-radius: 5px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n.dlook-wishlist-filter legend { padding: 0 3px; font-weight: 700; }\n.dlook-wishlist-filter label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  min-height: 27px;\n  cursor: pointer;\n}\n.dlook-wishlist-filter input { accent-color: #2147a1; margin: 0; }\n.dlook-wishlist-filter-status:not(:empty) { margin-inline-start: auto; }\n#filter_drawer .dlook-wishlist-filter { margin: 8px 12px; }\n#filter_drawer .dlook-wishlist-filter label { min-height: 44px; }\n.dlook-wishlist-filter-summary:not(:empty) {\n  display: block;\n  padding: 5px 8px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n@media (pointer: coarse) {\n  .dlook-wishlist-filter label { min-height: 36px; }\n}\n\n/* Keep both price rows together, then show DLook, then the site's own campaign. */\n.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }\n.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  align-items: start;\n  gap: 3px 8px;\n}\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }\n.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }\n\n/* On desktop the campaign lives inside the title. Grid keeps all native nodes\n   in place for DLsite's cart updates, while sharing the wide details column. */\n.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr) auto;\n  gap: 0 12px;\n  align-items: start;\n  & > .work_thumb { grid-area: 1 / 1 / span 12; }\n  & > .work_setting { grid-area: 1 / 3 / span 12; }\n  & > .work_content, & > .work_content > .work_name { display: contents; }\n  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {\n    grid-column: 2;\n    min-width: 0;\n    order: 4;\n  }\n  & .work_name > a { order: 0; }\n  & > .work_content > .maker_name { order: 1; }\n  & > div.work_price {\n    order: 2;\n    display: flex;\n    flex-flow: row wrap;\n    align-items: baseline;\n    justify-content: flex-start;\n    gap: 1px 5px;\n    width: auto;\n    padding: 0;\n    text-align: start;\n  }\n  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }\n  & .work_name > .icon_wrap { order: 3; }\n}\n\n.dlook-cart-campaigns {\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 8px 0;\n  padding: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  color: #fff;\n  background: #2147a1;\n  font: 12px/1.45 system-ui, sans-serif;\n  text-align: start;\n  white-space: normal;\n  overflow-wrap: anywhere;\n}\n.dlook-cart-campaign-header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 5px 8px;\n  background: #295bc8;\n}\n.dlook-cart-campaign-header > :is(img, .dlook-logo) {\n  flex: 0 0 44px;\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  object-fit: contain;\n}\n.dlook-cart-campaign-header > h2 { margin: 0; color: inherit; font: inherit; font-weight: 700; }\n.dlook-cart-campaigns > ul { margin: 0; padding: 7px 10px; list-style: none; }\n.dlook-cart-campaigns li + li {\n  margin-top: 5px;\n  padding-top: 5px;\n  border-top: 1px solid #b6dfff45;\n}\n.dlook-cart-campaign-count { display: block; color: #b6dfff; }\n:is(.work_genre, .n_work_option, .n_work_genre_tags):has(> .dlook-cart-bundle-tag) { flex-wrap: wrap; }\n:is(.cart_list_item, ._cart_item) :is(span.dlook-cart-bundle-tag, span.type_matome.__target:not([hidden])) {\n  display: inline-block;\n  box-sizing: border-box;\n  max-width: 100%;\n  padding: 0 4px;\n  border: 0;\n  border-radius: 2px;\n  color: #fff;\n  background: #2147a1;\n  font: 600 11px/18px system-ui, sans-serif;\n  vertical-align: middle;\n  white-space: normal;\n}\nspan.dlook-cart-bundle-tag { margin-inline-start: 3px; }\n[data-dlook-bundle-source] { display: none !important; }\n.cart_bill_content > .dlook-cart-campaigns {\n  width: 100%;\n  font-size: 13px;\n}\n.cart_bill_content > .dlook-cart-campaigns > ul { padding: 8px 12px; }";
+const dlookLayoutCss = "/* The native touch price wrapper precedes the official campaign and genre tags. */\n:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }\n:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {\n  flex: 0 0 100%;\n  grid-column: 1 / -1;\n  margin: 4px 0 0;\n}\n.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }\n\n.dlook-wishlist-card {\n  /* In the wishlist the native details use a column flexbox. */\n  flex: none;\n  grid-column: 1 / -1;\n  box-sizing: border-box;\n  width: 100%;\n  min-width: 0;\n  margin: 3px 0;\n  list-style: none;\n  white-space: normal;\n}\n.n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }\n\na.dlook-offer-link,\n.btn_01 > a.dlook-bottom-offer {\n  box-sizing: border-box;\n  display: flex;\n  min-height: 42px;\n  width: 100%;\n  align-items: center;\n  justify-content: center;\n  gap: 9px;\n  padding: 4px 8px;\n  border-radius: 6px;\n  background: #2147a1;\n  color: #fff !important;\n  font: 600 14px/1.2 system-ui, sans-serif;\n  text-decoration: none;\n}\na.dlook-offer-link:hover { background: #295bc8; text-decoration: none; }\na.dlook-offer-link:focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }\n.dlook-offer-link > span { color: #fff !important; }\n.dlook-offer-link :is(img, svg) { display: block; flex: 0 0 45px; width: 45px; height: 15px; }\na.dlook-cart-offer {\n  min-height: 64px;\n  gap: 12px;\n  margin-block-end: 8px;\n  font-size: 20px;\n  font-weight: 700;\n}\n.dlook-cart-offer :is(img, svg) { flex-basis: 56px; width: 56px; height: 19px; }\n\n:is(.c-purchaseBottomBar__nav > .single, .work_cart_column_container .btn_01):has(> .dlook-bottom-offer) {\n  display: grid;\n  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);\n  align-items: stretch;\n  gap: 8px;\n  min-width: 0;\n  reading-flow: grid-rows;\n}\n.c-purchaseBottomBar > .c-purchaseBottomBar__nav:has(.dlook-bottom-offer) { min-width: 0; }\na.dlook-offer-link.dlook-bottom-offer {\n  grid-area: 1 / 1;\n  height: auto;\n  box-shadow: none;\n  min-height: 34px;\n  min-width: 0;\n  margin: 0;\n  gap: 5px;\n  padding: 4px 6px;\n  font-size: 13px;\n}\n.dlook-bottom-offer :is(img, svg) { flex-basis: 44px; width: 44px; height: 15px; }\n.work_cart_column_container .btn_01:has(> .dlook-bottom-offer) >\n  :is(button, input[type=\"button\"], input[type=\"submit\"], a[href]):not(.dlook-offer-link) {\n  grid-area: 1 / 2;\n  width: 100%;\n  min-width: 0;\n  margin: 0;\n}\n\n.c-purchaseBottomBar:has(.dlook-bottom-offer) {\n  align-items: stretch;\n  reading-flow: flex-visual;\n}\n.c-purchaseBottomBar:has(.dlook-bottom-offer) > .grid:has(.btn_favorite) {\n  order: -1;\n}\n.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) {\n  grid-template-columns: 34px minmax(0, 1fr);\n}\n.c-purchaseBottomBar__nav > .single > a.dlook-bottom-offer {\n  grid-area: 1 / 2;\n}\n.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in,\n.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in {\n  grid-area: 1 / 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  box-sizing: border-box;\n  width: 34px;\n  min-width: 0;\n  padding: 0;\n  margin: 0;\n  font-size: 0;\n  gap: 0;\n}\n.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in span,\n.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in span {\n  font-size: 0;\n}\n.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in::before,\n.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in :is(i, [class*=\"icon\"]),\n.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in::before,\n.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in :is(i, [class*=\"icon\"]) {\n  font-size: 20px;\n  margin: 0;\n}\n\n/* Keep the native purchase controls inside their Vue-managed DOM. */\n.p-purchaseButtonsPc > .dlook-product-offer { order: -2; }\n.p-purchaseButtonsPc:has(> .dlook-product-offer) {\n  reading-flow: flex-visual;\n  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(> .btn_buy) { display: contents; }\n  & > .btn_buy,\n  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase) > .btn_buy { order: -1; }\n}\n/* Outrank DLsite's late-loaded scoped .p-purchaseButtonsPc[data-v-*] rule. */\n.p-purchaseButtonsPc:has(> a.dlook-product-cart-offer) {\n  display: grid;\n  grid-template-columns: 34px minmax(0, 1fr);\n  gap: 8px;\n  align-items: stretch;\n  reading-flow: grid-rows;\n  & > * { grid-column: 1 / -1; }\n  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(a.btn_cart_in) { display: contents; }\n  & > .dlook-product-cart-offer {\n    grid-area: 1 / 2;\n    min-width: 0;\n    gap: 5px;\n    padding-inline: 4px;\n    font-size: 13px;\n  }\n}\n[data-dlook-wishlist-filtered] { display: none !important; }\n.dlook-wishlist-filter {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 4px 12px;\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 6px 0;\n  padding: 3px 9px 5px;\n  border: 1px solid #b3c4e3;\n  border-radius: 5px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n.dlook-wishlist-filter legend { padding: 0 3px; font-weight: 700; }\n.dlook-wishlist-filter label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  min-height: 27px;\n  cursor: pointer;\n}\n.dlook-wishlist-filter input { accent-color: #2147a1; margin: 0; }\n.dlook-wishlist-filter-status:not(:empty) { margin-inline-start: auto; }\n#filter_drawer .dlook-wishlist-filter { margin: 8px 12px; }\n#filter_drawer .dlook-wishlist-filter label { min-height: 44px; }\n.dlook-wishlist-filter-summary:not(:empty) {\n  display: block;\n  padding: 5px 8px;\n  color: #223a63;\n  background: #edf3ff;\n  font: 500 12px/1.3 system-ui, sans-serif;\n}\n@media (pointer: coarse) {\n  .dlook-wishlist-filter label { min-height: 36px; }\n}\n\n/* Keep both price rows together, then show DLook, then the site's own campaign. */\n.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }\n.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  align-items: start;\n  gap: 3px 8px;\n}\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }\n.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }\n.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }\n\n/* On desktop the campaign lives inside the title. Grid keeps all native nodes\n   in place for DLsite's cart updates, while sharing the wide details column. */\n.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {\n  display: grid;\n  grid-template-columns: auto minmax(0, 1fr) auto;\n  gap: 0 12px;\n  align-items: start;\n  & > .work_thumb { grid-area: 1 / 1 / span 12; }\n  & > .work_setting { grid-area: 1 / 3 / span 12; }\n  & > .work_content, & > .work_content > .work_name { display: contents; }\n  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {\n    grid-column: 2;\n    min-width: 0;\n    order: 4;\n  }\n  & .work_name > a { order: 0; }\n  & > .work_content > .maker_name { order: 1; }\n  & > div.work_price {\n    order: 2;\n    display: flex;\n    flex-flow: row wrap;\n    align-items: baseline;\n    justify-content: flex-start;\n    gap: 1px 5px;\n    width: auto;\n    padding: 0;\n    text-align: start;\n  }\n  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }\n  & .work_name > .icon_wrap { order: 3; }\n}\n\n.dlook-cart-campaigns {\n  box-sizing: border-box;\n  min-width: 0;\n  margin: 8px 0;\n  padding: 0;\n  border-radius: 7px;\n  overflow: hidden;\n  color: #fff;\n  background: #2147a1;\n  font: 12px/1.45 system-ui, sans-serif;\n  text-align: start;\n  white-space: normal;\n  overflow-wrap: anywhere;\n}\n.dlook-cart-campaign-header {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 6px;\n  padding: 5px 8px;\n  background: #295bc8;\n}\n.dlook-cart-campaign-header > :is(img, .dlook-logo) {\n  flex: 0 0 44px;\n  display: block;\n  width: 44px;\n  height: 15px;\n  margin: 0;\n  object-fit: contain;\n}\n.dlook-cart-campaign-header > h2 { margin: 0; color: inherit; font: inherit; font-weight: 700; }\n.dlook-cart-campaigns > ul { margin: 0; padding: 7px 10px; list-style: none; }\n.dlook-cart-campaigns li + li {\n  margin-top: 5px;\n  padding-top: 5px;\n  border-top: 1px solid #b6dfff45;\n}\n.dlook-cart-campaign-count { display: block; color: #b6dfff; }\n:is(.work_genre, .n_work_option, .n_work_genre_tags):has(> .dlook-cart-bundle-tag) { flex-wrap: wrap; }\n:is(.cart_list_item, ._cart_item) :is(span.dlook-cart-bundle-tag, span.type_matome.__target:not([hidden])) {\n  display: inline-block;\n  box-sizing: border-box;\n  max-width: 100%;\n  padding: 0 4px;\n  border: 0;\n  border-radius: 2px;\n  color: #fff;\n  background: #2147a1;\n  font: 600 11px/18px system-ui, sans-serif;\n  vertical-align: middle;\n  white-space: normal;\n}\nspan.dlook-cart-bundle-tag { margin-inline-start: 3px; }\n[data-dlook-bundle-source] { display: none !important; }\n.cart_bill_content > .dlook-cart-campaigns {\n  width: 100%;\n  font-size: 13px;\n}\n.cart_bill_content > .dlook-cart-campaigns > ul { padding: 8px 12px; }";
 const dlookLogoMarkup = "<svg id=\"on-dark\" xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"380\" viewBox=\"0 0 120.109375 38\"><path fill=\"#bbdfff\" d=\"M27.7021 20.3623Q27.7021 24.4072 26.0044 27.5151Q24.3066 30.623 21.1523 32.3115Q17.998 34 13.8789 34H2.6162V7.3926H13.6377Q27.7021 7.3926 27.7021 20.3623ZM19.1855 20.4365Q19.1855 18.4883 18.397 16.9297Q17.6084 15.3711 16.1426 14.5176Q14.6768 13.6641 12.6914 13.6641H10.6318V27.7285H12.877Q15.7529 27.7285 17.4692 25.7524Q19.1855 23.7764 19.1855 20.4365Z\"/><path fill=\"#bbdfff\" d=\"M29.6475 34V7.3926H37.6631V27.7285H46.8291V34Z\"/><path fill=\"#ffd25d\" d=\"M68.8232 24.166Q68.8232 28.9717 65.9194 31.7178Q63.0156 34.4639 57.8018 34.4639Q52.625 34.4639 49.7397 31.7827Q46.8545 29.1016 46.8545 24.3887Q46.8545 21.3643 48.209 19.1377Q49.5635 16.9111 52.0684 15.7236Q54.5732 14.5361 57.8389 14.5361Q61.2158 14.5361 63.6929 15.7793Q66.1699 17.0225 67.4966 19.2305Q68.8232 21.4385 68.8232 24.166ZM60.8076 24.2031Q60.8076 20.3252 57.8389 20.3252Q54.8701 20.3252 54.8701 24.3887Q54.8701 28.6748 57.876 28.6748Q60.8076 28.6748 60.8076 24.2031Z\"/><path fill=\"#ffd25d\" d=\"M91.1045 24.166Q91.1045 28.9717 88.2007 31.7178Q85.2969 34.4639 80.083 34.4639Q74.9062 34.4639 72.021 31.7827Q69.1357 29.1016 69.1357 24.3887Q69.1357 21.3643 70.4902 19.1377Q71.8447 16.9111 74.3496 15.7236Q76.8545 14.5361 80.1201 14.5361Q83.4971 14.5361 85.9741 15.7793Q88.4512 17.0225 89.7778 19.2305Q91.1045 21.4385 91.1045 24.166ZM83.0889 24.2031Q83.0889 20.3252 80.1201 20.3252Q77.1514 20.3252 77.1514 24.3887Q77.1514 28.6748 80.1572 28.6748Q83.0889 28.6748 83.0889 24.2031Z\"/><path fill=\"#bbdfff\" d=\"M104.4766 34 100.2461 24.2402H100.1719V34H92.2676V5.8711H100.1719V23.9248H100.2461L104.0869 15H112.9932L107.8535 23.7021L113.29 34Z\"/><circle fill=\"#bbdfff\" cx=\"117.609375\" cy=\"30.5\" r=\"2.5\"/></svg>";
 
 function startStore() {
@@ -2399,7 +4068,7 @@ const DLookLanguage = (() => {
       recorded: '记录低价', newTag: '新史低',
       noDiscount: '暂无折扣史低记录', free: '当前免费', history: '查看价格走势',
       cartCampaigns: '活动提示', cartCampaignWorks: count => `${count} 件作品适用`,
-      buyWithOffer: '优惠购买', viewOffers: '查看优惠',
+      buyWithOffer: '优惠购买', viewOffers: '查看优惠', viewCart: '查看购物车',
     },
     en: {
       language: 'Display language', auto: 'Match DLsite', low: 'Found for you', tag: 'At record low', loading: 'Loading…',
@@ -2408,7 +4077,7 @@ const DLookLanguage = (() => {
       recorded: 'Recorded low', newTag: 'New low',
       noDiscount: 'No discount low on record', free: 'Currently free', history: 'View price history',
       cartCampaigns: 'Bundle offers', cartCampaignWorks: count => `${count} eligible ${count === 1 ? 'item' : 'items'}`,
-      buyWithOffer: 'Shop offers', viewOffers: 'View offers',
+      buyWithOffer: 'Shop offers', viewOffers: 'View offers', viewCart: 'View cart',
     },
     ja: {
       language: '表示言語', auto: 'DLsite に合わせる', low: 'お調べした価格', tag: '最安', loading: '確認中…',
@@ -2417,7 +4086,7 @@ const DLookLanguage = (() => {
       recorded: '記録最安値', newTag: '最安値更新',
       noDiscount: 'セール最安値の記録なし', free: '現在無料', history: '価格履歴を見る',
       cartCampaigns: 'キャンペーン情報', cartCampaignWorks: count => `対象作品 ${count}点`,
-      buyWithOffer: 'お得に購入', viewOffers: '特典を見る',
+      buyWithOffer: 'お得に購入', viewOffers: '特典を見る', viewCart: 'カートを見る',
     },
     ko: {
       language: '표시 언어', auto: 'DLsite 언어 따르기', low: '확인한 가격', tag: '최저가', loading: '조회 중…',
@@ -2426,7 +4095,7 @@ const DLookLanguage = (() => {
       recorded: '기록된 최저가', newTag: '최저가 갱신',
       noDiscount: '할인 최저가 기록 없음', free: '현재 무료', history: '가격 기록 보기',
       cartCampaigns: '캠페인 안내', cartCampaignWorks: count => `대상 작품 ${count}개`,
-      buyWithOffer: '할인 구매', viewOffers: '혜택 보기',
+      buyWithOffer: '할인 구매', viewOffers: '혜택 보기', viewCart: '장바구니 보기',
     },
     th: {
       language: 'ภาษาที่แสดง', auto: 'ตามภาษา DLsite', low: 'ราคาที่ค้นพบ', tag: 'ต่ำสุด', loading: 'กำลังค้นหา…',
@@ -2435,7 +4104,7 @@ const DLookLanguage = (() => {
       recorded: 'ราคาต่ำสุดที่บันทึกไว้', newTag: 'ต่ำสุดใหม่',
       noDiscount: 'ไม่มีบันทึกราคาต่ำสุดช่วงลดราคา', free: 'ฟรีในขณะนี้', history: 'ดูประวัติราคา',
       cartCampaigns: 'โปรโมชันซื้อชุด', cartCampaignWorks: count => `ใช้ได้กับ ${count} รายการ`,
-      buyWithOffer: 'ซื้อในราคาโปรโมชัน', viewOffers: 'ดูโปรโมชัน',
+      buyWithOffer: 'ซื้อในราคาโปรโมชัน', viewOffers: 'ดูโปรโมชัน', viewCart: 'ดูรถเข็น',
     },
   };
   function siteLocale() {
@@ -3051,9 +4720,15 @@ const DLookPurchaseOffers = (() => {
           link.remove();
           return;
         }
-        if (link.lang !== language) {
-          link.lang = language;
-          caption.textContent = cartPage ? copy.viewOffers : copy.buyWithOffer;
+        const cart = !cartPage && Array.from(anchor.querySelectorAll('a.btn_cart_in[href]')).find(visible);
+        const productCart = Boolean(cart) && !touchPage;
+        const text = cartPage ? copy.viewOffers : touchPage || productCart ? copy.viewCart : copy.buyWithOffer;
+        if (link.lang !== language) link.lang = language;
+        if (caption.textContent !== text) caption.textContent = text;
+        link.classList.toggle('dlook-product-cart-offer', productCart);
+        if (cart) {
+          if (cart.getAttribute('aria-label') !== copy.viewCart) cart.setAttribute('aria-label', copy.viewCart);
+          if (cart.title !== copy.viewCart) cart.title = copy.viewCart;
         }
         link.classList.toggle('dlook-bottom-offer', bottom);
         if (cartPage && !bottom) {

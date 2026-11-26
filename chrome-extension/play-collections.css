@@ -22,7 +22,7 @@
 /* Play measures one item at a time. Each pair occupies two half-height slots,
    with the second card aligned to the top of the first slot. */
 [data-dlook-collection$="-index"] li[data-index]:has(> a[data-dd-action-name$=".card"]) {
-  --dlook-card-step: calc((100cqi - var(--dlook-collection-gap)) * .1875 + 50px);
+  --dlook-card-step: calc((100cqi - var(--dlook-collection-gap)) * .1875 + 40px);
   position: relative;
   height: var(--dlook-card-step);
   padding: 0;
@@ -47,7 +47,7 @@
 
 [data-dlook-collection$="-index"] div:has(> ul > li[data-index] > a[data-dd-action-name$=".card"]) {
   box-sizing: content-box;
-  padding-block-end: min(calc((100vw - 36px) * .1875 + 50px), 139px);
+  padding-block-end: min(calc((100vw - 36px) * .1875 + 40px), 129px);
 }
 
 [data-dlook-collection$="-index"] :is([data-dd-action-name="mylist.card"], [data-dd-action-name="playlist.card"]) {
@@ -57,7 +57,7 @@
   border: 1px solid var(--dlook-collection-border);
   border-radius: 15px;
   background: var(--dlook-collection-card);
-  box-shadow: 0 3px 12px #19376414;
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--dlook-play-shadow) 8%, transparent);
   color: var(--dlook-collection-ink);
   text-decoration: none;
   overflow: hidden;
@@ -78,13 +78,13 @@
   height: auto;
   aspect-ratio: 4 / 3;
   margin: 0;
-  background-color: #172c53;
+  background-color: var(--dlook-play-raised);
   background-position: center;
   background-size: cover;
   overflow: hidden;
 }
 
-[data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] > [class*="_thumbnail_"] {
+[data-dlook-collection] :is(a[data-dd-action-name$=".card"], [class*="_info_hxvvl_"]) > [class*="_thumbnail_"] {
   /* Single covers have an inline contain rule from the native thumbnail. */
   background-size: cover !important;
   background-position: center !important;
@@ -94,13 +94,43 @@
   width: 50%;
   height: 50%;
   background-position: center;
+  background-size: cover !important;
+}
+
+[data-dlook-collection] :is(a[data-dd-action-name$=".card"], [class*="_info_hxvvl_"]) > [class*="_thumbnail_"] img,
+[data-dlook-collection$="-detail"] [data-dd-action-name$=".detail_item"] [class*="_thumbnail_"] img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+[data-dlook-collection$="-detail"] [data-dd-action-name$=".detail_item"] [class*="_thumbnail_"] {
+  flex: none;
+  width: 70px;
+  height: 70px;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+[data-dlook-collection$="-detail"] [data-dd-action-name$=".detail_item"] [class*="_thumbnail_"] > span,
+[data-dlook-collection$="-detail"] [data-dd-action-name$=".detail_item"] [class*="_thumbnail_"] :is([class*="_thumbs_"], [class*="_cover_"], [class*="_imageContainer_"], [class*="_thumb_"]) {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  background-size: cover !important;
+  background-position: center !important;
 }
 
 [data-dlook-collection] :is(a[data-dd-action-name$=".card"], [class*="_info_hxvvl_"]) > [class*="_thumbnail_"] > svg {
   width: 52px;
   height: 52px;
   border-radius: 9px;
-  fill: #b6dfff;
+  fill: var(--dlook-play-accent);
 }
 
 [data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] > [class*="_text_"]:has(> p) {
@@ -117,18 +147,12 @@
 }
 
 [data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] p:first-child {
-  display: -webkit-box;
+  display: block;
+  min-width: 0;
   overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow-wrap: anywhere;
-  white-space: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font: 700 15px/1.35 system-ui, sans-serif;
-}
-
-[data-dlook-collection$="-index"] li[data-index] > a[data-dd-action-name$=".card"] p:first-child {
-  min-height: 2lh;
 }
 
 [data-dlook-collection$="-index"] a[data-dd-action-name$=".card"] p:not(:first-child) {
@@ -149,8 +173,8 @@
 }
 
 [data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] {
-  --surface-on-surface: #edf5ff;
-  --surface-on-surface-variant-high: #b6dfff;
+  --surface-on-surface: var(--dlook-play-light);
+  --surface-on-surface-variant-high: var(--dlook-play-accent);
   display: grid;
   position: relative;
   justify-items: center;
@@ -159,8 +183,8 @@
   --dlook-collection-detail-padding: clamp(16px, 4vw, 28px);
   padding: calc(var(--dlook-header-height) + var(--dlook-collection-detail-padding)) 16px var(--dlook-collection-detail-padding);
   border-radius: 16px;
-  background: linear-gradient(160deg, #244b9d, #14284f 80%);
-  color: #edf5ff;
+  background: linear-gradient(160deg, var(--dlook-play-band), var(--dlook-play-deep) 80%);
+  color: var(--dlook-play-light);
   text-align: center;
 }
 
@@ -172,17 +196,17 @@
   width: 42px;
   height: 42px;
   padding: 0;
-  border: 1px solid #c5e0ff4d;
+  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 30%, transparent);
   border-radius: 50%;
-  background: #0d214b80;
-  box-shadow: 0 2px 8px #09152e40;
+  background: color-mix(in srgb, var(--dlook-play-deep) 50%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--dlook-play-shadow) 25%, transparent);
   color: var(--dlook-play-text);
   font-size: 0;
   cursor: pointer;
 }
 
 #App > .loContainer[data-dlook-play] > main header[class*="_loHeader_"] [class*="_headerInner_"] :is(a, button)[data-dlook-round-action]:hover {
-  background: #102751eb;
+  background: color-mix(in srgb, var(--dlook-play-deep) 92%, transparent);
 }
 
 [data-dlook-round-action] > :not([data-dlook-action-icon]) {
@@ -229,10 +253,10 @@
   background: var(--surface-surface, #f3f6fc);
   color: var(--surface-on-surface, #182e53);
   font: 500 15px/1.4 system-ui, sans-serif;
-  box-shadow: 0 14px 50px #0b1c3e40;
+  box-shadow: 0 14px 50px color-mix(in srgb, var(--dlook-play-shadow) 25%, transparent);
 }
 
-.dlook-collection-dialog::backdrop { background: #10254db3; }
+.dlook-collection-dialog::backdrop { background: color-mix(in srgb, var(--dlook-play-deep) 70%, transparent); }
 .dlook-collection-dialog form { display: grid; gap: 12px; }
 .dlook-collection-dialog h2 { margin: 0; font-size: 20px; }
 .dlook-collection-dialog input {
@@ -265,21 +289,23 @@
 .dlook-collection-dialog :is(input, button):focus-visible { outline: 2px solid var(--dlook-play-action); outline-offset: 2px; }
 
 [data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] > [class*="_thumbnail_"] {
-  width: min(65vw, 248px);
-  aspect-ratio: 1;
+  /* 4:3 hero cover keeping the former square cover's height: min(65vw, 248px). */
+  width: min(86.67vw, 331px, 100%);
+  height: auto;
+  aspect-ratio: 4 / 3;
   border-radius: 13px;
-  box-shadow: 0 12px 36px #09163166;
+  box-shadow: 0 12px 36px color-mix(in srgb, var(--dlook-play-shadow) 40%, transparent);
 }
 
 [data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] > [class*="_text_"] {
   width: min(100%, 460px);
   padding: 0;
-  color: #edf5ff;
+  color: var(--dlook-play-light);
 }
 
 [data-dlook-collection$="-detail"] [class*="_info_hxvvl_"] h1 {
   margin: 0 0 4px;
-  color: #edf5ff;
+  color: var(--dlook-play-light);
   font: 750 clamp(20px, 5vw, 27px)/1.25 system-ui, sans-serif;
 }
 
@@ -308,6 +334,31 @@
   cursor: default;
 }
 
+[data-dlook-collection$="-detail"] li[data-editing="true"][data-dd-action-name$=".detail_item"] {
+  box-sizing: border-box;
+  padding-inline: 44px;
+}
+
+[data-dlook-collection="mylist-detail"] li[data-editing="true"] > a {
+  inset-inline: 44px;
+  width: auto;
+}
+
+[data-dlook-collection$="-detail"] li[data-editing="true"] > button[data-dd-action-name$=".detail_item_delete"] {
+  inset-inline: 0 auto;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 44px;
+  height: 100%;
+  transform: none;
+}
+
+[data-dlook-collection$="-detail"] li[data-editing="true"] > [class*="_handleSort_"] {
+  inset-inline: auto 0;
+  width: 44px;
+}
+
 .dlook-collection-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -326,7 +377,7 @@
   border: 1px solid #ffffff26;
   border-radius: 9px;
   background: #ffffff19;
-  color: #edf5ff;
+  color: var(--dlook-play-light);
   font: 650 13px/1.25 system-ui, sans-serif;
   cursor: pointer;
 }
@@ -336,7 +387,7 @@
 }
 
 .dlook-collection-actions button:hover {
-  background: #3569c5;
+  background: var(--dlook-play-action);
 }
 
 .dlook-collection-actions svg {

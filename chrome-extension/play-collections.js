@@ -15,7 +15,76 @@ const DLookPlayCollections = (() => {
   };
   const trackSelector = '[data-dd-action-name="playlist.detail_item"]';
   const shuffleSelector = 'button[data-dd-action-name="player.shuffle"]';
-  let activePane, request, counts, actions, pendingOrder, createLabels;
+  const mylistItemSelector = '[data-dd-action-name="mylist.detail_item"]';
+  const guardedPanes = new WeakSet();
+  const takeoverPanes = new WeakSet();
+  let activePane, request, counts, actions, pendingOrder, createLabels, language, prepared, bypass;
+
+  function loadCollections(kind) {
+    return DLookPlaySite.cache(kind === 'mylist' ? 'mylists' : 'playlists', async () => {
+      const response = await fetch(kind === 'mylist' ? '/api/mylists' : '/api/playlists', { credentials: 'same-origin' });
+      if (!response.ok) throw new Error('Could not load collections');
+      return response.json();
+    }, 20000);
+  }
+
+  // Resolves the open list into queue entries and counts its locally saved tracks.
+  function prepare(pane, mode) {
+    const kind = mode.split('-')[0];
+    const id = location.pathname.split('/').at(-1);
+    const lookup = loadCollections(kind);
+    if (prepared?.pane === pane && prepared.lookup === lookup && prepared.id === id) return;
+    const current = { pane, lookup, id, kind, entries: null, cached: 0 };
+    prepared = current;
+    lookup.then(async data => {
+      const list = (kind === 'mylist' ? data?.mylists : data?.playlists)?.find(entry => String(entry?.id) === id);
+      if (!Array.isArray(list?.data)) return;
+      const entries = kind === 'mylist' ?
+        list.data.filter(workno => typeof workno === 'string').map(workno => ({ workno })) :
+        list.data.filter(track => typeof track?.workno === 'string' && typeof track.src === 'string')
+          .map(track => ({ workno: track.workno, path: track.src }));
+      const cached = kind === 'playlist' ? await DLookOffline.cachedTracks(entries) : 0;
+      if (prepared !== current) return;
+      current.entries = entries;
+      current.cached = cached;
+    }).catch(() => {});
+  }
+
+  function startQueue(options) {
+    const entries = prepared?.entries;
+    if (!entries?.length) return Promise.resolve(false);
+    return DLookOffline.playQueue(language, entries, { returnHref: location.pathname, ...options }).catch(() => false);
+  }
+
+  // Playlist rows play through the DLook player once any of their tracks is saved locally.
+  function takeOverTracks(pane) {
+    if (takeoverPanes.has(pane)) return;
+    takeoverPanes.add(pane);
+    pane.addEventListener('click', event => {
+      const row = event.target.closest(trackSelector);
+      if (!row || bypass === row || row.hasAttribute('data-editing') || event.target.closest('button, [class*="_handleSort_"]')) return;
+      const rows = [...pane.querySelectorAll(trackSelector)];
+      if (prepared?.pane !== pane || !prepared.cached || rows.length !== prepared.entries.length) return;
+      event.preventDefault();
+      event.stopPropagation();
+      startQueue({ index: rows.indexOf(row), requireCache: true }).then(started => {
+        if (started || !row.isConnected) return;
+        bypass = row;
+        try { row.click(); } finally { bypass = undefined; }
+      });
+    }, true);
+  }
+
+  function guardEditingItems(pane) {
+    if (guardedPanes.has(pane)) return;
+    guardedPanes.add(pane);
+    pane.addEventListener('click', event => {
+      const row = event.target.closest('li[data-editing="true"][data-dd-action-name$=".detail_item"]');
+      if (!row || event.target.closest('button, [class*="_handleSort_"]')) return;
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
+  }
 
   function collectionMode(path) {
     const match = /^\/(mylist|playlist)(?:\/\d+)?$/.exec(path);
@@ -25,11 +94,7 @@ const DLookPlayCollections = (() => {
   function countPlaylistWorks(pane, labels) {
     const cards = pane.querySelectorAll('a[data-dd-action-name="playlist.card"]');
     if (cards.length && !request) {
-      const lookup = DLookPlaySite.cache('playlists', async () => {
-        const response = await fetch('/api/playlists', { credentials: 'same-origin' });
-        if (!response.ok) throw new Error('Could not load playlists');
-        return response.json();
-      }, 20000);
+      const lookup = loadCollections('playlist');
       request = lookup;
       lookup.then(data => {
         if (activePane !== pane || request !== lookup || !Array.isArray(data?.playlists)) return;
@@ -69,9 +134,9 @@ const DLookPlayCollections = (() => {
     }
   }
 
-  function playlistActions(pane, labels) {
+  function playlistActions(pane, labels, kind) {
     const hero = pane.querySelector('[class*="_info_hxvvl_"]');
-    const track = pane.querySelector(trackSelector);
+    const track = pane.querySelector(kind === 'mylist' ? mylistItemSelector : trackSelector);
     if (!hero || !track || track.hasAttribute('data-editing')) {
       actions?.remove();
       return;
@@ -83,10 +148,20 @@ const DLookPlayCollections = (() => {
         const control = document.createElement('button');
         control.type = 'button';
         control.append(DLookPlayIcons.create(name), document.createElement('span'));
-        control.addEventListener('click', () => {
+        control.addEventListener('click', async () => {
+          const shuffle = name === 'shuffle';
+          // My lists have no native queue, so the DLook player always plays them.
+          if (kind === 'mylist' || prepared?.cached) {
+            control.disabled = true;
+            try {
+              if (await startQueue({ shuffle, requireCache: kind !== 'mylist' })) return;
+            } finally {
+              control.disabled = false;
+            }
+            if (kind === 'mylist') return;
+          }
           const tracks = pane.querySelectorAll(trackSelector);
           if (!tracks.length) return;
-          const shuffle = name === 'shuffle';
           const index = shuffle ? Math.floor(Math.random() * tracks.length) : 0;
           pendingOrder = { shuffle, until: performance.now() + 2000 };
           tracks[index].click();
@@ -197,13 +272,14 @@ const DLookPlayCollections = (() => {
     roundAction(remove, 'delete');
   }
 
-  function update(page, path, language) {
+  function update(page, path, pageLanguage) {
+    language = pageLanguage;
     const mode = page && collectionMode(path);
     const pane = mode ? page.pane : null;
     if (pane !== activePane || (pane && pane.dataset.dlookCollection !== mode)) {
       if (activePane) delete activePane.dataset.dlookCollection;
       activePane = pane;
-      request = counts = undefined;
+      request = counts = prepared = undefined;
       pendingOrder = null;
       actions?.remove();
       actions = undefined;
@@ -213,9 +289,16 @@ const DLookPlayCollections = (() => {
     const labels = copy[language] ?? copy[language.split('-')[0]] ?? copy.en;
     createLabels = createCopy[language] ?? createCopy[language.split('-')[0]] ?? createCopy.en;
     if (mode?.endsWith('-index')) prepareCreate(pane, mode.split('-')[0]);
-    if (mode?.endsWith('-detail')) detailActions(page, mode.split('-')[0]);
+    if (mode?.endsWith('-detail')) {
+      guardEditingItems(pane);
+      detailActions(page, mode.split('-')[0]);
+    }
     if (mode === 'playlist-index') countPlaylistWorks(pane, labels);
-    if (mode === 'playlist-detail') playlistActions(pane, labels);
+    if (mode?.endsWith('-detail')) {
+      prepare(pane, mode);
+      playlistActions(pane, labels, mode.split('-')[0]);
+    }
+    if (mode === 'playlist-detail') takeOverTracks(pane);
   }
 
   return { update };

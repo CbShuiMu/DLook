@@ -7,7 +7,7 @@ const DLookLanguage = (() => {
       recorded: '记录低价', newTag: '新史低',
       noDiscount: '暂无折扣史低记录', free: '当前免费', history: '查看价格走势',
       cartCampaigns: '活动提示', cartCampaignWorks: count => `${count} 件作品适用`,
-      buyWithOffer: '优惠购买', viewOffers: '查看优惠',
+      buyWithOffer: '优惠购买', viewOffers: '查看优惠', viewCart: '查看购物车',
     },
     en: {
       language: 'Display language', auto: 'Match DLsite', low: 'Found for you', tag: 'At record low', loading: 'Loading…',
@@ -16,7 +16,7 @@ const DLookLanguage = (() => {
       recorded: 'Recorded low', newTag: 'New low',
       noDiscount: 'No discount low on record', free: 'Currently free', history: 'View price history',
       cartCampaigns: 'Bundle offers', cartCampaignWorks: count => `${count} eligible ${count === 1 ? 'item' : 'items'}`,
-      buyWithOffer: 'Shop offers', viewOffers: 'View offers',
+      buyWithOffer: 'Shop offers', viewOffers: 'View offers', viewCart: 'View cart',
     },
     ja: {
       language: '表示言語', auto: 'DLsite に合わせる', low: 'お調べした価格', tag: '最安', loading: '確認中…',
@@ -25,7 +25,7 @@ const DLookLanguage = (() => {
       recorded: '記録最安値', newTag: '最安値更新',
       noDiscount: 'セール最安値の記録なし', free: '現在無料', history: '価格履歴を見る',
       cartCampaigns: 'キャンペーン情報', cartCampaignWorks: count => `対象作品 ${count}点`,
-      buyWithOffer: 'お得に購入', viewOffers: '特典を見る',
+      buyWithOffer: 'お得に購入', viewOffers: '特典を見る', viewCart: 'カートを見る',
     },
     ko: {
       language: '표시 언어', auto: 'DLsite 언어 따르기', low: '확인한 가격', tag: '최저가', loading: '조회 중…',
@@ -34,7 +34,7 @@ const DLookLanguage = (() => {
       recorded: '기록된 최저가', newTag: '최저가 갱신',
       noDiscount: '할인 최저가 기록 없음', free: '현재 무료', history: '가격 기록 보기',
       cartCampaigns: '캠페인 안내', cartCampaignWorks: count => `대상 작품 ${count}개`,
-      buyWithOffer: '할인 구매', viewOffers: '혜택 보기',
+      buyWithOffer: '할인 구매', viewOffers: '혜택 보기', viewCart: '장바구니 보기',
     },
     th: {
       language: 'ภาษาที่แสดง', auto: 'ตามภาษา DLsite', low: 'ราคาที่ค้นพบ', tag: 'ต่ำสุด', loading: 'กำลังค้นหา…',
@@ -43,7 +43,7 @@ const DLookLanguage = (() => {
       recorded: 'ราคาต่ำสุดที่บันทึกไว้', newTag: 'ต่ำสุดใหม่',
       noDiscount: 'ไม่มีบันทึกราคาต่ำสุดช่วงลดราคา', free: 'ฟรีในขณะนี้', history: 'ดูประวัติราคา',
       cartCampaigns: 'โปรโมชันซื้อชุด', cartCampaignWorks: count => `ใช้ได้กับ ${count} รายการ`,
-      buyWithOffer: 'ซื้อในราคาโปรโมชัน', viewOffers: 'ดูโปรโมชัน',
+      buyWithOffer: 'ซื้อในราคาโปรโมชัน', viewOffers: 'ดูโปรโมชัน', viewCart: 'ดูรถเข็น',
     },
   };
   function siteLocale() {

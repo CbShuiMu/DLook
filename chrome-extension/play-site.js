@@ -41,6 +41,8 @@ const DLookPlaySite = (() => {
 
   function clearCache() { cached.clear(); }
 
+  function forget(key) { cached.delete(key); }
+
   function layout() {
     const container = document.querySelector('#App > .loContainer');
     const main = container?.querySelector(':scope > main');
@@ -114,5 +116,5 @@ const DLookPlaySite = (() => {
     clearCache();
   }
 
-  return { layout, activate, hasUnreadNotifications, navigate, cache, clearCache, csrfHeaders, createCollection };
+  return { layout, activate, hasUnreadNotifications, navigate, cache, clearCache, forget, csrfHeaders, createCollection };
 })();

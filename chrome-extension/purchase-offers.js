@@ -39,9 +39,15 @@ const DLookPurchaseOffers = (() => {
           link.remove();
           return;
         }
-        if (link.lang !== language) {
-          link.lang = language;
-          caption.textContent = cartPage ? copy.viewOffers : copy.buyWithOffer;
+        const cart = !cartPage && Array.from(anchor.querySelectorAll('a.btn_cart_in[href]')).find(visible);
+        const productCart = Boolean(cart) && !touchPage;
+        const text = cartPage ? copy.viewOffers : touchPage || productCart ? copy.viewCart : copy.buyWithOffer;
+        if (link.lang !== language) link.lang = language;
+        if (caption.textContent !== text) caption.textContent = text;
+        link.classList.toggle('dlook-product-cart-offer', productCart);
+        if (cart) {
+          if (cart.getAttribute('aria-label') !== copy.viewCart) cart.setAttribute('aria-label', copy.viewCart);
+          if (cart.title !== copy.viewCart) cart.title = copy.viewCart;
         }
         link.classList.toggle('dlook-bottom-offer', bottom);
         if (cartPage && !bottom) {

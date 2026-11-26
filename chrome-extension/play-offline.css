@@ -126,7 +126,7 @@ html[data-dlook-offline]:has(#App [data-dd-action-name="player.mini_open"]) .dlo
   width: 100%;
   aspect-ratio: 4 / 3;
   overflow: hidden;
-  background: #172c53;
+  background: var(--dlook-play-raised);
   color: var(--dlook-play-accent);
 }
 
@@ -293,14 +293,14 @@ html[data-dlook-offline]:has(#App [data-dd-action-name="player.mini_open"]) .dlo
   display: none;
 }
 
-.dlook-offline-work button:first-child {
+.dlook-offline-work button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
 }
 
-.dlook-offline-work button:first-child svg {
+.dlook-offline-work button svg {
   width: 18px;
   height: 18px;
   flex: none;
@@ -308,12 +308,15 @@ html[data-dlook-offline]:has(#App [data-dd-action-name="player.mini_open"]) .dlo
 
 #App [class*="_actions_"]:has(> .dlook-offline-work[data-listen-group]) {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, auto));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .dlook-offline-work[data-listen-group] {
-  grid-column: 1 / -1;
-  justify-content: end;
+  position: relative;
+  display: grid;
+  grid-column: 1;
+  min-width: 0;
   width: auto;
   margin: 0;
   padding: 0;
@@ -321,7 +324,9 @@ html[data-dlook-offline]:has(#App [data-dd-action-name="player.mini_open"]) .dlo
   color: var(--surface-on-surface, #182e53);
 }
 
-.dlook-offline-work[data-listen-group] button:first-child {
+.dlook-offline-work[data-listen-group] button {
+  width: 100%;
+  min-width: 0;
   background: var(--dlook-play-band);
 }
 
@@ -331,17 +336,26 @@ html[data-dlook-offline]:has(#App [data-dd-action-name="player.mini_open"]) .dlo
 }
 
 .dlook-offline-work[data-listen-group] p {
-  flex: 0 1 auto;
+  position: absolute;
+  z-index: 1;
+  inset: -9px 6px auto auto;
+  box-sizing: border-box;
+  max-width: calc(100% - 12px);
+  overflow: hidden;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--dlook-play-band);
+  color: var(--dlook-play-text);
+  font: 600 10px/1.3 system-ui, sans-serif;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
-@media (max-width: 760px) {
-  .dlook-offline-work[data-listen-group] button:first-child {
-    flex: 1 0 100%;
-  }
-}
-
-@container (width < 460px) {
-  [class*="_actions_"]:has(> .dlook-offline-work) > :is([data-dd-action-name="work_detail.resume"], [data-dd-action-name="work_detail.start"]) {
-    grid-column: 1 / -1;
-  }
+#App [class*="_actions_"]:has(> .dlook-offline-work[data-listen-group]) > :is([data-dd-action-name="work_detail.resume"], [data-dd-action-name="work_detail.start"]) {
+  grid-column: 2;
+  min-width: 0;
+  width: 100%;
+  min-height: 44px;
+  height: 100%;
 }

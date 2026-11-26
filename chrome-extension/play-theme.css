@@ -1,0 +1,33 @@
+/* Theme tokens shared by every DLsite Play enhancement. Other play-*.css files
+ * only reference these variables, so a theme is a single block of overrides. */
+html {
+  --dlook-play-band: #2147a1;
+  --dlook-play-action: #295bc8;
+  --dlook-play-accent: #b6dfff;
+  --dlook-play-on-accent: #142852;
+  --dlook-play-text: #e1ecfa;
+  --dlook-play-light: #f1f7ff;
+  --dlook-play-muted: #b9cbea;
+  --dlook-play-disabled: #8096ba;
+  --dlook-play-primary: #91c8ff;
+  --dlook-play-deep: #101e3b;
+  --dlook-play-raised: #1a2d54;
+  --dlook-play-shadow: #0a275a;
+  --dlook-play-focus: #ffe197;
+}
+
+html[data-dlook-theme="pink"] {
+  --dlook-play-band: #a8396f;
+  --dlook-play-action: #c44a86;
+  --dlook-play-accent: #ffc4de;
+  --dlook-play-on-accent: #4b0f2f;
+  --dlook-play-text: #fde7f1;
+  --dlook-play-light: #fff3f8;
+  --dlook-play-muted: #ecbdd3;
+  --dlook-play-disabled: #b98aa1;
+  --dlook-play-primary: #ff9fcb;
+  --dlook-play-deep: #2c1020;
+  --dlook-play-raised: #44193a;
+  --dlook-play-shadow: #4f0f2e;
+  --dlook-play-focus: #ffe197;
+}

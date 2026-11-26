@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "2.0.5",
+  "version": "2.1.4",
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "icons": { "128": "icon-128.png" },
@@ -25,8 +25,8 @@
     "run_at": "document_end"
   }, {
     "matches": ["https://play.dlsite.com/*"],
-    "js": ["play-site.js", "play-icons.js", "play-library.js", "play-collections.js", "play-captions.js", "play-player.js", "play-offline-store.js", "play-offline-source.js", "play-offline-player.js", "play-offline.js", "play-motion.js", "play.js"],
-    "css": ["play.css", "play-collections.css", "play-library.css", "play-player.css", "play-offline.css", "play-motion.css"],
+    "js": ["play-theme.js", "play-site.js", "play-icons.js", "play-cover-cache.js", "play-library.js", "play-collections.js", "play-captions.js", "play-sleep.js", "play-player-motion.js", "play-player.js", "play-progress.js", "play-offline-store.js", "play-offline-source.js", "play-offline-player.js", "play-offline.js", "play-work.js", "play-motion.js", "play.js"],
+    "css": ["play-theme.css", "play.css", "play-collections.css", "play-library.css", "play-player.css", "play-offline.css", "play-work.css", "play-motion.css"],
     "run_at": "document_start"
   }],
   "web_accessible_resources": [{

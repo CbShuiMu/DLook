@@ -41,20 +41,36 @@ const DLookOfflinePlayer = (() => {
     artwork.append(DLookPlayIcons.create('playlist'), image);
     const captions = element('div', 'dlook-audio-captions');
     captions.hidden = true;
-    const renderCaptions = DLookPlayCaptions.timeline(captions);
 
     const mini = element('div', 'dlook-offline-mini');
-    const audio = element('audio');
+    // One <video> element plays both audio and video tracks; it shows in the cover frame for videos.
+    const audio = element('video', 'dlook-offline-media');
     audio.hidden = true;
     audio.preload = 'metadata';
+    audio.playsInline = true;
+    artwork.append(audio);
+    const renderCaptions = DLookPlayCaptions.timeline(captions, { onSeek: time => {
+      if (Number.isFinite(audio.duration)) {
+        audio.currentTime = Math.min(audio.duration, time);
+        updateControls();
+      }
+    } });
+    const sleep = DLookPlaySleep.create(() => audio.pause(), language);
     let artworkKey, artworkUrl, artworkRequest = 0, artworkPending = false, playing;
     let hasTrack = false;
     let cues = [];
     let showCaptions = true;
 
-    function setExpanded(open, focus = false) {
-      expanded.hidden = !hasTrack || !open;
-      mini.hidden = !hasTrack || open;
+    function setExpanded(open, focus = false, origin) {
+      const commit = () => {
+        expanded.hidden = !hasTrack || !open;
+        mini.hidden = !hasTrack || open;
+      };
+      if (hasTrack && open !== !expanded.hidden) {
+        const from = open ? (mini.hidden ? origin?.element : mini) : expanded;
+        DLookPlayerMotion.change(from, open ? expanded : mini, open, commit, mini.hidden ? origin?.artwork : undefined);
+      }
+      else commit();
       if (focus && hasTrack) (open ? minimize : openMini).focus({ preventScroll: true });
     }
 
@@ -85,7 +101,7 @@ const DLookOfflinePlayer = (() => {
     subtitle.className = 'dlook-caption-toggle';
     subtitle.setAttribute('aria-pressed', 'true');
     subtitle.hidden = true;
-    stage.append(artwork, captions, minimize, queue, speed, subtitle);
+    stage.append(artwork, captions, minimize, queue, speed, sleep.button, sleep.picker, subtitle);
 
     const controls = element('div', 'dlook-audio-controls');
     const title = element('div', 'dlook-audio-title');
@@ -180,33 +196,50 @@ const DLookOfflinePlayer = (() => {
         node.removeAttribute('src');
       }
       artwork.style.removeProperty('--dlook-cover-ratio');
+      artwork.style.removeProperty('background-image');
+      DLookPlayPlayer.setBackground(expanded);
     }
 
-    function show(work, track, open, trackCaptions = []) {
+    function show(work, track, open, trackCaptions = [], origin) {
       hasTrack = true;
       cues = trackCaptions;
       subtitle.hidden = !cues.length;
       captions.hidden = !cues.length || !showCaptions;
       renderCaptions(cues, 0);
+      const video = track.kind === 'video';
+      artwork.toggleAttribute('data-video', video);
+      audio.hidden = !video;
+      if (!video && image.naturalWidth && !image.hidden) DLookPlayPlayer.fitCover(artwork, image);
       title.textContent = miniTitle.textContent = track.name;
       album.textContent = miniAlbum.textContent = work.title;
       status.textContent = '';
       openMini.setAttribute('aria-label', `${expandLabel} · ${track.name}`);
-      setExpanded(open || !expanded.hidden, open);
-      if (work.workno === artworkKey && (artworkUrl || artworkPending)) return;
+      if (work.workno === artworkKey && (artworkUrl || artworkPending)) {
+        setExpanded(open || !expanded.hidden, open, origin);
+        return;
+      }
       clearCover();
       artworkKey = work.workno;
+      const preview = origin?.artwork?.querySelector('img');
+      if (preview?.complete && preview.naturalWidth) {
+        const background = `url(${JSON.stringify(preview.src)})`;
+        artwork.style.backgroundImage = background;
+        if (!artwork.hasAttribute('data-video')) DLookPlayPlayer.fitCover(artwork, preview);
+        DLookPlayPlayer.setBackground(expanded, background);
+      }
+      setExpanded(open || !expanded.hidden, open, origin);
       if (!work.hasCover) return;
       const request = artworkRequest;
       artworkPending = true;
       cover(work.workno).then(data => {
         if (request !== artworkRequest || !data?.bytes) return;
         artworkUrl = URL.createObjectURL(new Blob([data.bytes], { type: data.type }));
+        DLookPlayPlayer.setBackground(expanded, `url(${JSON.stringify(artworkUrl)})`);
         for (const node of [image, thumb]) {
           node.onload = () => {
             if (request !== artworkRequest) return;
             node.hidden = false;
-            if (node === image) DLookPlayPlayer.fitCover(artwork, node);
+            if (node === image && !artwork.hasAttribute('data-video')) DLookPlayPlayer.fitCover(artwork, node);
           };
           node.src = artworkUrl;
         }
@@ -217,6 +250,19 @@ const DLookOfflinePlayer = (() => {
       audio.addEventListener(event, updateControls);
     }
     audio.addEventListener('ended', onEnded);
+    // Videos size the cover frame to their own aspect ratio.
+    audio.addEventListener('loadedmetadata', () => {
+      if (artwork.hasAttribute('data-video') && audio.videoWidth && audio.videoHeight) {
+        artwork.style.setProperty('--dlook-cover-ratio', audio.videoWidth / audio.videoHeight);
+      }
+    });
+    audio.addEventListener('click', togglePlayback);
+    audio.addEventListener('dblclick', () => {
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      // iPhone Safari only offers fullscreen through the video element's WebKit method.
+      else if (audio.requestFullscreen) audio.requestFullscreen().catch(() => {});
+      else audio.webkitEnterFullscreen?.();
+    });
     audio.addEventListener('error', onError);
     expanded.addEventListener('keydown', event => {
       if (event.key === 'Escape') setExpanded(false, true);
@@ -224,9 +270,11 @@ const DLookOfflinePlayer = (() => {
     setExpanded(false);
     updateControls();
     return {
-      audio, elements: [expanded, mini, audio], show, resume, collapse: () => setExpanded(false),
+      audio, elements: [expanded, mini], show, resume, collapse: () => setExpanded(false),
+      setShuffle(value) { shuffle.setAttribute('aria-pressed', String(value)); },
       error(message) { status.textContent = message; },
       hide() {
+        sleep.clear();
         hasTrack = false;
         cues = [];
         captions.hidden = true;

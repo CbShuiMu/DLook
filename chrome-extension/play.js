@@ -5,31 +5,37 @@
     dlsite: 'https://www.dlsite.com/home-touch/mypage',
     help: '/help',
     notifications: '/notifications',
+    theme: null,
     logout: null,
   };
   const labels = {
     'zh-cn': {
+      theme: '主题色', themeBlue: '已切换为蓝色主题。', themePink: '已切换为粉色主题。',
       navigation: 'DLsite Play 导航', library: '媒体库', mylist: '我的列表', playlist: '播放列表', settings: '设置',
       sync: '同步', dlsite: '返回DL', help: '帮助', notifications: '通知', logout: '登出',
       unread: '有未读通知', syncRequested: '已请求同步媒体库。', failed: '操作未能启动，请重试。',
     },
     'zh-tw': {
+      theme: '主題色', themeBlue: '已切換為藍色主題。', themePink: '已切換為粉色主題。',
       navigation: 'DLsite Play 導覽', library: '媒體庫', mylist: '我的清單', playlist: '播放清單', settings: '設定',
       sync: '同步', dlsite: '返回DL', help: '說明', notifications: '通知', logout: '登出',
       unread: '有未讀通知', syncRequested: '已要求同步媒體庫。', failed: '無法啟動操作，請再試一次。',
     },
     ja: {
+      theme: 'テーマ色', themeBlue: 'ブルーのテーマに切り替えました。', themePink: 'ピンクのテーマに切り替えました。',
       navigation: 'DLsite Play ナビゲーション', library: 'ライブラリ', mylist: 'マイリスト', playlist: 'プレイリスト', settings: '設定',
       sync: '同期', dlsite: 'DLsiteへ', help: 'ヘルプ', notifications: 'お知らせ', logout: 'ログアウト',
       unread: '未読のお知らせがあります', syncRequested: '同期をリクエストしました。',
       failed: '操作を開始できませんでした。もう一度お試しください。',
     },
     en: {
+      theme: 'Theme', themeBlue: 'Switched to the blue theme.', themePink: 'Switched to the pink theme.',
       navigation: 'DLsite Play navigation', library: 'Library', mylist: 'My lists', playlist: 'Playlists', settings: 'Settings',
       sync: 'Sync', dlsite: 'DLsite', help: 'Help', notifications: 'Notices', logout: 'Log out',
       unread: 'Unread notifications', syncRequested: 'Library sync requested.', failed: 'Could not start this action. Try again.',
     },
     ko: {
+      theme: '테마 색', themeBlue: '파란색 테마로 바꿨습니다.', themePink: '분홍색 테마로 바꿨습니다.',
       navigation: 'DLsite Play 탐색', library: '라이브러리', mylist: '내 목록', playlist: '재생 목록', settings: '설정',
       sync: '동기화', dlsite: 'DLsite로', help: '도움말', notifications: '알림', logout: '로그아웃',
       unread: '읽지 않은 알림', syncRequested: '라이브러리 동기화를 요청했습니다.',
@@ -97,6 +103,11 @@
       list.append(item);
 
       async function activate() {
+        if (name === 'theme') {
+          const theme = DLookPlayTheme.toggle();
+          status.textContent = theme === 'pink' ? copy.themePink : copy.themeBlue;
+          return;
+        }
         if (handling) {
           if (isTab) queuedTab = activate;
           return;
@@ -151,6 +162,10 @@
 
   const tabItems = addItems(tabList, tabs, true);
   const actionItems = addItems(actionList, actions);
+  const themeControl = actionItems.find(item => item.name === 'theme').control;
+  const syncTheme = theme => themeControl.setAttribute('aria-pressed', String(theme === 'pink'));
+  syncTheme(DLookPlayTheme.current());
+  DLookPlayTheme.onChange(syncTheme);
 
   function render() {
     scheduled = false;
@@ -169,6 +184,7 @@
     if (!offline) DLookOffline.hide(showNav, page?.container);
     const language = document.documentElement.lang.toLowerCase().replaceAll('_', '-');
     DLookPlayLibrary.update(page, path, language);
+    DLookPlayWork.update(page);
     DLookPlayPlayer.update(layout?.container);
     DLookOffline.updateWork(page, path, language);
     DLookPlayCollections.update(page, path, language);
@@ -236,7 +252,7 @@
 
   motion.begin(routeFor());
   new MutationObserver(schedule).observe(document, {
-    childList: true, subtree: true, attributes: true,
+    childList: true, characterData: true, subtree: true, attributes: true,
     attributeFilter: ['lang', 'data-dd-action-name', 'aria-label', 'data-active', 'aria-busy'],
   });
   document.addEventListener('DOMContentLoaded', schedule, { once: true });

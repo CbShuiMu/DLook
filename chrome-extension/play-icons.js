@@ -1,3 +1,18 @@
+/* Settings glyph: Lucide (ISC).
+ * Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as
+ * part of Feather (MIT). All other copyright (c) for Lucide are held by
+ * Lucide Contributors 2022.
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 const DLookPlayIcons = (() => {
   const paths = {
     library: 'M3 4h4v16H3z M10 4h4v16h-4z M17 5l2.7-.6 3 14.6-2.7.6z',
@@ -8,6 +23,7 @@ const DLookPlayIcons = (() => {
     headphones: 'M4 14v-2a8 8 0 0 1 16 0v2M4 14h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H4Zm16 0h-2a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2Z',
     video: 'M4 5h16v14H4z M10 9l5 3-5 3Z',
     captions: 'M3 5h18v14H3z M6 11h4m3 0h5M6 15h7m3 0h2',
+    timer: 'M9 2h6m-3 0v3m6 1 2-2M12 9v4l3 2M20 13a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z',
     mylist: 'M3 7V5a2 2 0 0 1 2-2h4l3 3h7a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z M7 12h10 M7 16h6',
     playlist: 'M3 6h12 M3 10h12 M3 14h8 M17 17V5l4-1 M17 17c0 1.7-1.4 3-3.2 3S11 19 11 17.6s1.4-2.6 3.2-2.6c1.1 0 2.2.4 2.8 1',
     offline: 'M12 3v12m-4-4 4 4 4-4M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4',
@@ -18,7 +34,8 @@ const DLookPlayIcons = (() => {
     search: 'M15.5 15.5 21 21M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z',
     minimize: 'm5 9 7 7 7-7',
     close: 'm6 6 12 12M18 6 6 18',
-    settings: 'm9.5 3-.6 2.2-2 .9-2.1-1-2 3.5 1.7 1.5v2.4l-1.7 1.6 2 3.5 2.1-1 2 .9.6 2.2h4l.6-2.2 2-.9 2.1 1 2-3.5-1.7-1.6v-2.4l1.7-1.5-2-3.5-2.1 1-2-.9-.6-2.2z M14.5 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
+    settings: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
+    theme: 'M12 3a9 9 0 1 0 0 18c.9 0 1.5-.7 1.5-1.5 0-.4-.1-.7-.4-1-.2-.3-.4-.6-.4-1 0-.8.7-1.5 1.5-1.5H16a5 5 0 0 0 5-5c0-4.4-4-8-9-8Z M7.5 11.5h.01 M10 7.5h.01 M14.5 7.5h.01 M17 11h.01',
     play: 'm8 5 12 7-12 7z',
     pause: 'M8 5h2v14H8z M14 5h2v14h-2z',
     previous: 'M5 6v12m14-12L8 12l11 6z',

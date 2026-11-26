@@ -161,6 +161,7 @@
 
 [data-dlook-library-filters] [class*="_tab_"] {
   display: flex;
+  overflow: visible;
   width: auto;
   flex: none;
   justify-content: flex-end;
@@ -180,17 +181,17 @@
   height: 40px;
   min-width: 0;
   padding: 0;
-  border: 1px solid #b6dfff38;
+  border: 1px solid color-mix(in srgb, var(--dlook-play-accent) 22%, transparent);
   border-radius: 50%;
   background: var(--dlook-play-band);
   color: var(--dlook-play-text);
   font-size: 0;
-  box-shadow: 0 2px 7px #0a275a26;
+  box-shadow: 0 2px 7px color-mix(in srgb, var(--dlook-play-shadow) 15%, transparent);
 }
 
 #App [data-dlook-library] button[data-dlook-library-filter]:is([data-active], [aria-expanded="true"]) {
   background: var(--dlook-play-accent);
-  color: #15356e;
+  color: var(--dlook-play-on-accent);
 }
 
 #App [data-dlook-library] [data-dlook-library-filter] > :not(.dlook-play-icon) {
@@ -252,7 +253,7 @@
   background: var(--surface-surface, white);
   color: var(--surface-on-surface, #182e53);
   text-decoration: none;
-  box-shadow: 0 3px 12px #19376414;
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--dlook-play-shadow) 8%, transparent);
   pointer-events: auto;
 }
 
@@ -300,7 +301,7 @@
   aspect-ratio: 4 / 3;
   margin: 0;
   overflow: hidden;
-  background: #172c53;
+  background: var(--dlook-play-raised);
 }
 
 [data-dlook-library-card] [class*="_thumbnail_"] :is([class*="_thumbs_"], [class*="_cover_"], [class*="_imageContainer_"]) {

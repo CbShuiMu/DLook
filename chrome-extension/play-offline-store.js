@@ -50,8 +50,13 @@ const DLookOfflineStore = (() => {
   const workTrackRange = workno => IDBKeyRange.bound([workno], [workno, []]);
   const coverKey = workno => ['cover', workno];
   const captionKey = (work, asset) => [work.workno, work.revision, asset, 'captions'];
+  // A track's own entry plus its captions and video segments all share this key prefix.
+  const assetRange = (workno, revision, asset) => IDBKeyRange.bound([workno, revision, asset], [workno, revision, asset, []]);
+  const segmentKey = (work, asset, index) => [work.workno, work.revision, asset, 'segment', index];
+  const segmentRange = (work, asset) =>
+    IDBKeyRange.bound([work.workno, work.revision, asset, 'segment'], [work.workno, work.revision, asset, 'segment', []]);
 
-  function start({ workno, title, creator }, revision, tracks) {
+  function start({ workno, title, creator }, revision, tracks, { hash, unitCount } = {}) {
     const attempt = crypto.randomUUID();
     return transact(['works', 'tracks'], 'readwrite', (tx, finish) => {
       const works = tx.objectStore('works');
@@ -65,17 +70,14 @@ const DLookOfflineStore = (() => {
           for (const track of previous.tracks) {
             const updated = keep.get(track.asset);
             if (updated) saved.push({ ...updated, size: track.size });
-            else {
-              audio.delete([workno, revision, track.asset]);
-              audio.delete(captionKey(previous, track.asset));
-            }
+            else audio.delete(assetRange(workno, revision, track.asset));
           }
         } else if (previous) {
           audio.delete(workTrackRange(workno));
         }
         const record = {
           workno, title, creator: creator || previous?.creator,
-          hasCover: Boolean(previous?.hasCover), revision, attempt, total: tracks.length, tracks: saved,
+          hasCover: Boolean(previous?.hasCover), revision, attempt, total: tracks.length, tracks: saved, hash, unitCount,
           updated: previous?.updated ?? Date.now(),
         };
         works.put(record);
@@ -119,6 +121,34 @@ const DLookOfflineStore = (() => {
     });
   }
 
+  // Segments are written one by one so a long video never has to sit in memory as a whole.
+  async function saveSegment(record, asset, index, blob) {
+    try {
+      return await writeSegment(record, asset, index, blob);
+    } catch (error) {
+      // Some WebKit storage modes reject Blob writes but accept byte buffers.
+      if (error.name !== 'UnknownError') throw error;
+      return writeSegment(record, asset, index, { bytes: await blob.arrayBuffer(), type: blob.type });
+    }
+  }
+
+  function writeSegment(record, asset, index, blob) {
+    return transact(['works', 'tracks'], 'readwrite', tx => {
+      const request = tx.objectStore('works').get(record.workno);
+      request.onsuccess = () => {
+        if (request.result?.attempt !== record.attempt) {
+          tx.abort();
+          return;
+        }
+        tx.objectStore('tracks').put(blob, segmentKey(record, asset, index));
+      };
+    });
+  }
+
+  function saveVideo(record, track, video, captions) {
+    return writeTrack(record, track, { hls: video.playlist, count: video.count }, video.size, captions);
+  }
+
   async function save(record, track, blob, captions) {
     try {
       return await writeTrack(record, track, blob, blob.size, captions);
@@ -140,7 +170,22 @@ const DLookOfflineStore = (() => {
   }
 
   return {
-    start, save, saveCover, remove,
+    start, save, saveSegment, saveVideo, saveCover, remove,
+    // Returns the saved HLS playlist text with "#DLOOK-SEGMENT:<n>" markers and its segment blobs.
+    async video(work, asset) {
+      const [entry, segments] = await Promise.all([
+        read('tracks', [work.workno, work.revision, asset]),
+        transact('tracks', 'readonly', (tx, finish) => {
+          const request = tx.objectStore('tracks').getAll(segmentRange(work, asset));
+          request.onsuccess = () => finish(request.result);
+        }),
+      ]);
+      if (typeof entry?.hls !== 'string' || segments?.length !== entry.count) return null;
+      return {
+        playlist: entry.hls,
+        segments: segments.map(data => data?.bytes instanceof ArrayBuffer ? new Blob([data.bytes], { type: data.type }) : data),
+      };
+    },
     list: () => read('works'),
     work: workno => read('works', workno),
     cover: workno => read('tracks', coverKey(workno)),
