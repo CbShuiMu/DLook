@@ -10,7 +10,7 @@
   DLookPlatform.prepare();
 
   const prices = new Map();
-  const wishlistQuotes = new Map();
+  const currentQuotes = new Map();
   const mounted = new Map();
   let language, copy;
   const validAmount = value => Number.isFinite(value) && value >= 0;
@@ -81,19 +81,19 @@
     }
   }
 
-  async function lookupWishlistQuotes(ids) {
+  async function lookupCurrentQuotes(ids) {
     try {
       const quotes = await lookupProductInfo(ids);
       for (const id of ids) {
         const quote = quotes?.[id];
         if (!validAmount(quote?.price)) continue;
         const off = quote.discount_rate;
-        wishlistQuotes.set(id, { price: quote.price, off: validAmount(off) && off <= 100 ? off : null });
+        currentQuotes.set(id, { price: quote.price, off: validAmount(off) && off <= 100 ? off : null });
       }
     } catch {
       // The historical card can still be shown when DLsite has no JPY quote.
     } finally {
-      for (const id of ids) if (wishlistQuotes.get(id) === null) wishlistQuotes.set(id, undefined);
+      for (const id of ids) if (currentQuotes.get(id) === null) currentQuotes.set(id, undefined);
       schedule();
     }
   }
@@ -248,11 +248,13 @@
     const missingQuotes = [];
     for (const [node, target] of current) {
       const { id, anchor, position, touch } = target;
-      if (wishlistPage && target.currentPrice === null && !wishlistQuotes.has(id)) {
-        wishlistQuotes.set(id, null);
+      // Translated mobile pages can show a converted price while their JSON-LD
+      // still identifies the parent work. Fetch JPY for the selected product.
+      if (!cartPage && target.currentPrice === null && !currentQuotes.has(id)) {
+        currentQuotes.set(id, null);
         missingQuotes.push(id);
       }
-      const quote = wishlistQuotes.get(id);
+      const quote = currentQuotes.get(id);
       const currentPrice = target.currentPrice ?? quote?.price ?? null;
       const currentOff = target.currentOff ?? (quote?.price === currentPrice ? quote.off : null);
       if (!prices.has(id)) {
@@ -303,11 +305,11 @@
         }, Math.min(2147483647, Math.max(0, nextEnd - Date.now())));
       }
     }
-    wishlistFilter?.update(language, copy, mounted, wishlistQuotes);
+    wishlistFilter?.update(language, copy, mounted, currentQuotes);
     cartCampaigns?.update(language, copy);
     purchaseOffers?.update(language, copy);
     for (let start = 0; start < needed.length; start += 50) void lookup(needed.slice(start, start + 50));
-    for (let start = 0; start < missingQuotes.length; start += 50) void lookupWishlistQuotes(missingQuotes.slice(start, start + 50));
+    for (let start = 0; start < missingQuotes.length; start += 50) void lookupCurrentQuotes(missingQuotes.slice(start, start + 50));
   }
 
   function schedule() {

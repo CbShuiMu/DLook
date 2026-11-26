@@ -79,11 +79,30 @@ a.dlook-offer-link.dlook-bottom-offer {
 }
 
 .c-purchaseBottomBar:has(.dlook-bottom-offer) {
-  align-items: stretch;
+  --dlook-bottom-action-height: 34px;
+  align-items: center;
   reading-flow: flex-visual;
 }
 .c-purchaseBottomBar:has(.dlook-bottom-offer) > .grid:has(.btn_favorite) {
   order: -1;
+}
+/* Native square buttons use fit-content height inside a centered grid. */
+.c-purchaseBottomBar:has(.dlook-bottom-offer) > .grid .btn_favorite,
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer),
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > :is(a.btn_cart_in, a.dlook-bottom-offer) {
+  box-sizing: border-box;
+  height: var(--dlook-bottom-action-height);
+  min-height: var(--dlook-bottom-action-height);
+  margin-block: 0;
+}
+.c-purchaseBottomBar:has(.dlook-bottom-offer) > .grid .btn_favorite {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+}
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in {
+  /* DLsite's icon classes force display:grid with !important. */
+  display: flex !important;
 }
 .c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) {
   grid-template-columns: 34px minmax(0, 1fr);
