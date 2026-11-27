@@ -79,7 +79,8 @@
 .app[data-mode="mobile"] .view-switch { width: 100%; }
 .app[data-mode="mobile"] .view-switch .seg-item { flex: 1; padding: 0 8px; }
 .app[data-mode="mobile"] .library-tools .search { display: none; }
-.app[data-mode="mobile"] .library-tools[data-search] .search { display: flex; animation: drop-in var(--mid) var(--spring) both; }
+/* The tools row is a column here, so the desktop flex-basis (260px) must not become a height. */
+.app[data-mode="mobile"] .library-tools[data-search] .search { display: flex; flex: none; height: 44px; animation: drop-in var(--mid) var(--spring) both; }
 @keyframes drop-in { from { opacity: 0; transform: translateY(-8px) scale(.98); } }
 .app[data-mode="mobile"] .chip { min-height: 34px; padding: 0 12px 0 10px; font-size: 13.5px; }
 .app[data-mode="mobile"] .section-head h2 { font-size: 19px; }
