@@ -27,7 +27,8 @@ export async function create(app, route) {
   const params = route.params;
   const isPerson = params.person !== undefined;
   const isHidden = params.view === 'hidden';
-  let view = isHidden ? 'works' : params.view;
+  // A circle / voice actor page lists that person's works.
+  let view = isHidden || isPerson ? 'works' : params.view;
   let query = '';
   let savedWorks = new Set();
   offline.list().then(list => { savedWorks = new Set(list.map(work => work.workno)); schedule(); }).catch(() => {});
@@ -70,7 +71,7 @@ export async function create(app, route) {
 
   const toolbar = h('div', { class: 'library-tools' },
     h('div', { class: 'tools-row' }, isPerson || isHidden ? null : viewSwitch, search),
-    view === 'works' ? chips : null, syncLine);
+    view === 'works' && !isPerson ? chips : null, syncLine);
   if (route.params.view !== 'works' && !isPerson) toolbar.setAttribute('data-people', '');
 
   const titleText = isHidden ? t('hidden') : isPerson ? params.person : t('library');

@@ -69,7 +69,7 @@ export async function create(app) {
       } }),
       notificationsRow,
       row({ icon: 'help', tint: 'blue', label: t('help'), onClick: () => app.go('/help') }),
-      row({ icon: 'globe', tint: 'indigo', label: t('dlsite'), href: 'https://www.dlsite.com/home-touch/mypage' }),
+      row({ icon: 'globe', tint: 'indigo', label: t('dlsite'), href: 'https://dlaf.jp/home/dlaf/=/aid/DL00k/url/https%3A%2F%2Fwww.dlsite.com%2Fhome-touch%2Fmypage%3Futm_medium%3Daffiliate%26utm_campaign%3Dbnlink%26utm_content%3Dtext' }),
       row({ icon: 'logout', tint: 'gray', label: t('logout'), destructive: true, onClick: () => nativeAction('logout') })),
     group(t('appearance'),
       row({ icon: 'palette', tint: 'accent', label: t('accent'), trailing: accent }),
