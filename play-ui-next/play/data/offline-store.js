@@ -1,201 +1,125 @@
-// Port of chrome-extension/play-offline-store.js as an ES module (same IndexedDB schema,
-// so works saved by the previous DLook extension remain readable).
-const store = (() => {
-  let connection;
+// Offline copies storage. Where the data lives depends on where DLook runs:
+//  - Browser extension: in the EXTENSION's own IndexedDB, so the offline page
+//    (play/offline.html) can open and play them without reaching play.dlsite.com.
+//    On play.dlsite.com the content-script UI talks to that database through a hidden
+//    extension iframe (play/offline/bridge.html) — Blobs pass through postMessage intact.
+//  - Safari userscript / dev harness: in the page's own IndexedDB, as before.
+// Copies saved by earlier versions in play.dlsite.com's IndexedDB are moved over once.
+import { createDirectStore, DB_NAME } from './offline-db.js';
 
-  function open() {
-    if (!connection) {
-      connection = new Promise((resolve, reject) => {
-        const request = indexedDB.open('dlook-offline-audio', 1);
-        request.onupgradeneeded = () => {
-          request.result.createObjectStore('works', { keyPath: 'workno' });
-          request.result.createObjectStore('tracks');
-        };
-        request.onerror = () => reject(request.error);
-        request.onsuccess = () => {
-          const db = request.result;
-          db.onversionchange = () => { db.close(); connection = undefined; };
-          resolve(db);
-        };
-      }).catch(error => {
-        connection = undefined;
-        throw error;
-      });
-    }
-    return connection;
-  }
+const METHODS = ['start', 'save', 'saveSegment', 'saveVideo', 'saveCover', 'remove', 'video', 'list', 'work', 'cover', 'captions', 'track', 'trackKeys', 'rawTrack', 'putRaw'];
+const migrationListeners = new Set();
+let backend, bridgeUrl, bridgeContainer, migration;
 
-  async function transact(names, mode, run) {
-    const db = await open();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(names, mode);
-      let result;
-      tx.oncomplete = () => resolve(result);
-      tx.onabort = () => reject(tx.error ?? new DOMException('Offline operation interrupted', 'AbortError'));
-      try {
-        run(tx, value => { result = value; });
-      } catch (error) {
-        reject(error);
-        tx.abort();
-      }
-    });
-  }
+/** Called by app.start on play.dlsite.com when running as a browser extension. */
+export function useBridge(url, container) { bridgeUrl = url; bridgeContainer = container; }
 
-  function read(name, key) {
-    return transact(name, 'readonly', (tx, finish) => {
-      const store = tx.objectStore(name);
-      const request = key === undefined ? store.getAll() : store.get(key);
-      request.onsuccess = () => finish(request.result);
-    });
-  }
+/** Notified (once) when copies from an earlier version have been moved into the extension. */
+export function onMigrated(listener) { migrationListeners.add(listener); return () => migrationListeners.delete(listener); }
 
-  const workTrackRange = workno => IDBKeyRange.bound([workno], [workno, []]);
-  const coverKey = workno => ['cover', workno];
-  const captionKey = (work, asset) => [work.workno, work.revision, asset, 'captions'];
-  // A track's own entry plus its captions and video segments all share this key prefix.
-  const assetRange = (workno, revision, asset) => IDBKeyRange.bound([workno, revision, asset], [workno, revision, asset, []]);
-  const segmentKey = (work, asset, index) => [work.workno, work.revision, asset, 'segment', index];
-  const segmentRange = (work, asset) =>
-    IDBKeyRange.bound([work.workno, work.revision, asset, 'segment'], [work.workno, work.revision, asset, 'segment', []]);
-
-  function start({ workno, title, creator }, revision, tracks, { hash, unitCount } = {}) {
-    const attempt = crypto.randomUUID();
-    return transact(['works', 'tracks'], 'readwrite', (tx, finish) => {
-      const works = tx.objectStore('works');
-      const get = works.get(workno);
-      get.onsuccess = () => {
-        const previous = get.result;
-        const audio = tx.objectStore('tracks');
-        const keep = new Map(tracks.map(track => [track.asset, track]));
-        const saved = [];
-        if (previous?.revision === revision) {
-          for (const track of previous.tracks) {
-            const updated = keep.get(track.asset);
-            if (updated) saved.push({ ...updated, size: track.size });
-            else audio.delete(assetRange(workno, revision, track.asset));
+/**
+ * Connects to the extension's storage frame. The frame lives in DLook's shadow root; when the
+ * site re-renders the document and DLook's host is re-attached, the frame reloads, so every
+ * load performs a new handshake and requests still waiting for an answer are sent again.
+ */
+function connectBridge(url, container) {
+  return new Promise((resolve, reject) => {
+    const frame = document.createElement('iframe');
+    frame.src = url;
+    frame.setAttribute('aria-hidden', 'true');
+    frame.tabIndex = -1;
+    frame.style.cssText = 'position:fixed;width:0;height:0;border:0;opacity:0;pointer-events:none;';
+    const pending = new Map();   // id -> { method, args, ok, fail }
+    let port, next = 0, connected = false;
+    const timeout = setTimeout(() => { if (!connected) { frame.remove(); reject(new Error('Offline bridge did not start')); } }, 10000);
+    const send = (id, call) => port?.postMessage({ id, method: call.method, args: call.args });
+    frame.addEventListener('load', () => {
+      port?.close();
+      port = undefined;
+      const channel = new MessageChannel();
+      channel.port1.onmessage = ({ data }) => {
+        if (data?.ready) {
+          port = channel.port1;
+          for (const [id, call] of pending) send(id, call);
+          if (!connected) {
+            connected = true;
+            clearTimeout(timeout);
+            resolve(Object.fromEntries(METHODS.map(method => [method, (...args) => new Promise((ok, fail) => {
+              const id = ++next;
+              const call = { method, args, ok, fail };
+              pending.set(id, call);
+              send(id, call);
+            })])));
           }
-        } else if (previous) {
-          audio.delete(workTrackRange(workno));
-        }
-        const record = {
-          workno, title, creator: creator || previous?.creator,
-          hasCover: Boolean(previous?.hasCover), revision, attempt, total: tracks.length, tracks: saved, hash, unitCount,
-          updated: previous?.updated ?? Date.now(),
-        };
-        works.put(record);
-        finish(record);
-      };
-    });
-  }
-
-  function saveCover(record, cover) {
-    return transact(['works', 'tracks'], 'readwrite', tx => {
-      const works = tx.objectStore('works');
-      const request = works.get(record.workno);
-      request.onsuccess = () => {
-        const latest = request.result;
-        if (latest?.attempt !== record.attempt) return;
-        tx.objectStore('tracks').put(cover, coverKey(record.workno));
-        latest.hasCover = true;
-        works.put(latest);
-      };
-    });
-  }
-
-  function writeTrack(record, track, data, size, captions) {
-    return transact(['works', 'tracks'], 'readwrite', (tx, finish) => {
-      const works = tx.objectStore('works');
-      const request = works.get(record.workno);
-      request.onsuccess = () => {
-        const latest = request.result;
-        if (latest?.attempt !== record.attempt) {
-          tx.abort();
           return;
         }
-        const store = tx.objectStore('tracks');
-        store.put(data, [record.workno, record.revision, track.asset]);
-        if (captions?.length) store.put(captions, captionKey(record, track.asset));
-        latest.tracks.push({ ...track, size });
-        latest.updated = Date.now();
-        works.put(latest);
-        finish(latest.tracks.length);
+        const call = pending.get(data?.id);
+        if (!call) return;
+        pending.delete(data.id);
+        if (data.ok) call.ok(data.value);
+        else call.fail(Object.assign(new Error(data.error?.message ?? 'Offline storage failed'), { name: data.error?.name ?? 'Error' }));
       };
+      frame.contentWindow.postMessage({ dlookOfflineBridge: true }, new URL(url).origin, [channel.port2]);
     });
-  }
+    (container ?? document.body ?? document.documentElement).append(frame);
+  });
+}
 
-  // Segments are written one by one so a long video never has to sit in memory as a whole.
-  async function saveSegment(record, asset, index, blob) {
-    try {
-      return await writeSegment(record, asset, index, blob);
-    } catch (error) {
-      // Some WebKit storage modes reject Blob writes but accept byte buffers.
-      if (error.name !== 'UnknownError') throw error;
-      return writeSegment(record, asset, index, { bytes: await blob.arrayBuffer(), type: blob.type });
+/** Moves copies saved in this page's own IndexedDB (DLook ≤ 3.0) into the extension store. */
+async function migrate(target) {
+  if (indexedDB.databases) {
+    const names = (await indexedDB.databases().catch(() => [])).map(entry => entry.name);
+    if (!names.includes(DB_NAME)) return;
+  }
+  const local = createDirectStore();
+  try {
+    const works = await local.list();
+    for (const work of works) {
+      // Media first, the work record last: a half-copied work never shows up as saved.
+      for (const key of await local.trackKeys(work.workno)) {
+        const value = await local.rawTrack(key);
+        if (value !== undefined) await target.putRaw('tracks', value, key);
+      }
+      const existing = await target.work(work.workno).catch(() => null);
+      if (!existing || existing.tracks.length < work.tracks.length || (existing.updated ?? 0) < (work.updated ?? 0)) await target.putRaw('works', work);
     }
-  }
-
-  function writeSegment(record, asset, index, blob) {
-    return transact(['works', 'tracks'], 'readwrite', tx => {
-      const request = tx.objectStore('works').get(record.workno);
-      request.onsuccess = () => {
-        if (request.result?.attempt !== record.attempt) {
-          tx.abort();
-          return;
-        }
-        tx.objectStore('tracks').put(blob, segmentKey(record, asset, index));
-      };
+    await local.close();
+    await new Promise(resolve => {
+      const request = indexedDB.deleteDatabase(DB_NAME);
+      request.onsuccess = request.onerror = request.onblocked = () => resolve();
     });
+    if (works.length) for (const listener of migrationListeners) listener(works.length);
+  } catch (error) {
+    // Keep the old copies; the next visit retries (writes are idempotent).
+    console.warn('[DLook] offline migration failed', error);
+    await local.close();
   }
+}
 
-  function saveVideo(record, track, video, captions) {
-    return writeTrack(record, track, { hls: video.playlist, count: video.count }, video.size, captions);
+function resolveBackend() {
+  if (!backend) {
+    backend = (async () => {
+      if (!bridgeUrl) return createDirectStore();
+      try {
+        const remote = await connectBridge(bridgeUrl, bridgeContainer);
+        migration = migrate(remote);
+        return remote;
+      } catch (error) {
+        console.warn('[DLook] offline bridge unavailable, using page storage', error);
+        return createDirectStore();
+      }
+    })();
   }
+  return backend;
+}
 
-  async function save(record, track, blob, captions) {
-    try {
-      return await writeTrack(record, track, blob, blob.size, captions);
-    } catch (error) {
-      // Some WebKit storage modes reject Blob writes but accept byte buffers.
-      if (error.name !== 'UnknownError') throw error;
-      const data = { bytes: await blob.arrayBuffer(), type: blob.type };
-      return writeTrack(record, track, data, blob.size, captions);
-    }
-  }
+/** Resolves once earlier copies (if any) have been moved over. */
+export const migrated = () => resolveBackend().then(() => migration);
 
-  function remove(workno) {
-    return transact(['works', 'tracks'], 'readwrite', tx => {
-      tx.objectStore('works').delete(workno);
-      const tracks = tx.objectStore('tracks');
-      tracks.delete(workTrackRange(workno));
-      tracks.delete(coverKey(workno));
-    });
-  }
-
-  return {
-    start, save, saveSegment, saveVideo, saveCover, remove,
-    // Returns the saved HLS playlist text with "#DLOOK-SEGMENT:<n>" markers and its segment blobs.
-    async video(work, asset) {
-      const [entry, segments] = await Promise.all([
-        read('tracks', [work.workno, work.revision, asset]),
-        transact('tracks', 'readonly', (tx, finish) => {
-          const request = tx.objectStore('tracks').getAll(segmentRange(work, asset));
-          request.onsuccess = () => finish(request.result);
-        }),
-      ]);
-      if (typeof entry?.hls !== 'string' || segments?.length !== entry.count) return null;
-      return {
-        playlist: entry.hls,
-        segments: segments.map(data => data?.bytes instanceof ArrayBuffer ? new Blob([data.bytes], { type: data.type }) : data),
-      };
-    },
-    list: () => read('works'),
-    work: workno => read('works', workno),
-    cover: workno => read('tracks', coverKey(workno)),
-    captions: (work, asset) => read('tracks', captionKey(work, asset)),
-    async track(work, asset) {
-      const data = await read('tracks', [work.workno, work.revision, asset]);
-      return data?.bytes instanceof ArrayBuffer ? new Blob([data.bytes], { type: data.type }) : data;
-    },
-  };
-})();
+const store = Object.fromEntries(METHODS.map(method => [method, async (...args) => {
+  const target = await resolveBackend();
+  // Reads wait for the migration so the list is complete; writes go straight through.
+  if (['list', 'work', 'cover', 'captions', 'track', 'video'].includes(method)) await migration;
+  return target[method](...args);
+}]));
 export default store;

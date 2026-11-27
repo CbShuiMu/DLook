@@ -157,3 +157,7 @@
 /* Sheets */
 .app[data-mode="mobile"] .thumbs { grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .app[data-mode="mobile"] .sheet-hero { grid-template-columns: 108px 1fr; }
+
+/* Extension offline page: two tabs (offline library, DLsite Play). */
+.app[data-standalone] .tabbar { grid-template-columns: repeat(2, minmax(0, 1fr)); left: 50%; right: auto; width: min(260px, calc(100% - 24px)); translate: -50% 0; }
+.app[data-standalone] .tab-indicator { width: calc((100% - 10px) / 2); }

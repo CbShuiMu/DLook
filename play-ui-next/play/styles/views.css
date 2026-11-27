@@ -195,6 +195,11 @@
 .notice { margin-bottom: 14px; padding: 10px 14px; border-radius: 14px; background: color-mix(in srgb, var(--orange) 14%, transparent); color: var(--orange); font-weight: 600; font-size: 14px; }
 .storage-card { position: relative; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 14px; padding: 16px 18px; margin-bottom: 20px; overflow: hidden; }
 .storage-icon { grid-row: span 2; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--accent-soft); color: var(--accent); }
+.offline-page-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 14px 16px 14px 18px; margin-bottom: 20px; }
+.offline-page-card .storage-icon { grid-row: auto; }
+.offline-page-text { margin: 0; color: var(--label-2); font-size: 13.5px; line-height: 1.45; }
+.app[data-mode="mobile"] .offline-page-card { grid-template-columns: auto 1fr; }
+.app[data-mode="mobile"] .offline-page-card .pill { grid-column: 1 / -1; justify-self: start; }
 .storage-text { display: grid; }
 .storage-text small { color: var(--label-2); font-size: 13px; }
 .storage-bar { height: 6px; border-radius: 3px; background: var(--fill-2); overflow: hidden; }

@@ -7,13 +7,23 @@ import * as kit from '../kit.js';
 import { page } from '../page.js';
 import { mosaic } from '../cards.js';
 import * as offline from '../../data/offline.js';
+import { onMigrated } from '../../data/offline-store.js';
 
 export async function create(app) {
   const scaffold = page(app, { title: t('offline'), className: 'offline' });
   const summary = h('div', { class: 'storage-card glass-card' });
   const notice = h('p', { class: 'notice', role: 'status', hidden: navigator.onLine });
   const grid = h('div', { class: 'grid works-grid offline-grid' });
-  scaffold.content.append(notice, summary, grid);
+  // On play.dlsite.com (extension): point to the extension's own offline page, which opens
+  // without a network connection or access to DLsite.
+  const ext = globalThis.browser ?? globalThis.chrome;
+  const pageLink = app.extension && !app.standalone && ext?.runtime?.getURL
+    ? h('div', { class: 'offline-page-card glass-card' },
+      h('div', { class: 'storage-icon' }, icon('wifiOff')),
+      h('p', { class: 'offline-page-text', text: t('offlinePageHint') }),
+      kit.pill('external', t('offlinePage'), () => window.open(ext.runtime.getURL('play/offline.html'), '_blank'), { tone: 'soft' }))
+    : null;
+  scaffold.content.append(...[notice, summary, pageLink, grid].filter(Boolean));
   const objectUrls = new Set();
 
   function coverUrl(work) {
@@ -100,7 +110,7 @@ export async function create(app) {
       }, { tone: 'danger' })));
   }
 
-  const offs = [offline.onChange(() => render()), app.on('network', () => render()), app.player.on('change', () => render())];
+  const offs = [onMigrated(count => { kit.toast(t('offlineMigrated', count), { icon: 'downloaded' }); render(); }), offline.onChange(() => render()), app.on('network', () => render()), app.player.on('change', () => render())];
   window.addEventListener('focus', render);
   render();
   return {

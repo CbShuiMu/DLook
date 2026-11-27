@@ -9,9 +9,10 @@ import * as kit from './kit.js';
 import * as native from './native.js';
 import * as state from './state.js';
 import { offlineHref } from '../data/offline.js';
+import { useBridge } from '../data/offline-store.js';
 import { createPlayer } from './player.js';
 
-const TABS = [
+const PLAY_TABS = [
   { name: 'library', icon: 'library', href: '/' },
   { name: 'mylist', icon: 'folderStar', href: '/mylist' },
   { name: 'playlist', icon: 'queue', href: '/playlist' },
@@ -31,8 +32,11 @@ const viewModules = {
 
 /* ------------------------------------------------------------------ routing */
 
+let standalone = false;
 export function parse(href = location.href) {
   const url = new URL(href, location.href);
+  // The extension's offline page only ever shows the offline library.
+  if (standalone) return { key: 'offline', path: url.pathname, url, tab: 'offline', depth: 0, name: 'offline', params: {} };
   const path = url.pathname.replace(/\/+$/, '') || '/';
   const segments = path.split('/').filter(Boolean).map(part => { try { return decodeURIComponent(part); } catch { return part; } });
   const key = url.pathname + url.search + (url.hash === '#dlook-offline' ? url.hash : '');
@@ -66,6 +70,17 @@ export function parse(href = location.href) {
   return route;
 }
 
+/** Mirrors preferences to extension storage so the offline page uses the same theme and player settings. */
+function syncPrefs() {
+  const storage = (globalThis.browser ?? globalThis.chrome)?.storage?.local;
+  if (!storage) return;
+  // The site's language goes along too: the offline page has no DLsite page to read it from.
+  const push = () => { try { storage.set({ 'dlook-next-prefs': prefs.all(), 'dlook-next-lang': document.documentElement.lang || '' })?.catch?.(() => {}); } catch {} };
+  push();
+  prefs.onChange(push);
+  new MutationObserver(push).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+}
+
 /** Official full-screen viewers have their own close button; DLook's chrome stays out of the way. */
 const isViewer = route => /^\/work\/[^/]+\/(?:view|viewer)\//.test(route?.path ?? '');
 
@@ -90,7 +105,18 @@ function enableSafeAreas() {
  * host: the <dlook-next> element. asset(path): URL of a packaged file.
  * styles: optional { 'tokens.css': text, ... } — the Safari userscript inlines its CSS.
  */
-export async function start({ host, asset, extension, styles, version = 'dev' }) {
+export async function start({ host, asset, extension, styles, version = 'dev', standalone: isStandalone = false }) {
+  standalone = isStandalone;
+  // Offline page: the offline library plus a way back to DLsite Play (opens in a new tab).
+  const TABS = standalone
+    ? [{ name: 'offline', icon: 'download', href: location.pathname }, { name: 'openPlay', icon: 'external', href: 'https://play.dlsite.com/' }]
+    : PLAY_TABS;
+  if (extension && !standalone) {
+    // Offline copies live in the extension's own storage so they can be played without
+    // reaching play.dlsite.com (see data/offline-store.js and play/offline.html).
+    useBridge(asset('play/offline/bridge.html'), host.shadowRoot ?? host.attachShadow({ mode: 'open' }));
+    syncPrefs();
+  }
   const shadow = host.shadowRoot ?? host.attachShadow({ mode: 'open' });
   const root = document.documentElement;
   await Promise.all(STYLES.map(name => new Promise(resolve => {
@@ -108,6 +134,7 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
   const media = matchMedia('(min-width: 860px)');
   const mode = () => media.matches ? 'desktop' : 'mobile';
   const frame = h('div', { class: 'app', 'data-mode': mode() });
+  frame.toggleAttribute('data-standalone', standalone);
   const ambient = h('div', { class: 'ambient', 'aria-hidden': 'true' }, h('i', { class: 'blob a' }), h('i', { class: 'blob b' }), h('i', { class: 'blob c' }), h('div', { class: 'cover-glow' }));
   const stage = h('div', { class: 'stage' });
   const overlays = h('div', { class: 'overlays' });
@@ -125,6 +152,9 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
     frame.dataset.accent = accent;
     const dark = appearance === 'dark' || (appearance === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
     frame.dataset.scheme = dark ? 'dark' : 'light';
+    // The logo file carries its own palette for dark backgrounds (selected with #on-dark).
+    const logo = frame.querySelector('.brand img');
+    if (logo) logo.src = asset('dlook-logo.svg') + (dark ? '#on-dark' : '');
   }
   applyTheme();
   const applyMotion = () => frame.toggleAttribute('data-reduce-motion', kit.reducedMotion.matches);
@@ -140,25 +170,27 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
   const sidebar = h('aside', { class: 'sidebar glass', 'aria-label': t('navigation') },
     h('div', { class: 'brand' }, h('img', { src: asset('dlook-logo.svg'), alt: 'DLook', width: 74, height: 24 }), h('span', { class: 'brand-tag', text: 'Play' })),
     h('nav', { class: 'side-nav' }, TABS.map(tab => {
-      const link = h('a', { href: tab.href, class: 'side-item', dataset: { tab: tab.name } }, icon(tab.icon), h('span', { class: 'side-label' }), h('i', { class: 'badge-dot', 'aria-hidden': 'true' }));
+      const link = h('a', { href: tab.href, class: 'side-item', dataset: { tab: tab.name }, target: tab.name === 'openPlay' ? '_blank' : undefined }, icon(tab.icon), h('span', { class: 'side-label' }), h('i', { class: 'badge-dot', 'aria-hidden': 'true' }));
       sidebarControls.set(tab.name, link);
       return link;
     })),
     sidebarLists);
   const indicator = h('span', { class: 'tab-indicator', 'aria-hidden': 'true' });
   const tabbar = h('nav', { class: 'tabbar glass', 'aria-label': t('navigation') }, indicator, TABS.map(tab => {
-    const link = h('a', { href: tab.href, class: 'tab', dataset: { tab: tab.name } }, h('span', { class: 'tab-icon' }, icon(tab.icon), h('i', { class: 'badge-dot', 'aria-hidden': 'true' })), h('span', { class: 'tab-label' }));
+    const link = h('a', { href: tab.href, class: 'tab', dataset: { tab: tab.name }, target: tab.name === 'openPlay' ? '_blank' : undefined }, h('span', { class: 'tab-icon' }, icon(tab.icon), h('i', { class: 'badge-dot', 'aria-hidden': 'true' })), h('span', { class: 'tab-label' }));
     tabControls.set(tab.name, link);
     return link;
   }));
   const passBar = h('div', { class: 'pass-bar' }, h('button', { type: 'button', class: 'pass-back glass', onclick: () => go('/') }, icon('back'), h('span', { class: 'pass-label' })));
   frame.append(sidebar, stage, tabbar, passBar, playerRoot, overlays);
+  applyTheme();
 
   function label() {
     for (const tab of TABS) {
-      sidebarControls.get(tab.name).querySelector('.side-label').textContent = t(tab.name);
-      tabControls.get(tab.name).querySelector('.tab-label').textContent = t(tab.name);
-      tabControls.get(tab.name).setAttribute('aria-label', t(tab.name));
+      const text = tab.name === 'openPlay' ? 'DLsite Play' : t(tab.name);
+      sidebarControls.get(tab.name).querySelector('.side-label').textContent = text;
+      tabControls.get(tab.name).querySelector('.tab-label').textContent = text;
+      tabControls.get(tab.name).setAttribute('aria-label', text);
     }
     passBar.querySelector('.pass-label').textContent = t('returnToDLook');
     sidebar.setAttribute('aria-label', t('navigation'));
@@ -189,7 +221,7 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
   /* ---------------- app context shared with views */
   const bus = new EventTarget();
   const app = {
-    asset, extension, version, frame, stage, shadow, state, native, unread: false,
+    asset, extension, version, standalone, frame, stage, shadow, state, native, unread: false,
     mode,
     go, back, replace: href => go(href, { replace: true }),
     on: (name, listener) => { const wrapped = () => listener(); bus.addEventListener(name, wrapped); return () => bus.removeEventListener(name, wrapped); },
@@ -209,7 +241,7 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
   };
   app.player = createPlayer(app, playerRoot);
 
-  native.watchUnread(unread => {
+  if (!standalone) native.watchUnread(unread => {
     for (const link of [tabControls.get('settings'), sidebarControls.get('settings')]) {
       link.toggleAttribute('data-unread', unread);
       if (unread) link.setAttribute('title', `${t('settings')} · ${t('unread')}`); else link.removeAttribute('title');
@@ -298,7 +330,8 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
     transition(previous, controller, direction);
     app.emit('route');
     root.removeAttribute('data-dn-booting');
-    setTitle(controller.title ? `${controller.title} · DLsite Play` : 'DLsite Play');
+    const suffix = standalone ? 'DLook' : 'DLsite Play';
+    setTitle(controller.title ? `${controller.title} · ${suffix}` : suffix);
   }
 
   function transition(previous, next, direction) {
@@ -331,9 +364,11 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
   }
 
   function go(href, { replace = false } = {}) {
-    const url = new URL(href, location.href);
+    // On the offline page every other screen belongs to DLsite Play: open it in a new tab.
+    const url = new URL(href, standalone ? 'https://play.dlsite.com/' : location.href);
     if (url.origin !== location.origin) { window.open(url.href, '_blank', 'noopener'); return; }
     const route = parse(url.href);
+    if (standalone) { if (!current) render(route); return; }
     ignorePop = true;
     try { native.pushRoute(url.href, { replace }); } finally { ignorePop = false; }
     if (route.key === currentRoute?.key && route.name !== 'native' && current) {
@@ -363,11 +398,13 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
     }
     render(route, { direction });
   }
-  window.addEventListener('popstate', () => { if (!ignorePop) follow('auto'); });
-  // The native app may redirect on its own (e.g. /work/x/tree → /work/x); follow it.
-  const followNative = () => follow('fade');
-  if (window.navigation?.addEventListener) window.navigation.addEventListener('currententrychange', () => queueMicrotask(followNative));
-  else setInterval(followNative, 400);
+  if (!standalone) {
+    window.addEventListener('popstate', () => { if (!ignorePop) follow('auto'); });
+    // The native app may redirect on its own (e.g. /work/x/tree → /work/x); follow it.
+    const followNative = () => follow('fade');
+    if (window.navigation?.addEventListener) window.navigation.addEventListener('currententrychange', () => queueMicrotask(followNative));
+    else setInterval(followNative, 400);
+  }
 
   // In-app links (sidebar, tab bar, cards) navigate without reloading.
   shadow.addEventListener('click', event => {
@@ -405,7 +442,7 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
   });
 
   // Language follows the site; it can change when the person switches it in DLsite Play.
-  new MutationObserver(() => setLanguage(detect())).observe(root, { attributes: true, attributeFilter: ['lang'] });
+  if (!standalone) new MutationObserver(() => setLanguage(detect())).observe(root, { attributes: true, attributeFilter: ['lang'] });
   onLanguage(() => {
     label();
     for (const [key, entry] of cache) { if (entry !== current) { entry.destroy?.(); cache.delete(key); } }
@@ -420,13 +457,15 @@ export async function start({ host, asset, extension, styles, version = 'dev' })
   });
 
   // Warm caches in the background: library, lists, hidden works, activity.
-  state.loadLibrary().catch(() => {});
-  state.loadCollections('mylist').catch(() => {});
-  state.loadCollections('playlist').catch(() => {});
-  state.loadHidden().catch(() => {});
-  state.loadActivity().catch(() => {});
-  state.loadHistory().catch(() => {});
-  window.addEventListener('focus', () => { state.loadActivity().catch(() => {}); });
+  if (!standalone) {
+    state.loadLibrary().catch(() => {});
+    state.loadCollections('mylist').catch(() => {});
+    state.loadCollections('playlist').catch(() => {});
+    state.loadHidden().catch(() => {});
+    state.loadActivity().catch(() => {});
+    state.loadHistory().catch(() => {});
+    window.addEventListener('focus', () => { state.loadActivity().catch(() => {}); });
+  }
   window.addEventListener('online', () => app.emit('network'));
   window.addEventListener('offline', () => app.emit('network'));
 

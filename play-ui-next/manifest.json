@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extensionName__",
-  "version": "3.0.3",
+  "version": "3.0.5",
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "icons": { "128": "icon-128.png" },
-  "permissions": ["storage"],
+  "permissions": ["storage", "unlimitedStorage"],
   "action": { "default_popup": "popup.html", "default_title": "DLook" },
   "host_permissions": ["https://dlook.site/*"],
   "background": { "service_worker": "background.js" },
@@ -33,7 +33,7 @@
     "resources": ["dlook-logo.svg"],
     "matches": ["https://*.dlsite.com/*"]
   }, {
-    "resources": ["play/*", "play/core/*", "play/data/*", "play/ui/*", "play/ui/views/*", "play/styles/*"],
+    "resources": ["play/*", "play/core/*", "play/data/*", "play/ui/*", "play/ui/views/*", "play/styles/*", "play/offline/*"],
     "matches": ["https://play.dlsite.com/*"]
   }]
 }
