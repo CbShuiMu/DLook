@@ -1,0 +1,276 @@
+/* Player: shared pieces; layout specifics live in desktop.css / mobile.css. */
+.player-root { position: absolute; inset: 0; z-index: 30; pointer-events: none; }
+.player-root > * { pointer-events: auto; }
+
+.art { position: relative; overflow: hidden; background: var(--placeholder); flex: none; }
+.art-fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--label-3); }
+.art-fallback .i { width: 40%; height: 40%; max-width: 64px; max-height: 64px; }
+.art-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.np-title, .np-sub { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Mini player / dock */
+.mini {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  border-radius: 22px;
+  transition: opacity var(--mid) ease, transform var(--slow) var(--spring), bottom var(--slow) var(--spring), left var(--slow) var(--spring);
+}
+.mini-open { display: flex; align-items: center; gap: 12px; min-width: 0; text-align: start; border-radius: 16px; }
+.mini-open .art { width: 46px; height: 46px; border-radius: 11px; box-shadow: var(--shadow-1); }
+.np-text { display: grid; min-width: 0; }
+.mini .np-title { font-size: 14.5px; font-weight: 650; }
+.mini .np-sub { font-size: 12.5px; color: var(--label-2); }
+.mini-actions { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+.mini-progress {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 250ms linear;
+}
+.player-root[data-loading] .mini-open .art::after,
+.player-root[data-loading] .full-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .25) radial-gradient(circle, transparent 10px, transparent 11px);
+}
+.player-root[data-loading] .mini-play { animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .4; } }
+
+/* Seek bar */
+.seek { display: grid; gap: 4px; }
+.seek-track { position: relative; height: 18px; display: flex; align-items: center; }
+.seek-input {
+  --p: 0%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.seek-input::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent) var(--p), var(--fill-2) var(--p));
+  transition: height var(--fast) ease;
+}
+.seek-input::-moz-range-track { height: 5px; border-radius: 4px; background: var(--fill-2); }
+.seek-input::-moz-range-progress { height: 5px; border-radius: 4px; background: var(--accent); }
+.seek-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3), 0 0 0 .5px rgba(0, 0, 0, .1);
+  transform: scale(.0);
+  transition: transform var(--mid) var(--spring);
+}
+.seek-input::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+.seek-track:hover .seek-input::-webkit-slider-thumb, .seek-input:focus-visible::-webkit-slider-thumb, .seek-input:active::-webkit-slider-thumb { transform: scale(1); }
+.seek-track:hover .seek-input::-webkit-slider-runnable-track { height: 7px; }
+.seek-input:disabled { cursor: default; opacity: .5; }
+.seek-hover {
+  position: absolute;
+  bottom: 22px;
+  translate: -50% 0;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--glass-strong);
+  box-shadow: var(--shadow-2);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.seek-times { display: flex; justify-content: space-between; color: var(--label-3); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+
+/* Transport */
+.transport { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.tp-play { color: var(--label); }
+.transport .tp-play.lg, .transport .tp-play.xl {
+  color: var(--label);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  border: .5px solid var(--glass-edge);
+  box-shadow: var(--shadow-1), inset 0 1px 0 rgba(255, 255, 255, .3);
+}
+.transport .tp-play:hover { background: color-mix(in srgb, var(--accent) 12%, var(--glass-strong)); }
+.tp-shuffle, .tp-repeat { color: var(--label-2); }
+
+.rate { width: auto; min-width: 40px; padding: 0 8px; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums; }
+.rate[data-active] { color: var(--accent); background: var(--accent-soft); }
+.tb-badge { position: absolute; top: 2px; right: 0; min-width: 16px; padding: 0 4px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; }
+.tb-badge:empty { display: none; }
+.volume { display: flex; align-items: center; gap: 2px; }
+.volume-input {
+  --p: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 84px;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+.volume-input::-webkit-slider-runnable-track { height: 4px; border-radius: 3px; background: linear-gradient(90deg, var(--label-2) var(--p), var(--fill-2) var(--p)); }
+.volume-input::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: -4px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); }
+
+/* Full player */
+.full {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #16161c;
+  isolation: isolate;
+  /* Now Playing always sits on a darkened blur of the cover with white text (like Apple
+     Music), in light and dark mode alike, so track names and captions stay readable. */
+  --label: #fff;
+  --label-2: rgba(255, 255, 255, .7);
+  --label-3: rgba(255, 255, 255, .45);
+  --fill: rgba(255, 255, 255, .12);
+  --fill-2: rgba(255, 255, 255, .2);
+  --fill-3: rgba(255, 255, 255, .28);
+  --glass: rgba(255, 255, 255, .1);
+  --glass-strong: rgba(255, 255, 255, .18);
+  --glass-edge: rgba(255, 255, 255, .16);
+  --glass-hair: rgba(0, 0, 0, .2);
+  --accent-soft: rgba(255, 255, 255, .18);
+  color: var(--label);
+  color-scheme: dark;
+}
+.np-backdrop {
+  position: absolute;
+  z-index: -1;
+  inset: -15%;
+  background: #16161c center / cover no-repeat;
+  filter: blur(70px) saturate(180%) brightness(.95);
+  opacity: .75;
+  transform: scale(1.1);
+  transition: background-image 600ms ease;
+}
+.np-backdrop, .app[data-scheme="dark"] .np-backdrop { filter: blur(70px) saturate(150%) brightness(.62); opacity: 1; }
+.np-backdrop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(0, 0, 0, .18), rgba(0, 0, 0, .36)); }
+.np-head { display: flex; align-items: center; gap: 8px; padding: 10px 16px 0; flex: none; }
+.np-head-text { flex: 1; text-align: center; color: var(--label-2); font-size: 12.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+.np-grabber { display: none; }
+.np-body { flex: 1; min-height: 0; display: grid; }
+.np-left { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+/* Stage: the cover on top, and (when captions are on) three caption lines underneath it,
+   like the original DLook player. Sizes come from the stage box via container queries. */
+.np-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  container-type: size;
+  --caption-room: clamp(104px, 30cqh, 168px);
+}
+.full-art {
+  --ratio: 4 / 3;
+  aspect-ratio: var(--ratio);
+  width: min(100cqw, 560px, calc(100cqh * var(--ratio)));
+  border-radius: 22px;
+  box-shadow: var(--shadow-3);
+  transition: transform var(--slow) var(--spring);
+}
+.full[data-captions] .full-art { width: min(100cqw, 480px, calc((100cqh - var(--caption-room) - 18px) * var(--ratio))); }
+.player-root:not([data-playing]) .full:not([data-video]) .full-art { transform: scale(.88); }
+.media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.media[hidden] { display: none; }
+.full:not([data-video]) .media { display: none; }
+.full[data-video] .full-art { border-radius: 16px; background: #000; }
+.np-meta { display: grid; gap: 2px; min-width: 0; text-align: center; }
+.np-meta .np-title { font-size: 22px; font-weight: 750; letter-spacing: -.01em; }
+.np-work { color: var(--label-2); font-size: 15px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; justify-self: center; }
+.np-status { color: var(--red); font-size: 13px; min-height: 0; }
+.np-status:empty { display: none; }
+.full-tools { display: flex; justify-content: center; gap: 14px; }
+.full .transport .ib:not(.tp-play) { --size: 52px; }
+.full .transport .ib:not(.tp-play) .i { width: 28px; height: 28px; }
+.full .transport .tp-shuffle, .full .transport .tp-repeat { --size: 40px; }
+.full .transport .tp-shuffle .i, .full .transport .tp-repeat .i { width: 21px; height: 21px; }
+.full .seek-input::-webkit-slider-runnable-track { height: 6px; }
+.full .seek-input::-webkit-slider-thumb { transform: scale(1); width: 16px; height: 16px; margin-top: -5px; }
+
+/* Captions: only the previous, current and next cue are visible (original DLook style);
+   scrolling the area seeks, tapping a line jumps to it. */
+.captions-pane {
+  position: relative;
+  flex: none;
+  width: min(100cqw, 520px);
+  height: var(--caption-room);
+  overflow-y: auto;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-mask: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+  mask: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+}
+.captions-pane::-webkit-scrollbar { display: none; }
+.captions-out::before, .captions-out::after { content: ""; display: block; height: calc(var(--caption-room) / 2); }
+.cue {
+  visibility: hidden;
+  opacity: 0;
+  transform-origin: left center;
+  transform: scale(var(--cue-scale, .8));
+  transition: transform 260ms var(--spring), opacity 260ms ease;
+  cursor: pointer;
+  font-size: clamp(17px, 4.6vw, 23px);
+  font-weight: 740;
+  line-height: 1.38;
+  letter-spacing: -.01em;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.cue + .cue { margin-top: .35em; }
+.cue:is([data-offset="-1"], [data-offset="0"], [data-offset="1"]) { visibility: visible; opacity: var(--cue-opacity, .4); }
+.cue[aria-current="true"] { color: var(--label); }
+.cue p + p { margin-top: 2px; font-size: .78em; font-weight: 600; color: var(--label-2); }
+.captions-pane[data-browsing] .cue { transition: none; }
+.captions-empty { display: none; position: absolute; inset: 0; place-items: center; color: var(--label-3); font-weight: 600; }
+.captions-pane[data-empty] .captions-empty { display: grid; }
+.captions-pane[data-empty] .captions-out { display: none; }
+
+/* Queue */
+.queue-list { display: grid; gap: 2px; }
+.queue-work { padding: 14px 12px 6px; color: var(--label-2); font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.queue-item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 6px 12px; border-radius: 12px; text-align: start; transition: background-color var(--fast) ease; }
+.queue-item:hover { background: var(--fill); }
+.queue-item[aria-current="true"] { background: var(--accent-soft); color: var(--accent); }
+.queue-eq { width: 18px; visibility: hidden; color: var(--accent); }
+.queue-item[aria-current="true"] .queue-eq { visibility: visible; }
+.player-root:not([data-playing]) .queue-eq i { animation-play-state: paused; }
+.queue-name { flex: 1; min-width: 0; display: grid; }
+.queue-name strong { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.queue-name small { color: var(--label-3); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.queue-flag { color: var(--green); }
+.queue-flag .i { width: 17px; height: 17px; }
+
+.flying-art { position: fixed; z-index: 100; background: center / cover no-repeat; box-shadow: var(--shadow-3); pointer-events: none; }
+.np-skin { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+/* Video cards keep the cover's size. Before the first frame the cover shows as usual; once the
+   video paints, the cover turns into a blurred backdrop behind the fitted video. */
+/* The video scales up proportionally until it fills the card's height (sides are cropped). */
+.full[data-video] .media { background: transparent; object-fit: cover; }
+.full[data-video] .media:fullscreen { object-fit: contain; }
+.full[data-video] .full-art[data-frame] .art-img { filter: blur(22px) saturate(1.2) brightness(.55); transform: scale(1.15); transition: filter var(--slow, .4s) ease; }
+:fullscreen.media, .media:fullscreen { background: #000; }

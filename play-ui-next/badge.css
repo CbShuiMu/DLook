@@ -1,0 +1,126 @@
+.dlook-price-low {
+  --dlook-band: #2147a1;
+  --dlook-muted: #415570;
+  --dlook-number: #b6dfff;
+  container: dlook-card / inline-size;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 4px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--dlook-band);
+  color: white;
+  font: 500 13px/1.25 system-ui, sans-serif;
+  text-align: start;
+  font-variant-numeric: tabular-nums;
+}
+.dlook-price-low *, .dlook-price-low *::after { box-sizing: border-box; }
+.dlook-price-low:is([data-state="low"], [data-state="new-low"]) {
+  --dlook-band: #775009;
+  --dlook-number: #ffe197;
+  --dlook-tag: #ffce61;
+}
+.dlook-price-low[data-state="new-low"] { --dlook-band: #241c27; }
+.dlook-details {
+  display: flex;
+  flex: 1 1 100%;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 3px 12px;
+  min-width: 0;
+  padding: 4px 6px;
+}
+.dlook-low-labels, .dlook-low-amount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 4px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.dlook-low-values {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  min-width: 0;
+  background: var(--dlook-band);
+}
+.dlook-recorded { color: #e1ecfa; }
+.dlook-low-amount { align-items: baseline; }
+.dlook-price-low .dlook-low-amount > strong {
+  color: var(--dlook-number);
+  font: 750 21px/1.12 system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.dlook-low-values .dlook-unit, .dlook-price-low .dlook-off-value { font: 600 10px/1 system-ui, sans-serif; }
+.dlook-low-amount :is(.dlook-unit, .dlook-off-value) { color: var(--dlook-number); }
+.dlook-price-low .dlook-low-tag {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font: 700 12px/1.2 system-ui, sans-serif;
+  white-space: nowrap;
+}
+.dlook-price-low .dlook-low-tag { color: var(--dlook-band); background: var(--dlook-tag); }
+.dlook-price-low[data-state="new-low"] .dlook-low-tag { color: #000; }
+.dlook-off-value { white-space: nowrap; }
+.dlook-price-low :is(img, .dlook-logo) {
+  display: block;
+  width: 44px;
+  height: 15px;
+  margin: 0;
+  background: transparent;
+  object-fit: contain;
+}
+.dlook-price-low a.dlook-history {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 27px;
+  padding: 3px 7px;
+  background: #295bc8;
+  color: white;
+  font: 600 12px/1.25 system-ui, sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+@container dlook-card (min-width: 240px) {
+  .dlook-details { flex: 1 1 0; }
+  .dlook-price-low a.dlook-history {
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 2px;
+    padding-inline: 10px;
+  }
+}
+.dlook-price-low a.dlook-history:hover { background: #2147a1; text-decoration: underline; }
+.dlook-price-low :is(a, button):focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }
+.dlook-price-low:is([data-state="empty"], [data-state="loading"], [data-state="error"]) {
+  align-items: center;
+  gap: 3px 7px;
+  padding: 4px 8px;
+  background: var(--dlook-muted);
+}
+.dlook-price-low[data-state="error"] { background: #773747; }
+.dlook-price-low .dlook-note { flex: 1 1 6ch; font-size: 13px; overflow-wrap: anywhere; }
+.dlook-price-low > button {
+  min-height: 24px;
+  padding: 2px 6px;
+  border: 1px solid #ffffff80;
+  border-radius: 4px;
+  background: #994659;
+  color: white;
+  font: 600 13px/1.2 system-ui, sans-serif;
+  cursor: pointer;
+}
+.dlook-price-low:is([data-layout="touch"], [data-layout="wishlist-touch"]) > button { min-height: 44px; }
+.dlook-price-low[data-layout="touch"] .dlook-low-amount > strong { font-size: 22px; }
+.dlook-price-low[data-layout="wishlist-touch"] .dlook-low-amount > strong { font-size: 19px; }

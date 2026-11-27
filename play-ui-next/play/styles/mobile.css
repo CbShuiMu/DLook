@@ -1,0 +1,158 @@
+/* ===================== Mobile layout (< 860px): portrait-first ===================== */
+.app[data-mode="mobile"] {
+  --page-pad: 18px;
+  --page-max: 100%;
+  --bar-h: 50px;
+  --title-size: 32px;
+  --card-min: 148px;
+  --card-min-compact: 104px;
+  --grid-gap-x: 14px;
+  --grid-gap-y: 20px;
+  /* Shelf cards match the two-column grid exactly so edges line up. */
+  --shelf-card: calc((100vw - var(--safe-left) - var(--safe-right) - var(--page-pad) * 2 - var(--grid-gap-x)) / 2);
+  --tabbar-h: 66px;
+  --tabbar-bottom: max(10px, var(--safe-bottom));
+  --mini-h: 62px;
+  --page-bottom: calc(var(--tabbar-h) + var(--tabbar-bottom) + 28px);
+  --toast-bottom: calc(var(--tabbar-h) + var(--tabbar-bottom) + 14px);
+}
+.app[data-mode="mobile"][data-playing] {
+  --page-bottom: calc(var(--tabbar-h) + var(--tabbar-bottom) + var(--mini-h) + 36px);
+  --toast-bottom: calc(var(--tabbar-h) + var(--tabbar-bottom) + var(--mini-h) + 22px);
+}
+@media (min-width: 600px) {
+  .app[data-mode="mobile"] { --card-min: 168px; --page-pad: 24px; }
+}
+
+.app[data-mode="mobile"] .stage { inset: 0; }
+
+/* Floating glass tab bar: icon + text for every tab. */
+.tabbar {
+  position: absolute;
+  z-index: 25;
+  left: max(12px, var(--safe-left));
+  right: max(12px, var(--safe-right));
+  bottom: var(--tabbar-bottom);
+  height: var(--tabbar-h);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  padding: 5px;
+  border-radius: 33px;
+  isolation: isolate;
+  transition: opacity var(--mid) ease, transform var(--slow) var(--spring);
+}
+.tab-indicator {
+  position: absolute;
+  z-index: -1;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  width: calc((100% - 10px) / 5);
+  border-radius: 28px;
+  background: var(--accent-soft);
+  transition: transform var(--slow) var(--spring), opacity var(--mid) ease;
+}
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  border-radius: 28px;
+  color: var(--label-2);
+  transition: color var(--fast) ease, transform var(--mid) var(--spring);
+}
+.tab:active { transform: scale(.9); }
+.tab[aria-current="page"] { color: var(--accent); }
+.tab-icon { position: relative; }
+.tab .i { width: 25px; height: 25px; }
+.tab[aria-current="page"] .i-line { stroke-width: 2.1; }
+.tab-icon .badge-dot { position: absolute; top: -1px; right: -4px; }
+.tab-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; font-weight: 650; letter-spacing: -.01em; }
+.app[data-mode="mobile"][data-player-open] .tabbar { opacity: 0; transform: translateY(30px); pointer-events: none; }
+
+/* Pages */
+.app[data-mode="mobile"] .bar { grid-template-columns: minmax(40px, 1fr) auto minmax(40px, 1fr); }
+.app[data-mode="mobile"] .bar .ib { --size: 36px; }
+.app[data-mode="mobile"] .tools-row { flex-direction: column; align-items: stretch; }
+.app[data-mode="mobile"] .view-switch { width: 100%; }
+.app[data-mode="mobile"] .view-switch .seg-item { flex: 1; padding: 0 8px; }
+.app[data-mode="mobile"] .library-tools .search { display: none; }
+.app[data-mode="mobile"] .library-tools[data-search] .search { display: flex; animation: drop-in var(--mid) var(--spring) both; }
+@keyframes drop-in { from { opacity: 0; transform: translateY(-8px) scale(.98); } }
+.app[data-mode="mobile"] .chip { min-height: 34px; padding: 0 12px 0 10px; font-size: 13.5px; }
+.app[data-mode="mobile"] .section-head h2 { font-size: 19px; }
+
+/* Work page: blurred-cover hero stacked above the files. */
+.app[data-mode="mobile"] .work-layout { display: grid; gap: 22px; }
+.app[data-mode="mobile"] .hero { margin-inline: calc(var(--page-pad) * -1); padding: 0 var(--page-pad); }
+.app[data-mode="mobile"] .hero-cover { width: min(100%, 420px); justify-self: center; }
+.app[data-mode="mobile"] .hero-text { text-align: center; justify-items: center; }
+.app[data-mode="mobile"] .work-title { font-size: 22px; }
+.app[data-mode="mobile"] .work-cast { justify-content: center; }
+.app[data-mode="mobile"] .work-meta { justify-content: center; }
+.app[data-mode="mobile"] .primary-actions { justify-content: center; }
+.app[data-mode="mobile"] .primary-actions { width: 100%; max-width: 420px; }
+.app[data-mode="mobile"] .primary-actions .primary { flex: 1 1 auto; min-width: 0; }
+.app[data-mode="mobile"] .work .section-head { flex-wrap: wrap; }
+.app[data-mode="mobile"] .crumbs { justify-content: flex-start; flex-basis: 100%; }
+.app[data-mode="mobile"] .file-main { min-height: 56px; }
+
+/* Collections */
+.app[data-mode="mobile"] .list-hero { justify-items: center; text-align: center; }
+.app[data-mode="mobile"] .list-art { width: min(64vw, 260px); }
+.app[data-mode="mobile"] .list-actions { justify-content: center; }
+.app[data-mode="mobile"] .list-actions .pill { flex: 1; max-width: 200px; }
+.app[data-mode="mobile"] .list-title { font-size: 24px; white-space: normal; }
+
+/* Mini player: a floating capsule above the tab bar. */
+.app[data-mode="mobile"] .mini {
+  left: max(12px, var(--safe-left));
+  right: max(12px, var(--safe-right));
+  bottom: calc(var(--tabbar-bottom) + var(--tabbar-h) + 8px);
+  height: var(--mini-h);
+  padding: 0 6px 0 8px;
+  border-radius: 22px;
+}
+.app[data-mode="mobile"] .mini-open { flex: 1; padding: 4px; }
+.app[data-mode="mobile"] .mini-close { display: none; }
+.app[data-mode="mobile"] .mini-play { --size: 44px; }
+.app[data-mode="mobile"] .mini-play .i { width: 26px; height: 26px; }
+.app[data-mode="mobile"][data-immersive] .mini { transform: translateY(140%); }
+
+/* Full-screen Now Playing sheet */
+.app[data-mode="mobile"] .full {
+  inset: 0;
+  padding-top: var(--safe-top);
+  padding-bottom: max(14px, var(--safe-bottom));
+}
+.app[data-mode="mobile"] .np-grabber { display: block; position: relative; height: 18px; flex: none; touch-action: none; }
+.app[data-mode="mobile"] .np-grabber .grabber { top: 8px; }
+.app[data-mode="mobile"] .np-head { padding: 0 12px; }
+.app[data-mode="mobile"] .np-body { grid-template-columns: 1fr; padding: 4px 24px 0; }
+.app[data-mode="mobile"] .np-right { display: none; }
+.app[data-mode="mobile"] .np-left { gap: 14px; }
+.app[data-mode="mobile"] .np-stage { min-height: 0; padding: 8px 0; }
+.app[data-mode="mobile"] .full-art { touch-action: pan-y; }
+.app[data-mode="mobile"] .np-meta { text-align: start; }
+.app[data-mode="mobile"] .np-meta .np-title { font-size: 20px; }
+.app[data-mode="mobile"] .np-work { justify-self: start; }
+.app[data-mode="mobile"] .full .transport { justify-content: space-between; }
+.app[data-mode="mobile"] .transport.tp-full :is(.tp-shuffle, .tp-repeat) { display: none; }
+.app[data-mode="mobile"] .full .transport .tp-play { --size: 72px; }
+.app[data-mode="mobile"] .full-tools { justify-content: space-between; padding: 0 4px; }
+.app[data-mode="mobile"] .full-tools .ib { --size: 42px; }
+@media (max-height: 700px) {
+  .app[data-mode="mobile"] .full .transport .ib:not(.tp-play) { --size: 44px; }
+  .app[data-mode="mobile"] .full .transport .tp-play { --size: 60px; }
+}
+
+/* Reader on phones: chrome bars hug the screen edges. */
+.app[data-mode="mobile"] .r-full { display: none; }
+.app[data-mode="mobile"] .r-counter { display: none; }
+.app[data-mode="mobile"] .r-title small { display: none; }
+
+/* Sheets */
+.app[data-mode="mobile"] .thumbs { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.app[data-mode="mobile"] .sheet-hero { grid-template-columns: 108px 1fr; }

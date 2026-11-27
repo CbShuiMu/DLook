@@ -1,0 +1,162 @@
+/* Cards: equal cover ratio, one-line titles, covers fill the frame (crop, never letterbox). */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+  gap: var(--grid-gap-y) var(--grid-gap-x);
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  text-align: start;
+  border-radius: var(--r-card);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+  transition: transform var(--mid) var(--spring);
+  -webkit-touch-callout: none;
+}
+.card:active { transform: scale(.97); }
+.cover {
+  position: relative;
+  aspect-ratio: var(--cover-ratio, 4 / 3);
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background: var(--placeholder);
+  box-shadow: var(--shadow-1), inset 0 0 0 .5px var(--glass-hair);
+  isolation: isolate;
+  transform: translateZ(0);
+  transition: box-shadow var(--mid) ease, transform var(--slow) var(--spring);
+}
+.cover-ph { position: absolute; inset: 0; display: grid; place-items: center; color: var(--label-3); }
+.cover-ph .i { width: 30%; height: 30%; max-width: 40px; max-height: 40px; }
+.cover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 420ms ease, transform 700ms var(--spring);
+}
+.cover-img[data-portrait] { object-position: center 18%; }
+.cover-img[data-loaded] { opacity: 1; transform: none; }
+.cover-img[data-error] { display: none; }
+@media (hover: hover) {
+  .card:hover .cover { box-shadow: var(--shadow-2), inset 0 0 0 .5px var(--glass-hair); transform: translateY(-3px); }
+  .card:hover .cover-img[data-loaded] { transform: scale(1.04); }
+}
+
+/* Top-left capsule: work type, plus a check when saved offline. */
+.badges {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: 13px;
+}
+.badges .i { width: 15px; height: 15px; }
+.badges .badge-saved { color: #8dffbe; }
+.list-card .badges { top: auto; bottom: 8px; }
+
+/* Progress runs flush along the bottom edge of the cover. */
+.progress-line {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, .28);
+}
+.progress-line::after { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--p); border-radius: 0 2px 2px 0; background: linear-gradient(90deg, var(--accent-2), var(--accent)); }
+
+/* Quick play: a translucent glass disc, like the rest of the controls. */
+.card-play {
+  position: absolute;
+  z-index: 3;
+  right: 8px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(30, 32, 44, .34);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
+  border: .5px solid rgba(255, 255, 255, .35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .18), inset 0 1px 0 rgba(255, 255, 255, .25);
+  opacity: 0;
+  transform: translateY(6px) scale(.9);
+  transition: opacity var(--fast) ease, transform var(--mid) var(--spring), background-color var(--fast) ease;
+}
+.card-play:hover { background: rgba(30, 32, 44, .5); }
+.card-play .i { width: 20px; height: 20px; }
+.card:hover .card-play, .card:focus-within .card-play, .card[data-playing] .card-play { opacity: 1; transform: none; }
+.card-play:active { transform: scale(.88); }
+.card-eq { position: absolute; z-index: 2; left: 12px; bottom: 12px; color: #fff; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .5)); }
+.card[data-playing] .cover { box-shadow: 0 0 0 2.5px var(--accent), var(--shadow-2); }
+
+.card-text { display: grid; gap: 1px; padding: 0 4px; min-width: 0; }
+.card-title, .card-sub { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-title { font-size: 14.5px; font-weight: 650; line-height: 1.35; }
+.card-sub { color: var(--label-2); font-size: 12.5px; line-height: 1.35; }
+.card[data-playing] .card-title { color: var(--accent); }
+
+/* List layout rows */
+.rows { display: grid; gap: 2px; }
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 72px;
+  padding: 8px 10px;
+  border-radius: 16px;
+  transition: background-color var(--fast) ease, transform var(--mid) var(--spring);
+}
+.row:hover { background: var(--fill); }
+.row:active { transform: scale(.99); }
+.row-cover { width: 76px; border-radius: 12px; }
+.row-text { min-width: 0; display: grid; gap: 2px; }
+.row-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.row-sub { display: flex; align-items: center; gap: 6px; color: var(--label-2); font-size: 13px; overflow: hidden; white-space: nowrap; }
+.row-sub span { overflow: hidden; text-overflow: ellipsis; }
+.row-sub .i { width: 15px; height: 15px; }
+.row-trail { display: flex; align-items: center; gap: 8px; color: var(--label-3); }
+.chevron { width: 16px; height: 16px; color: var(--label-3); }
+.saved-icon { color: var(--green); width: 18px; height: 18px; }
+
+/* Mosaics (people, lists): 2×2 covers, fully filled. */
+.mosaic { position: absolute; inset: 0; display: grid; gap: 2px; }
+.mosaic.n1 { grid-template: 1fr / 1fr; }
+.mosaic.n2 { grid-template: 1fr / 1fr 1fr; }
+.mosaic.n3 { grid-template: 1fr 1fr / 1fr 1fr; }
+.mosaic.n3 > :first-child { grid-row: span 2; }
+.mosaic.n4 { grid-template: 1fr 1fr / 1fr 1fr; }
+.mosaic .cover-img { position: relative; inset: auto; width: 100%; height: 100%; min-height: 0; }
+.mosaic-empty { display: grid; place-items: center; color: var(--label-3); background: var(--placeholder); }
+.mosaic-empty .i { width: 36px; height: 36px; }
+.person-card .cover, .list-card .cover { --cover-ratio: 1 / 1; }
+
+/* Skeleton */
+.skeleton .card { pointer-events: none; }
+.skeleton .cover { box-shadow: none; }
+.skeleton .line { display: block; height: 12px; border-radius: 6px; margin-top: 4px; }
+.skeleton .line.short { width: 60%; }
+
+/* Touch screens have no hover: keep the quick-play button visible (smaller). */
+@media (hover: none) {
+  .card-play { opacity: 1; transform: none; width: 34px; height: 34px; right: 7px; bottom: 9px; }
+  .card-play .i { width: 17px; height: 17px; }
+}

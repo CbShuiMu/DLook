@@ -1,0 +1,309 @@
+/* The native touch price wrapper precedes the official campaign and genre tags. */
+:is(.n_work_price_wrap, .work_price_wrap):has(> .dlook-price-low) { flex-wrap: wrap; }
+:is(.n_work_price_wrap, .work_price_wrap) > .dlook-price-low {
+  flex: 0 0 100%;
+  grid-column: 1 / -1;
+  margin: 4px 0 0;
+}
+.n_cart .n_work_list.type_row_min.type_cart .n_work_item > dd.n_work_price_wrap:has(> .dlook-price-low) { padding-right: 0; }
+
+.dlook-wishlist-card {
+  /* In the wishlist the native details use a column flexbox. */
+  flex: none;
+  grid-column: 1 / -1;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: 3px 0;
+  list-style: none;
+  white-space: normal;
+}
+.n_work_list_item .work_desc:has(> .dlook-wishlist-card) { min-width: 0; }
+
+a.dlook-offer-link,
+.btn_01 > a.dlook-bottom-offer {
+  box-sizing: border-box;
+  display: flex;
+  min-height: 42px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #2147a1;
+  color: #fff !important;
+  font: 600 14px/1.2 system-ui, sans-serif;
+  text-decoration: none;
+}
+a.dlook-offer-link:hover { background: #295bc8; text-decoration: none; }
+a.dlook-offer-link:focus-visible { outline: 2px solid #ffe197; outline-offset: -3px; }
+.dlook-offer-link > span { color: #fff !important; }
+.dlook-offer-link :is(img, svg) { display: block; flex: 0 0 45px; width: 45px; height: 15px; }
+a.dlook-cart-offer {
+  min-height: 64px;
+  gap: 12px;
+  margin-block-end: 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.dlook-cart-offer :is(img, svg) { flex-basis: 56px; width: 56px; height: 19px; }
+
+:is(.c-purchaseBottomBar__nav > .single, .work_cart_column_container .btn_01):has(> .dlook-bottom-offer) {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  align-items: stretch;
+  gap: 8px;
+  min-width: 0;
+  reading-flow: grid-rows;
+}
+.c-purchaseBottomBar > .c-purchaseBottomBar__nav:has(.dlook-bottom-offer) { min-width: 0; }
+a.dlook-offer-link.dlook-bottom-offer {
+  grid-area: 1 / 1;
+  height: auto;
+  box-shadow: none;
+  min-height: 34px;
+  min-width: 0;
+  margin: 0;
+  gap: 5px;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+.dlook-bottom-offer :is(img, svg) { flex-basis: 44px; width: 44px; height: 15px; }
+.work_cart_column_container .btn_01:has(> .dlook-bottom-offer) >
+  :is(button, input[type="button"], input[type="submit"], a[href]):not(.dlook-offer-link) {
+  grid-area: 1 / 2;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.c-purchaseBottomBar:has(.dlook-bottom-offer) {
+  --dlook-bottom-action-height: 34px;
+  align-items: center;
+  reading-flow: flex-visual;
+}
+.c-purchaseBottomBar:has(.dlook-bottom-offer) > .grid:has(.btn_favorite) {
+  order: -1;
+}
+/* Native square buttons use fit-content height inside a centered grid. */
+.c-purchaseBottomBar:has(.dlook-bottom-offer) > .grid .btn_favorite,
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer),
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > :is(a.btn_cart_in, a.dlook-bottom-offer) {
+  box-sizing: border-box;
+  height: var(--dlook-bottom-action-height);
+  min-height: var(--dlook-bottom-action-height);
+  margin-block: 0;
+}
+.c-purchaseBottomBar:has(.dlook-bottom-offer) > .grid .btn_favorite {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+}
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in {
+  /* DLsite's icon classes force display:grid with !important. */
+  display: flex !important;
+}
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) {
+  grid-template-columns: 34px minmax(0, 1fr);
+}
+.c-purchaseBottomBar__nav > .single > a.dlook-bottom-offer {
+  grid-area: 1 / 2;
+}
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in,
+.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 34px;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  font-size: 0;
+  gap: 0;
+}
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in span,
+.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in span {
+  font-size: 0;
+}
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in::before,
+.c-purchaseBottomBar__nav > .single:has(> .dlook-bottom-offer) > a.btn_cart_in :is(i, [class*="icon"]),
+.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in::before,
+.p-purchaseButtonsPc:has(> .dlook-product-cart-offer) a.btn_cart_in :is(i, [class*="icon"]) {
+  font-size: 20px;
+  margin: 0;
+}
+
+/* Keep the native purchase controls inside their Vue-managed DOM. */
+.p-purchaseButtonsPc > .dlook-product-offer { order: -2; }
+.p-purchaseButtonsPc:has(> .dlook-product-offer) {
+  reading-flow: flex-visual;
+  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(> .btn_buy) { display: contents; }
+  & > .btn_buy,
+  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase) > .btn_buy { order: -1; }
+}
+/* Outrank DLsite's late-loaded scoped .p-purchaseButtonsPc[data-v-*] rule. */
+.p-purchaseButtonsPc:has(> a.dlook-product-cart-offer) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  gap: 8px;
+  align-items: stretch;
+  reading-flow: grid-rows;
+  & > * { grid-column: 1 / -1; }
+  & > :is(.p-purchaseBox__purchase, .c-purchaseBox__purchase):has(a.btn_cart_in) { display: contents; }
+  & a.btn_cart_in { grid-area: 1 / 2; }
+  & > .dlook-product-cart-offer {
+    grid-area: 1 / 1;
+    min-width: 0;
+    gap: 5px;
+    padding-inline: 4px;
+    font-size: 13px;
+  }
+}
+[data-dlook-wishlist-filtered] { display: none !important; }
+.dlook-wishlist-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 6px 0;
+  padding: 3px 9px 5px;
+  border: 1px solid #b3c4e3;
+  border-radius: 5px;
+  color: #223a63;
+  background: #edf3ff;
+  font: 500 12px/1.3 system-ui, sans-serif;
+}
+.dlook-wishlist-filter legend { padding: 0 3px; font-weight: 700; }
+.dlook-wishlist-filter label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 27px;
+  cursor: pointer;
+}
+.dlook-wishlist-filter input { accent-color: #2147a1; margin: 0; }
+.dlook-wishlist-filter-status:not(:empty) { margin-inline-start: auto; }
+#filter_drawer .dlook-wishlist-filter { margin: 8px 12px; }
+#filter_drawer .dlook-wishlist-filter label { min-height: 44px; }
+.dlook-wishlist-filter-summary:not(:empty) {
+  display: block;
+  padding: 5px 8px;
+  color: #223a63;
+  background: #edf3ff;
+  font: 500 12px/1.3 system-ui, sans-serif;
+}
+@media (pointer: coarse) {
+  .dlook-wishlist-filter label { min-height: 36px; }
+}
+
+/* Keep both price rows together, then show DLook, then the site's own campaign. */
+.c-purchaseSide__main .c-purchaseBox__main:has(.dlook-price-low) > .c-purchaseBox__labels { order: 5; }
+.c-purchaseBox > .c-purchaseBox__inner:has(> .dlook-price-low) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 3px 8px;
+}
+.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__main { display: contents; }
+.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__priceInfo { grid-area: 1 / 1; }
+.c-purchaseBox__inner:has(> .dlook-price-low) > .c-purchaseBox__sub { grid-area: 1 / 2; width: auto; }
+.c-purchaseBox__inner > .dlook-price-low { grid-area: 2 / 1 / auto / -1; margin: 0; }
+.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels { grid-area: 3 / 1 / auto / -1; }
+.c-purchaseBox__inner:has(> .dlook-price-low) .c-purchaseBox__labels:empty { display: none; }
+
+/* On desktop the campaign lives inside the title. Grid keeps all native nodes
+   in place for DLsite's cart updates, while sharing the wide details column. */
+.cart_list_item_inner:has(> .work_content > .work_name):has(> .work_price > .dlook-price-low) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0 12px;
+  align-items: start;
+  & > .work_thumb { grid-area: 1 / 1 / span 12; }
+  & > .work_setting { grid-area: 1 / 3 / span 12; }
+  & > .work_content, & > .work_content > .work_name { display: contents; }
+  & > .work_content > :not(.work_name), & .work_name > *, & > .work_price {
+    grid-column: 2;
+    min-width: 0;
+    order: 4;
+  }
+  & .work_name > a { order: 0; }
+  & > .work_content > .maker_name { order: 1; }
+  & > div.work_price {
+    order: 2;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: 1px 5px;
+    width: auto;
+    padding: 0;
+    text-align: start;
+  }
+  & > .work_price > .dlook-price-low { flex: 0 0 100%; margin: 3px 0; }
+  & .work_name > .icon_wrap { order: 3; }
+}
+
+.dlook-cart-campaigns {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 8px 0;
+  padding: 0;
+  border-radius: 7px;
+  overflow: hidden;
+  color: #fff;
+  background: #2147a1;
+  font: 12px/1.45 system-ui, sans-serif;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.dlook-cart-campaign-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: #295bc8;
+}
+.dlook-cart-campaign-header > :is(img, .dlook-logo) {
+  flex: 0 0 44px;
+  display: block;
+  width: 44px;
+  height: 15px;
+  margin: 0;
+  object-fit: contain;
+}
+.dlook-cart-campaign-header > h2 { margin: 0; color: inherit; font: inherit; font-weight: 700; }
+.dlook-cart-campaigns > ul { margin: 0; padding: 7px 10px; list-style: none; }
+.dlook-cart-campaigns li + li {
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid #b6dfff45;
+}
+.dlook-cart-campaign-count { display: block; color: #b6dfff; }
+:is(.work_genre, .n_work_option, .n_work_genre_tags):has(> .dlook-cart-bundle-tag) { flex-wrap: wrap; }
+:is(.cart_list_item, ._cart_item) :is(span.dlook-cart-bundle-tag, span.type_matome.__target:not([hidden])) {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 2px;
+  color: #fff;
+  background: #2147a1;
+  font: 600 11px/18px system-ui, sans-serif;
+  vertical-align: middle;
+  white-space: normal;
+}
+span.dlook-cart-bundle-tag { margin-inline-start: 3px; }
+[data-dlook-bundle-source] { display: none !important; }
+.cart_bill_content > .dlook-cart-campaigns {
+  width: 100%;
+  font-size: 13px;
+}
+.cart_bill_content > .dlook-cart-campaigns > ul { padding: 8px 12px; }

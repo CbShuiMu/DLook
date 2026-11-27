@@ -1,0 +1,33 @@
+/* Document-level rules (outside the shadow root). Keep this file tiny: everything
+ * visual lives in the shadow root so the site's CSS and ours never collide. */
+dlook-next {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482000;
+  display: block;
+  contain: strict;
+  background: transparent;
+  color-scheme: light dark;
+}
+
+/* Until the app paints, cover the native UI with the theme's backdrop color. */
+html[data-dn-booting] dlook-next { background: #f2f4f8; }
+html[data-dn-booting][data-dn-appearance="dark"] dlook-next { background: #0b0d12; }
+@media (prefers-color-scheme: dark) {
+  html[data-dn-booting][data-dn-appearance="auto"] dlook-next { background: #0b0d12; }
+}
+
+/* The native app keeps running underneath (its session, sync and dialogs are reused). */
+html[data-dn]:not([data-dn-pass]) #App {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+html[data-dn]:not([data-dn-pass]) body { overflow: hidden !important; }
+
+/* Pass-through: a native-only screen (notifications, help, protected viewers, account
+ * pages) is shown as-is; only DLook's floating controls stay on top. */
+html[data-dn-pass] dlook-next { pointer-events: none; }
+
+/* Native confirmation dialogs (e.g. logout) must appear above DLook while requested. */
+html[data-dn-native-dialog] dlook-next { z-index: 1000; }
+html[data-dn-native-dialog] #App { visibility: visible !important; }

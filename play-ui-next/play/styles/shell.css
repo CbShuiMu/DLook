@@ -1,0 +1,130 @@
+/* Shell: ambient background, stage, page scaffold (shared by both layouts). */
+
+/* Soft, slowly drifting color fields behind the glass (tinted by the accent). */
+.ambient { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.blob {
+  position: absolute;
+  width: 62vmax;
+  height: 62vmax;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: .9;
+  will-change: transform;
+}
+.blob.a { left: -18vmax; top: -24vmax; background: radial-gradient(circle, var(--blob-a), transparent 66%); animation: drift-a 38s ease-in-out infinite alternate; }
+.blob.b { right: -22vmax; top: 10vmax; background: radial-gradient(circle, var(--blob-b), transparent 66%); animation: drift-b 46s ease-in-out infinite alternate; }
+.blob.c { left: 18vmax; bottom: -34vmax; background: radial-gradient(circle, var(--blob-c), transparent 66%); animation: drift-c 52s ease-in-out infinite alternate; }
+@keyframes drift-a { to { transform: translate(14vmax, 10vmax) scale(1.08); } }
+@keyframes drift-b { to { transform: translate(-12vmax, 12vmax) scale(.94); } }
+@keyframes drift-c { to { transform: translate(10vmax, -12vmax) scale(1.1); } }
+.cover-glow {
+  position: absolute;
+  inset: -20%;
+  background: center / cover no-repeat;
+  filter: blur(90px) saturate(160%);
+  opacity: 0;
+  transform: scale(1.1);
+  transition: opacity 900ms ease, background-image 900ms ease;
+}
+.cover-glow[data-on] { opacity: .32; }
+.app[data-scheme="dark"] .cover-glow[data-on] { opacity: .26; }
+
+/* Stage holds stacked views; transitions animate between them. */
+.stage { position: absolute; overflow: hidden; contain: layout paint; }
+.view { position: absolute; inset: 0; will-change: transform, opacity; }
+.view.leaving { pointer-events: none; }
+
+/* Page scaffold */
+.page { display: flex; flex-direction: column; background: transparent; }
+.scroller {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  padding: calc(var(--bar-h) + var(--safe-top)) var(--page-pad) var(--page-bottom);
+  scrollbar-width: thin;
+  scrollbar-color: var(--fill-3) transparent;
+}
+.scroller::-webkit-scrollbar { width: 10px; }
+.scroller::-webkit-scrollbar-thumb { background: var(--fill-3); border-radius: 10px; border: 3px solid transparent; background-clip: padding-box; }
+.content, .heading, .toolbar { max-width: var(--page-max); margin-inline: auto; }
+
+.bar {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: minmax(44px, 1fr) auto minmax(44px, 1fr);
+  align-items: center;
+  gap: 8px;
+  height: calc(var(--bar-h) + var(--safe-top));
+  padding: var(--safe-top) calc(var(--page-pad) - 4px) 0;
+  transition: background-color var(--mid) ease, box-shadow var(--mid) ease, -webkit-backdrop-filter var(--mid) ease, backdrop-filter var(--mid) ease;
+}
+.bar[data-scrolled] {
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  box-shadow: 0 .5px 0 var(--separator);
+}
+.bar-lead { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.bar-title {
+  max-width: 52vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 16px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--mid) ease, transform var(--mid) var(--spring);
+}
+.bar[data-title] .bar-title { opacity: 1; transform: none; }
+.bar-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+
+.heading { padding: 4px 0 12px; }
+.large-title {
+  font-size: var(--title-size);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.12;
+  transform-origin: left center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.large-sub { margin-top: 4px; color: var(--label-2); font-size: 14px; }
+.toolbar:empty { display: none; }
+
+.section-head { display: flex; align-items: center; gap: 12px; margin: 22px 0 12px; }
+.section-head h2 { font-size: 20px; font-weight: 750; letter-spacing: -.01em; }
+
+/* Pass-through: floating capsule back to DLook over a native screen. */
+/* Sits just below the official header bar so it never covers its close/back buttons. */
+.pass-bar { display: none; position: absolute; z-index: 40; left: max(12px, var(--safe-left)); top: calc(60px + var(--safe-top)); }
+.app[data-pass] .pass-bar { display: block; }
+.pass-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 16px 0 10px;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  color: var(--accent);
+  transition: transform var(--mid) var(--spring);
+}
+.pass-back:active { transform: scale(.95); }
+
+/* Immersive views (reader) hide the navigation chrome. */
+.app[data-immersive] :is(.sidebar, .tabbar) { opacity: 0; pointer-events: none; transform: translateY(12px); }
+.app[data-immersive] .mini { opacity: 0; pointer-events: none; }
+.app[data-immersive] .stage { inset: 0 !important; z-index: 22; }
+
+/* Official full-screen viewers (protected comics, e-books, HTML) bring their own close button:
+   hide DLook's bottom bar, mini player and back capsule so nothing overlaps them. */
+.app[data-pass-viewer] :is(.tabbar, .pass-bar, .mini) { display: none !important; }
