@@ -16,7 +16,8 @@ const defaults = {
   readerDirection: 'rtl',    // rtl | ltr
   readerMode: 'auto',        // auto | single | spread | vertical
   readerFit: 'screen',       // screen | width
-  showCaptions: true,
+  captionMode: 'lyrics',     // off | lyrics (previous / current / next, scrollable) | single (current line only)
+  hideCaptionFiles: true,    // hide caption files that belong to an audio/video file in the same folder
   textSize: 16,              // text file viewer font size (px)
   motion: 'full',            // full | system (follow the OS reduce-motion setting)
 };
@@ -28,6 +29,9 @@ function load() {
   try {
     const saved = JSON.parse(localStorage.getItem(key) ?? '{}');
     const merged = { ...defaults, ...(saved && typeof saved === 'object' ? saved : {}) };
+    // Earlier versions had an on/off captions switch.
+    if (!saved?.captionMode && saved?.showCaptions === false) merged.captionMode = 'off';
+    delete merged.showCaptions;
     // Carry over the previous extension's theme choice.
     if (!saved?.accent) {
       const legacy = localStorage.getItem('dlook-play-theme');

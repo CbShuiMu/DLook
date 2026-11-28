@@ -9,7 +9,7 @@ import { page } from '../page.js';
 import { workCard, workRow, personCard, skeletonGrid } from '../cards.js';
 import * as offline from '../../data/offline.js';
 import * as api from '../../data/api.js';
-import { workTitle, circleOf, authorNames, categoryOf, searchText } from '../state.js';
+import { workTitle, circleOf, authorNames, voiceNames, categoryOf, searchText } from '../state.js';
 
 const CATEGORIES = [
   { value: 'all', icon: 'grid' },
@@ -125,7 +125,7 @@ export async function create(app, route) {
     let works = library.works.filter(work => isHidden ? hidden.has(work.workno) : !hidden.has(work.workno));
     if (isPerson) {
       works = works.filter(work => params.view === 'voices'
-        ? authorNames(work).includes(params.person)
+        ? voiceNames(work).includes(params.person)
         : circleOf(work)?.name === params.person || (work.workno.startsWith('BJ') && authorNames(work).includes(params.person)));
     }
     return works;
@@ -152,7 +152,7 @@ export async function create(app, route) {
   function people(works, kind) {
     const groups = new Map();
     for (const work of works) {
-      const names = kind === 'voices' ? (work.workno.startsWith('BJ') ? [] : authorNames(work))
+      const names = kind === 'voices' ? voiceNames(work)
         : [circleOf(work)?.name, ...(work.workno.startsWith('BJ') ? authorNames(work) : [])].filter(Boolean);
       for (const name of new Set(names)) {
         if (!groups.has(name)) groups.set(name, []);

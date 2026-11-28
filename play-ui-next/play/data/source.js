@@ -45,7 +45,9 @@ export async function identify(workno, locale) {
   const work = await workInfo(workno);
   if (!audioTypes.has(work?.work_type) || !work.encodable ||
       (work.sales_date == null && (!work.entitlement_type || work.entitlement_type === 'none'))) return null;
-  const authors = Array.isArray(work.authors) ? work.authors.map(author => localName(author?.name, locale)).filter(Boolean) : [];
+  // Audio works credit their voice actors as `voice_by` tags; `authors` holds other creators.
+  const voices = Array.isArray(work.tags) ? work.tags.filter(tag => tag?.classification === 'voice_by').map(tag => tag.name?.trim()).filter(Boolean) : [];
+  const authors = voices.length ? voices : Array.isArray(work.authors) ? work.authors.map(author => localName(author?.name, locale)).filter(Boolean) : [];
   return {
     workno,
     title: localName(work.name, locale) || workno,

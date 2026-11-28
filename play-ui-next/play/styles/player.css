@@ -246,6 +246,11 @@
 .cue[aria-current="true"] { color: var(--label); }
 .cue p + p { margin-top: 2px; font-size: .78em; font-weight: 600; color: var(--label-2); }
 .captions-pane[data-browsing] .cue { transition: none; }
+/* Single line: only the cue being spoken; no neighbours, no scrolling through the timeline. */
+.captions-pane[data-mode="single"] { overflow-y: hidden; touch-action: none; -webkit-mask: none; mask: none; }
+.captions-pane[data-mode="single"] .cue:not([aria-current="true"]),
+.captions-pane[data-mode="single"] .captions-out[data-gap] .cue { visibility: hidden; opacity: 0; }
+.captions-pane[data-mode="single"] .captions-out:not([data-gap]) .cue[aria-current="true"] { transform: none; opacity: 1; }
 .captions-empty { display: none; position: absolute; inset: 0; place-items: center; color: var(--label-3); font-weight: 600; }
 .captions-pane[data-empty] .captions-empty { display: grid; }
 .captions-pane[data-empty] .captions-out { display: none; }

@@ -1,5 +1,5 @@
 // DLsite Play endpoints used by DLook Next, each behind the shared cache.
-import { api, chunk, pool, WORKNO } from '../core/http.js';
+import { api, chunk, pool, STORE, WORKNO } from '../core/http.js';
 import * as kv from '../core/kv.js';
 
 /* ------------------------------------------------------------------ session */
@@ -17,7 +17,7 @@ export function authorize({ force = false } = {}) {
 // the last sync, so another account's cache must never be continued.
 async function libraryKey() {
   const account = await authorize().catch(() => null);
-  return `library:v2:${account?.account_id ?? 'anonymous'}:${account?.production_id ?? ''}`;
+  return `library:v3:${account?.account_id ?? 'anonymous'}:${account?.production_id ?? ''}`;
 }
 let syncing;
 
@@ -73,10 +73,72 @@ export function syncLibrary({ full = false, onProgress } = {}) {
   return syncing;
 }
 
+/* ------------------------------------------------------------------ store voices */
+
+// Play's work data sometimes lacks the `voice_by` tags (community translations, older
+// works). The store's product API credits voice actors as `creaters.voice_by`, so audio and
+// video works without any are looked up there once and remembered across accounts.
+const STORE_VOICES = 'store-voices:v1';
+const RECHECK = 14 * 24 * 3600e3;
+let voiceLookup;
+
+const voiced = work => !work.workno.startsWith('BJ') && !work.voices?.length &&
+  (['SOU', 'MOV', 'VCM'].includes(work.type) || ['sound', 'video'].includes(work.app));
+
+async function storeProduct(workno) {
+  const response = await fetch(`${STORE}/maniax/api/=/product.json?workno=${encodeURIComponent(workno)}`, { credentials: 'omit' });
+  if (!response.ok) throw new Error(`store product ${response.status}`);
+  const data = await response.json();
+  return Array.isArray(data) ? data[0] ?? null : null;
+}
+
+const creditedVoices = product => {
+  const list = product?.creaters && !Array.isArray(product.creaters) ? product.creaters.voice_by : null;
+  return Array.isArray(list) ? [...new Set(list.map(entry => entry?.name?.trim()).filter(Boolean))] : [];
+};
+
+async function lookupVoices(workno) {
+  const product = await storeProduct(workno);
+  const names = creditedVoices(product);
+  // A translation may only be credited on the original work.
+  const original = product?.translation_info?.original_workno;
+  if (names.length || !original || !WORKNO.test(original) || original === workno) return names;
+  return creditedVoices(await storeProduct(original));
+}
+
+/** `{ workno: names }` already known from the store. */
+export async function storeVoices() {
+  const cached = (await kv.peek(STORE_VOICES))?.value ?? {};
+  return Object.fromEntries(Object.entries(cached).filter(([, entry]) => entry.names?.length).map(([workno, entry]) => [workno, entry.names]));
+}
+
+/** Looks up voice actors for audio/video works that have none, then returns `storeVoices()`. */
+export function lookupStoreVoices(works) {
+  voiceLookup ??= (async () => {
+    const cached = { ...((await kv.peek(STORE_VOICES))?.value ?? {}) };
+    const now = Date.now();
+    const missing = works.filter(work => voiced(work) && !cached[work.workno]?.names?.length && !(now - (cached[work.workno]?.checked ?? 0) < RECHECK));
+    if (missing.length) {
+      await pool(missing, 2, async work => {
+        try {
+          cached[work.workno] = { names: await lookupVoices(work.workno), checked: Date.now() };
+        } catch {} // Offline or blocked: try again next time.
+      });
+      await kv.put(STORE_VOICES, cached);
+    }
+    return storeVoices();
+  })().finally(() => { voiceLookup = undefined; });
+  return voiceLookup;
+}
+
 const time = value => {
   const parsed = value ? Date.parse(value) : NaN;
   return Number.isFinite(parsed) ? parsed : 0;
 };
+
+const tagNames = (tags, classification) => Array.isArray(tags)
+  ? [...new Set(tags.filter(tag => tag?.classification === classification).map(tag => tag.name?.trim()).filter(Boolean))]
+  : [];
 
 /** Keeps only what the UI needs so the cached library stays small. */
 export function normalize(work) {
@@ -92,7 +154,9 @@ export function normalize(work) {
     originalMaker: work.original_maker ? { id: work.original_maker.id, name: work.original_maker.name ?? {} } : null,
     translation: Boolean(work.is_community_translation),
     authors: Array.isArray(work.authors) ? work.authors.map(author => ({ name: author?.name ?? {} })).filter(a => a.name) : [],
-    tags: Array.isArray(work.tags) ? work.tags.filter(tag => tag?.classification === 'created_by').map(tag => tag.name) : [],
+    tags: tagNames(work.tags, 'created_by'),
+    // Voice actors are only ever the `voice_by` tags; `authors` are creators (writers, artists).
+    voices: tagNames(work.tags, 'voice_by'),
     genres: Array.isArray(work.genre_ids) ? work.genre_ids : [],
     image: work.images?.main ?? work.images?.thumb ?? null,
     thumb: work.images?.thumb ?? work.images?.main ?? null,

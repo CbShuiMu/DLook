@@ -15,6 +15,11 @@ import { timeline } from './captions.js';
 const RATES = [0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2];
 const SLEEP = [5, 10, 15, 30, 45, 60, 90];
 
+// Captions cycle: off → lyrics (previous / current / next) → single line → off.
+const CAPTION_MODES = ['off', 'lyrics', 'single'];
+const captionMode = () => CAPTION_MODES.includes(prefs.get('captionMode')) ? prefs.get('captionMode') : 'lyrics';
+const captionLabel = mode => `${t('captions')} · ${t({ off: 'captionsOff', lyrics: 'captionsLyrics', single: 'captionsSingle' }[mode])}`;
+
 export function createPlayer(app, root) {
   const media = h('video', { class: 'media', playsInline: true, preload: 'metadata' });
   media.setAttribute('playsinline', '');
@@ -158,7 +163,18 @@ export function createPlayer(app, root) {
     return button;
   }
   function captionsButton() {
-    return kit.iconButton('captions', t('captions'), () => toggleCaptions(), { className: 'tb-captions', pressed: prefs.get('showCaptions') });
+    const button = kit.iconButton('captions', t('captions'), () => cycleCaptions(), { className: 'tb-captions' });
+    button.append(h('span', { class: 'tb-badge' }));
+    paintCaptionsButton(button);
+    return button;
+  }
+  function paintCaptionsButton(button) {
+    const mode = captionMode();
+    button.setAttribute('aria-pressed', String(mode !== 'off'));
+    button.dataset.mode = mode;
+    button.title = captionLabel(mode);
+    button.setAttribute('aria-label', button.title);
+    button.querySelector('.tb-badge').textContent = mode === 'single' ? '1' : '';
   }
   function sleepButton() {
     const button = kit.iconButton('timer', t('sleep'), () => sleepMenu(button), { className: 'tb-sleep', pressed: false });
@@ -314,8 +330,10 @@ export function createPlayer(app, root) {
    * says so), so the cover or video always sits in the same place for the same setting.
    */
   function layoutCaptions() {
-    const show = Boolean(prefs.get('showCaptions'));
+    const mode = captionMode();
+    const show = mode !== 'off';
     captionsPane.hidden = !show;
+    captionsPane.dataset.mode = mode;
     full.toggleAttribute('data-captions', show);
     captionsPane.toggleAttribute('data-empty', !cues.length);
     if (show && cues.length) requestAnimationFrame(() => renderCaptions(cues, media.currentTime || 0));
@@ -343,12 +361,19 @@ export function createPlayer(app, root) {
         { duration: 420, delay: 120, easing: kit.spring, fill: 'backwards' });
     }
   }
-  function toggleCaptions() {
-    prefs.set('showCaptions', !prefs.get('showCaptions'));
-    for (const button of root.querySelectorAll('.tb-captions')) button.setAttribute('aria-pressed', String(prefs.get('showCaptions')));
-    if (!expanded && prefs.get('showCaptions')) { layoutCaptions(); setExpanded(true); return; }
+  function cycleCaptions() {
+    const mode = CAPTION_MODES[(CAPTION_MODES.indexOf(captionMode()) + 1) % CAPTION_MODES.length];
+    prefs.set('captionMode', mode);
+    if (!expanded && mode !== 'off') setExpanded(true);
+    kit.toast(captionLabel(mode), { icon: 'captions', duration: 1600 });
+  }
+  /** Also follows the setting when it is changed on the settings page or in another tab. */
+  function applyCaptionMode() {
+    for (const button of root.querySelectorAll('.tb-captions')) paintCaptionsButton(button);
+    if (!expanded && captionMode() !== 'off') { layoutCaptions(); return; }
     animateStage(layoutCaptions);
   }
+  prefs.onChange(name => { if (name === 'captionMode') applyCaptionMode(); });
 
   /* ---------------------------------------------------------------- expand / collapse */
   // The mini player (the dock on desktop) is the card that spreads out to fill the screen while

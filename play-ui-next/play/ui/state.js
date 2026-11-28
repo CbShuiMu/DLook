@@ -44,10 +44,10 @@ export async function loadLibrary({ force = false } = {}) {
     setSync({ running: force || !state.library, value: 0, max: 0, error: false });
     const value = await api.library({
       force,
-      onUpdate: next => { set('library', next); setSync({ running: false }); },
+      onUpdate: next => { setLibrary(next); setSync({ running: false }); },
       onProgress: ({ value: done, max }) => setSync({ running: true, value: done, max }),
     });
-    set('library', value);
+    setLibrary(value);
     setSync({ running: false });
     return value;
   } catch (error) {
@@ -57,11 +57,34 @@ export async function loadLibrary({ force = false } = {}) {
   }
 }
 
+/** Fills in voice actors Play does not list, from the store (see api.lookupStoreVoices). */
+function applyVoices(voices) {
+  const current = state.library;
+  if (!current?.works?.length) return;
+  let changed = false;
+  const works = current.works.map(work => {
+    const names = work.voices?.length ? null : voices[work.workno];
+    if (!names?.length) return work;
+    changed = true;
+    return { ...work, voices: names };
+  });
+  if (changed) set('library', { ...current, works });
+}
+function enrichVoices() {
+  api.storeVoices().then(applyVoices)
+    .then(() => api.lookupStoreVoices(state.library?.works ?? [])).then(applyVoices)
+    .catch(() => {});
+}
+function setLibrary(value) {
+  set('library', value);
+  enrichVoices();
+}
+
 export async function syncLibrary() {
   setSync({ running: true, value: 0, max: 0, error: false });
   try {
     const value = await api.syncLibrary({ full: false, onProgress: ({ value: done, max }) => setSync({ running: true, value: done, max }) });
-    set('library', value);
+    setLibrary(value);
     setSync({ running: false });
     return value;
   } catch (error) {
@@ -134,6 +157,9 @@ export const authorNames = work => {
   return names.length ? names : (work?.tags ?? []).filter(Boolean);
 };
 
+/** Voice actors, as the native voice pages list them (`voice_by` tags). */
+export const voiceNames = work => work?.voices ?? [];
+
 /** Category used by the library filter chips. */
 export function categoryOf(work) {
   const type = work?.type;
@@ -152,7 +178,7 @@ export function searchText(work) {
   if (!text) {
     const circle = circleOf(work);
     text = [work.workno, ...Object.values(work.name ?? {}), work.phonetic, circle?.name, ...Object.values(work.maker?.name ?? {}),
-      ...(work.authors ?? []).flatMap(author => Object.values(author.name ?? {})), ...(work.tags ?? [])]
+      ...(work.authors ?? []).flatMap(author => Object.values(author.name ?? {})), ...(work.tags ?? []), ...(work.voices ?? [])]
       .filter(Boolean).join('\n').normalize('NFKC').toLowerCase();
     searchIndex.set(work, text);
   }

@@ -5,13 +5,14 @@ import { h, clear, formatBytes, formatTime, scrollWithin } from '../../core/dom.
 import { icon } from '../../core/icons.js';
 import { t, localized, lang } from '../../core/i18n.js';
 import * as kit from '../kit.js';
+import * as prefs from '../../core/prefs.js';
 import { page } from '../page.js';
 import { coverImage } from '../cards.js';
 import * as api from '../../data/api.js';
 import * as source from '../../data/source.js';
 import * as offline from '../../data/offline.js';
 import * as covers from '../../data/covers.js';
-import { workTitle, circleOf, authorNames, categoryOf, kindIcon, listsContaining } from '../state.js';
+import { workTitle, circleOf, authorNames, voiceNames, categoryOf, kindIcon, listsContaining } from '../state.js';
 
 const kindIcons = { folder: 'folder', audio: 'headphones', video: 'film', image: 'photo', pdf: 'doc', text: 'doc', vtt: 'captions', html: 'globe', epub: 'book', other: 'doc' };
 
@@ -55,7 +56,7 @@ export async function create(app, route) {
     titleNode.title = title;
     const circle = work && circleOf(work);
     clear(circleNode, circle ? h('a', { href: `/library/author/${encodeURIComponent(circle.name)}`, class: 'link' }, icon('people'), h('span', { text: circle.name })) : null);
-    const names = work ? authorNames(work) : [];
+    const names = work ? voiceNames(work) : [];
     clear(castNode, names.slice(0, 8).map(name => h('a', { href: `/library/voice/${encodeURIComponent(name)}`, class: 'cast-chip', text: name })));
     const category = work ? categoryOf(work) : 'other';
     const facts = [
@@ -246,13 +247,26 @@ export async function create(app, route) {
   }
 
   /* ---------------- files */
+  /**
+   * Like DLsite Play, caption files attached to an audio/video file in the same folder are
+   * hidden: the one its playfile links to, or one named after it ("01.mp3.vtt", "01.vtt").
+   */
+  function withoutCaptionFiles(nodes) {
+    const media = nodes.filter(file => file.kind === 'audio' || file.kind === 'video');
+    if (!media.length) return nodes;
+    const linked = new Set(media.map(file => file.playfile?.[file.kind]?.vtt).filter(Boolean));
+    const stems = new Set(media.flatMap(file => [file.name, file.name.replace(/\.[^.]+$/, '')]).map(name => name.toLowerCase()));
+    return nodes.filter(file => file.kind !== 'vtt' || !(linked.has(file.hashname) || stems.has(file.name.replace(/\.[^.]+$/, '').toLowerCase())));
+  }
   // Most works wrap everything in one top folder; open it directly to save a tap.
   const effectiveFolder = () => !folder && tree?.length === 1 && tree[0].kind === 'folder' ? tree[0].path : folder;
   function folderNodes() {
     let nodes = tree ?? [];
     const current = effectiveFolder();
     for (const segment of current ? current.split('/') : []) nodes = nodes.find(entry => entry.kind === 'folder' && entry.name === segment)?.children ?? [];
-    return nodes;
+    if (prefs.get('hideCaptionFiles')) nodes = withoutCaptionFiles(nodes);
+    // Folders first, like DLsite Play; otherwise the work's own order.
+    return nodes.filter(file => file.kind === 'folder').concat(nodes.filter(file => file.kind !== 'folder'));
   }
   function paintCrumbs() {
     const current = effectiveFolder();
@@ -348,7 +362,8 @@ export async function create(app, route) {
     const work = api.normalize({ workno, ...info });
     const rows = [
       [t('circle'), circleOf(work)?.name],
-      [authorNames(work).length && categoryOf(work) === 'audio' ? t('cast') : t('authors'), authorNames(work).join(' / ')],
+      [t('authors'), authorNames(work).join(' / ')],
+      [t('cast'), (voiceNames(work).length ? voiceNames(work) : voiceNames(light)).join(' / ')],
       [t('release'), work.released ? new Date(work.released).toLocaleDateString(lang()) : null],
       [t('purchasedOn'), light?.purchased ? new Date(light.purchased).toLocaleDateString(lang()) : null],
       [t('type'), [info.work_type, info.file_type].filter(Boolean).join(' · ')],
@@ -395,7 +410,7 @@ export async function create(app, route) {
   const unsubscribe = [
     state.on('mylist', paintHeart),
     state.on('activity', paintPrimary),
-    state.on('library', () => { light = state.findWork(workno) ?? light; paintHero(); }),
+    state.on('library', () => { light = state.findWork(workno) ?? light; paintHero(); paintDetails(); }),
     app.player.on('state', () => { paintPrimary(); paintFiles(); }),
     app.player.on('change', () => { paintPrimary(); paintFiles(); }),
     offOffline,

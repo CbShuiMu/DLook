@@ -4,6 +4,8 @@
 const dev = Boolean(globalThis.__DLOOK_DEV__);
 export const PLAY = dev ? location.origin : 'https://play.dlsite.com';
 export const CDN = dev ? `${location.origin}/cdn` : 'https://play.dl.dlsite.com';
+// DLsite store (www.dlsite.com): its product API allows play.dlsite.com as a CORS origin.
+export const STORE = dev ? `${location.origin}/store` : 'https://www.dlsite.com';
 export const WORKNO = /^(?:RJ|VJ|BJ)\d{6,10}$/;
 
 export function csrfHeaders() {

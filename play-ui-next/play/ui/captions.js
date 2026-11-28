@@ -139,6 +139,8 @@ export function timeline(output, { scrollContainer = output, onSeek } = {}) {
       scrollContainer.scrollTop = 0;
     }
     let index = cues.findIndex(cue => time >= cue.start && time < cue.end);
+    // Between cues: single-line mode shows nothing rather than the upcoming line.
+    output.toggleAttribute('data-gap', index < 0);
     if (index < 0) index = cues.findIndex(cue => time < cue.start);
     if (index < 0) index = cues.length - 1;
     if (index !== active) {
